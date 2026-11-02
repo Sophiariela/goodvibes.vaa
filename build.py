@@ -21,7 +21,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 SITE = {
     # TROCAR pelo domínio definitivo antes de publicar (usado em canonical, OG e sitemap)
-    "base_url": "https://www.example.com",
+    "base_url": "https://goodvibesvaa.vercel.app",
     "name": "Good Vibes Va'a",
     "whatsapp": "5571999789710",
     "whatsapp_display": "(71) 99978-9710",
