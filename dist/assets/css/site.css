@@ -115,8 +115,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   line-height: 1.04;
   letter-spacing: -.012em;
 }
-.h2 { font-size: var(--t-xl); font-stretch: 118%; font-weight: 750; line-height: 1; letter-spacing: -.02em; max-width: 18ch; }
-.h3 { font-size: var(--t-md); font-stretch: 112%; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
+.h2 {
+  font-family: var(--font-display); font-size: var(--t-xl); font-weight: 580; font-style: normal;
+  line-height: 1.05; letter-spacing: -.01em; max-width: 18ch;
+}
+.h3 {
+  font-family: var(--font-display); font-size: var(--t-md); font-weight: 560; font-style: normal;
+  line-height: 1.15; letter-spacing: -.008em;
+}
 .lead { font-size: var(--t-md); line-height: 1.5; max-width: 52ch; color: var(--stone); }
 .meta { font-stretch: 80%; font-size: var(--t-sm); font-weight: 500; letter-spacing: .01em; color: var(--stone); }
 .prose p + p { margin-top: 1em; }
@@ -291,7 +297,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: grid; gap: 4px; padding: 16px 0; text-decoration: none;
   border-bottom: 1px solid var(--line-light); position: relative;
 }
-.tab-title { font-stretch: 125%; font-weight: 800; font-size: clamp(1.375rem, 1rem + 2.4vw, 2.5rem); letter-spacing: -.025em; line-height: 1; color: rgba(244,240,230,.5); transition: color .2s; }
+.tab-title {
+  font-family: var(--font-display); font-weight: 580; font-style: normal;
+  font-size: clamp(1.375rem, 1rem + 2.4vw, 2.5rem); letter-spacing: -.012em; line-height: 1.05;
+  color: rgba(244,240,230,.5); transition: color .2s;
+}
 .tab-desc { font-size: var(--t-sm); color: rgba(244,240,230,.6); }
 .tab-short { display: none; }
 @media (max-width: 899px) {
@@ -337,7 +347,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .steps { margin-top: 16px; display: grid; gap: 12px 24px; grid-template-columns: 1fr 1fr; counter-reset: step; }
 @media (min-width: 900px) { .steps { grid-template-columns: repeat(4, 1fr); } }
 .step { counter-increment: step; display: grid; gap: 2px; font-size: var(--t-sm); }
-.step::before { content: counter(step); font-stretch: 125%; font-weight: 800; font-size: 1.5rem; line-height: 1; color: var(--sand); margin-bottom: 6px; }
+.step::before {
+  content: counter(step); font-family: var(--font-display); font-weight: 580; font-style: normal;
+  font-size: 1.625rem; line-height: 1; color: var(--sand); margin-bottom: 6px;
+}
 .step span { color: rgba(244,240,230,.7); }
 
 /* ---------- Formulários (compactos) ---------- */
@@ -374,7 +387,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .captain-media { aspect-ratio: 1; }
 .captain .media[data-slot]::after { font-size: 11px; }
 .captain figcaption { padding-top: 10px; display: grid; gap: 2px; font-size: var(--t-sm); }
-.captain strong { font-stretch: 112%; font-size: 1.125rem; }
+.captain strong { font-family: var(--font-display); font-weight: 600; font-style: normal; font-size: 1.1875rem; }
 @media (min-width: 960px) { .club-grid { grid-template-columns: 1.1fr 1fr; gap: 72px; align-items: start; } }
 .strip {
   margin-top: clamp(32px, 4vw, 48px);
