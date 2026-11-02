@@ -3,6 +3,7 @@ import {
   seatsAvailable,
   canReserve,
   availabilityLabel,
+  labelFromSeatsAvailable,
   reservationCountsTowardCapacity,
   isSessionInPast,
   computeHoldExpiry,
@@ -98,6 +99,27 @@ describe('availabilityLabel', () => {
 
   it('esgotado quando não sobra vaga', () => {
     expect(availabilityLabel('open', 6, [res({ participantsCount: 6 })], now)).toBe('esgotado');
+  });
+});
+
+describe('labelFromSeatsAvailable', () => {
+  it('cancelado tem prioridade sobre qualquer contagem', () => {
+    expect(labelFromSeatsAvailable('cancelled', 5)).toBe('cancelado');
+  });
+  it('esgotado com 0 ou negativo', () => {
+    expect(labelFromSeatsAvailable('open', 0)).toBe('esgotado');
+    expect(labelFromSeatsAvailable('open', -1)).toBe('esgotado');
+  });
+  it('quase esgotado com 1 ou 2', () => {
+    expect(labelFromSeatsAvailable('open', 1)).toBe('quase_esgotado');
+    expect(labelFromSeatsAvailable('open', 2)).toBe('quase_esgotado');
+  });
+  it('disponível acima do limiar', () => {
+    expect(labelFromSeatsAvailable('open', 3)).toBe('disponivel');
+  });
+  it('bate com availabilityLabel para o mesmo cenário', () => {
+    const reservations = [res({ participantsCount: 4 })];
+    expect(availabilityLabel('open', 6, reservations, now)).toBe(labelFromSeatsAvailable('open', seatsAvailable(6, reservations, now)));
   });
 });
 

@@ -50,17 +50,25 @@ export function seatsAvailable(capacity: number, reservations: ReservationForAva
   return capacity - seatsTaken(reservations, now);
 }
 
+/** Núcleo puro: dado quantas vagas já se sabe que sobram, decide o rótulo.
+ *  Reaproveitado tanto por availabilityLabel() (calcula a partir da lista de
+ *  reservas) quanto por quem já tem seats_available pronto de uma query SQL
+ *  (api/availability.ts), sem precisar reconstruir uma lista de reservas
+ *  falsa só para re-derivar o mesmo número. */
+export function labelFromSeatsAvailable(sessionStatus: SessionStatus, seatsAvailable: number): AvailabilityLabel {
+  if (sessionStatus === 'cancelled') return 'cancelado';
+  if (seatsAvailable <= 0) return 'esgotado';
+  if (seatsAvailable <= LOW_THRESHOLD) return 'quase_esgotado';
+  return 'disponivel';
+}
+
 export function availabilityLabel(
   sessionStatus: SessionStatus,
   capacity: number,
   reservations: ReservationForAvailability[],
   now: Date = new Date(),
 ): AvailabilityLabel {
-  if (sessionStatus === 'cancelled') return 'cancelado';
-  const free = seatsAvailable(capacity, reservations, now);
-  if (free <= 0) return 'esgotado';
-  if (free <= LOW_THRESHOLD) return 'quase_esgotado';
-  return 'disponivel';
+  return labelFromSeatsAvailable(sessionStatus, seatsAvailable(capacity, reservations, now));
 }
 
 /**
