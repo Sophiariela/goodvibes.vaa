@@ -29,6 +29,21 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 - Para ligar um sistema de reservas ou pagamentos, defina `request_endpoint` em `SITE` no `build.py`. O JS passa a enviar `POST` JSON `{ journey, locale, fields }` para esse endereço, sem mudar o HTML.
 - Nada no site simula disponibilidade, pagamento ou confirmação.
 
+## Backend de reservas (em andamento)
+
+Sistema de disponibilidade, reservas e pagamento Pix (Mercado Pago) sendo
+construído em `/api` (Vercel Serverless Functions) + Supabase Postgres, ao
+lado do site estático — sem alterar a stack do front. Ver:
+
+- `docs/SETUP.md` — como configurar Supabase, Mercado Pago e Vercel.
+- `db/schema.sql` — schema do banco.
+- `.env.example` — variáveis necessárias.
+- `npm test` — testes da lógica de disponibilidade/webhook (`lib/`, `tests/`).
+
+Nenhuma etapa é anunciada como pronta antes de rodar de verdade contra
+credenciais reais (de teste) — ver o plano de arquitetura para o roteiro
+completo.
+
 ## Antes de publicar
 
 ### 1. Fotografias oficiais
