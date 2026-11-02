@@ -137,7 +137,8 @@ CONTENT = {
 
         "community_title": "Uma comunidade que se encontra no mar.",
         "community_lead": "Treinos ao amanhecer, ações como o Outubro Rosa e um ano de histórias contadas por quem rema com a gente.",
-        "community_slots": ["Foto oficial: equipe celebrando após o treino · comunidade-1.jpg", "Foto oficial: Outubro Rosa · comunidade-2.jpg", "Foto oficial: aniversário de 1 ano do clube · comunidade-3.jpg", "Foto oficial: remadores na canoa · comunidade-4.jpg", "Foto oficial: detalhe de remo e mar · comunidade-5.jpg"],
+        "community_slots": ["Foto oficial: equipe celebrando após o treino · comunidade-1.jpg", "Foto oficial: Outubro Rosa · comunidade-2.jpg", "Foto oficial: aniversário de 1 ano do clube · comunidade-3.jpg", "Foto oficial: remadores na canoa · comunidade-canoa.jpg", "Foto oficial: detalhe de remo e mar · comunidade-5.jpg"],
+        "community_canoa_alt": "Equipe remando em canoa havaiana no mar",
         "community_alt": "Comunidade Good Vibes Va'a",
         "community_cta": "Ver depoimentos no Instagram",
         "community_note": "Depoimentos em vídeo de quem já remou com o clube estão no nosso Instagram.",
@@ -327,7 +328,8 @@ CONTENT = {
 
         "community_title": "A community that meets at sea.",
         "community_lead": "Sunrise training, campaigns like Pink October and a year of stories told by the people who paddle with us.",
-        "community_slots": ["Official photo: crew celebrating after training · comunidade-1.jpg", "Official photo: Pink October · comunidade-2.jpg", "Official photo: club's first anniversary · comunidade-3.jpg", "Official photo: paddlers in the canoe · comunidade-4.jpg", "Official photo: paddle and sea detail · comunidade-5.jpg"],
+        "community_slots": ["Official photo: crew celebrating after training · comunidade-1.jpg", "Official photo: Pink October · comunidade-2.jpg", "Official photo: club's first anniversary · comunidade-3.jpg", "Official photo: paddlers in the canoe · comunidade-canoa.jpg", "Official photo: paddle and sea detail · comunidade-5.jpg"],
+        "community_canoa_alt": "Crew paddling an outrigger canoe at sea",
         "community_alt": "Good Vibes Va'a community",
         "community_cta": "Watch testimonials on Instagram",
         "community_note": "Video testimonials from people who have paddled with the club are on our Instagram.",
@@ -718,7 +720,12 @@ def render(code):
             <a class="link" href="https://www.instagram.com/{cap['handle']}/" target="_blank" rel="noopener">@{e(cap['handle'])}</a></figcaption>
         </figure>"""
     tiles = "".join(
-        media(f"comunidade-{i+1}.jpg", s, c["community_alt"], prefix, w=900, h=900)
+        media(
+            "comunidade-canoa.jpg" if i == 3 else f"comunidade-{i+1}.jpg",
+            s,
+            c["community_canoa_alt"] if i == 3 else c["community_alt"],
+            prefix, w=900, h=900,
+        )
         for i, s in enumerate(c["community_slots"][:4])
     )
     club = f"""
