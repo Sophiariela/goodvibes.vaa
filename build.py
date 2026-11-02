@@ -222,6 +222,8 @@ CONTENT = {
         "footer_follow": "Acompanhe",
         "footer_rights": "Todos os direitos reservados.",
         "dock_book": "Experiências",
+        "float_wa_label": "Fale com a gente no WhatsApp",
+        "float_wa_msg": "Olá! Gostaria de saber mais sobre as experiências do Good Vibes Va'a.",
 
         "i18n": {
             "locale": "pt",
@@ -413,6 +415,8 @@ CONTENT = {
         "footer_follow": "Follow",
         "footer_rights": "All rights reserved.",
         "dock_book": "Experiences",
+        "float_wa_label": "Chat with us on WhatsApp",
+        "float_wa_msg": "Hi! I'd like to know more about Good Vibes Va'a experiences.",
 
         "i18n": {
             "locale": "en",
@@ -816,7 +820,8 @@ def render(code):
 <div class="dock" inert>
   <a class="btn btn--dark" href="#experiencias">{e(c['dock_book'])}</a>
   <a class="btn btn--primary" href="{wa_link()}" target="_blank" rel="noopener">{ICON_WA}WhatsApp</a>
-</div>"""
+</div>
+<a class="float-wa" href="{wa_link(c['float_wa_msg'])}" target="_blank" rel="noopener" aria-label="{e(c['float_wa_label'])}">{ICON_WA}</a>"""
 
     config = {"whatsapp": SITE["whatsapp"], "requestEndpoint": SITE["request_endpoint"]}
     scripts = f"""

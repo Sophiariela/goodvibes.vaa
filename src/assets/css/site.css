@@ -465,6 +465,26 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (min-width: 1080px) { .dock { display: none; } }
 @media (max-width: 1079px) { .footer { padding-bottom: 104px; } }
 
+/* ---------- Botão flutuante do WhatsApp ---------- */
+.float-wa {
+  position: fixed; z-index: 45;
+  right: calc(var(--gutter) * .75);
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  width: 52px; height: 52px; display: grid; place-items: center;
+  background: #25D366; color: #fff; border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(18, 61, 43, .28);
+  transition: transform .18s, box-shadow .18s, background-color .18s;
+}
+.float-wa svg { width: 26px; height: 26px; }
+.float-wa:hover { background: #20bd5a; box-shadow: 0 8px 24px rgba(18, 61, 43, .36); transform: translateY(-2px); }
+.float-wa:active { transform: translateY(0) scale(.96); }
+/* No mobile, quando a barra fixa de reserva está visível, sobe o botão pra não sobrepor. */
+@media (max-width: 1079px) {
+  .float-wa { bottom: calc(24px + env(safe-area-inset-bottom)); right: 16px; width: 48px; height: 48px; }
+  .float-wa svg { width: 24px; height: 24px; }
+  .dock.is-visible ~ .float-wa { bottom: calc(92px + env(safe-area-inset-bottom)); }
+}
+
 /* Celular: lista de opções enxuta (só nomes e valores), o formulário fica logo abaixo */
 @media (max-width: 639px) {
   .offers div { padding: 10px 0; }
