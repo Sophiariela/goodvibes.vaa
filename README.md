@@ -17,6 +17,9 @@ dist/                    site pronto para publicar (gerado)
 
 Para gerar: `python3 build.py`. Publique a pasta `dist/`.
 
+### Deploy
+Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` dispara um deploy automático de produção.
+
 ### Idiomas
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
