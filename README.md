@@ -42,7 +42,7 @@ Coloque os arquivos em `src/assets/img/` com estes nomes. Cada espaço sem foto 
 | particular.jpg | Grupo privado na canoa | 1200×1500 |
 | captain-jesse.jpg, captain-nala.jpg | Retratos dos capitães | 1200×1500 |
 | comunidade-1.jpg … comunidade-5.jpg | Comunidade, Outubro Rosa, 1 ano | 1200×900 |
-| produto-1.jpg … produto-4.jpg | Peças Moda Good Vibes | 1200×1500 |
+| produto-1.jpg … produto-5.jpg | Peças Moda Good Vibes | 1200×1500 |
 | final.jpg | Canoa no mar ao pôr do sol | 2400×1200 |
 | og.jpg | Imagem de compartilhamento | 1200×630 |
 | logo.png | Logo circular do clube | 160×160 |

@@ -749,7 +749,7 @@ def render(code):
     prods = "".join(
         f"""<figure class="product">{media(f'produto-{n}.jpg', f'produto-{n}.jpg', c['shop_item'], prefix, cls='product-media', w=800, h=800, light=True)}
         <figcaption>{e(c['shop_item_meta'])}</figcaption></figure>"""
-        for n in range(1, 5)
+        for n in range(1, 6)
     )
     shop = f"""
 <section class="section shop" id="produtos" aria-labelledby="shop-title">
