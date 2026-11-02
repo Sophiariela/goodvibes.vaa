@@ -24,6 +24,23 @@
   src: url(../fonts/archivo-latin-ext-standard-normal.woff2) format("woff2-variations");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+20A0-20AB, U+20AD-20C0, U+2C60-2C7F, U+A720-A7FF;
 }
+/* Serifada editorial da marca e dos títulos — auto-hospedada (licença OFL), mesmo padrão do Archivo */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url(../fonts/fraunces-latin-standard-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url(../fonts/fraunces-latin-ext-standard-normal.woff2) format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+20A0-20AB, U+20AD-20C0, U+2C60-2C7F, U+A720-A7FF;
+}
 
 /* ---------- Tokens ---------- */
 :root {
@@ -40,6 +57,7 @@
   --line-light: rgba(244, 240, 230, .22);
 
   --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
 
   /* Escala tipográfica (razão ~1.333) */
   --t-xs: .8125rem;
@@ -48,7 +66,7 @@
   --t-md: 1.375rem;
   --t-lg: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
   --t-xl: clamp(2.25rem, 1.4rem + 3.8vw, 4rem);
-  --t-hero: clamp(3rem, 1.2rem + 8.4vw, 8.5rem);
+  --t-hero: clamp(2.5rem, 1.35rem + 4.6vw, 5rem);
 
   --gutter: 16px;
   --max: 1240px;
@@ -91,10 +109,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- Tipografia ---------- */
 .display {
-  font-stretch: 125%;
-  font-weight: 800;
-  line-height: .94;
-  letter-spacing: -.025em;
+  font-family: var(--font-display);
+  font-weight: 580;
+  font-style: normal;
+  line-height: 1.04;
+  letter-spacing: -.012em;
 }
 .h2 { font-size: var(--t-xl); font-stretch: 118%; font-weight: 750; line-height: 1; letter-spacing: -.02em; max-width: 18ch; }
 .h3 { font-size: var(--t-md); font-stretch: 112%; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
@@ -165,23 +184,33 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .header.is-solid, .header.is-open {
   background: var(--ivory); color: var(--charcoal); box-shadow: 0 1px 0 var(--line);
 }
-.header .wrap { display: flex; align-items: center; justify-content: space-between; height: 100%; gap: 20px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-.brand-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-.brand-word { font-stretch: 125%; font-weight: 800; font-size: 1.0625rem; letter-spacing: -.01em; line-height: 1; }
-.brand-word small { display: block; margin-top: 4px; font-stretch: 80%; font-weight: 500; font-size: .75rem; letter-spacing: .02em; opacity: .75; }
+.header .wrap { display: flex; align-items: center; justify-content: space-between; height: 100%; gap: 28px; }
+.brand { display: inline-flex; align-items: center; gap: 13px; text-decoration: none; margin-right: auto; min-width: 0; }
+.brand-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; }
+.brand-word {
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  font-size: 1.125rem; letter-spacing: -.005em; line-height: 1;
+}
+.brand-word small {
+  display: block; margin-top: 5px; font-family: var(--font); font-stretch: 85%;
+  font-weight: 500; font-size: .6875rem; letter-spacing: .05em; text-transform: uppercase; opacity: .62;
+}
 
-.nav { display: none; }
-.nav ul { display: flex; gap: 28px; }
-.nav a { text-decoration: none; font-size: var(--t-sm); font-weight: 550; padding-block: 6px; border-bottom: 1.5px solid transparent; }
+.nav { display: none; min-width: 0; }
+.nav ul { display: flex; gap: 22px; }
+.nav li { flex: none; }
+.nav a {
+  text-decoration: none; font-size: .8125rem; font-weight: 650; letter-spacing: .06em; text-transform: uppercase;
+  padding-block: 6px; border-bottom: 1.5px solid transparent; white-space: nowrap;
+}
 .nav a:hover { border-color: currentColor; }
-.header-actions { display: flex; align-items: center; gap: 14px; }
-.lang-switch { display: flex; gap: 2px; font-stretch: 85%; font-size: var(--t-xs); font-weight: 650; }
+.header-actions { display: flex; align-items: center; gap: 16px; flex: none; }
+.lang-switch { display: flex; gap: 2px; font-stretch: 85%; font-size: var(--t-xs); font-weight: 650; flex: none; }
 .lang-switch a, .lang-switch span { padding: 6px 8px; text-decoration: none; border-radius: var(--radius); }
 .lang-switch [aria-current="true"] { background: currentColor; }
 .lang-switch [aria-current="true"] b { color: var(--forest); }
 .header.is-solid .lang-switch [aria-current="true"] b, .header.is-open .lang-switch [aria-current="true"] b { color: var(--ivory); }
-.header-cta { display: none; }
+.header-cta { display: none; white-space: nowrap; }
 .menu-btn {
   width: 44px; height: 44px; display: grid; place-items: center;
   background: none; border: 1.5px solid currentColor; border-radius: var(--radius); cursor: pointer;
@@ -212,6 +241,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .header-cta { display: inline-flex; min-height: 44px; padding: 10px 18px; }
   .menu-btn { display: none; }
   .mobile-nav { display: none !important; }
+  .brand-word, .brand-word small { white-space: nowrap; }
 }
 
 /* ---------- Hero ---------- */
@@ -222,21 +252,31 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero .media { position: absolute; inset: 0; z-index: -2; }
 .hero .media[data-slot]::after { left: auto; right: var(--gutter); top: calc(var(--header-h) + 16px); bottom: auto; max-width: 30ch; text-align: right; }
 .hero::before {
-  /* Véu de legibilidade sobre a fotografia */
+  /* Véu de legibilidade: bolso escuro ancorado onde o texto fica (canto inferior esquerdo),
+     deixando a direita da fotografia mais respirada — não uma faixa plana sobre a imagem inteira. */
   content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(to top, rgba(12,42,30,.88) 0%, rgba(12,42,30,.45) 42%, rgba(12,42,30,0) 70%),
-              linear-gradient(to bottom, rgba(12,42,30,.5) 0%, rgba(12,42,30,0) 22%);
+  background:
+    linear-gradient(100deg, rgba(8,24,17,.86) 0%, rgba(8,24,17,.62) 32%, rgba(8,24,17,.18) 58%, rgba(8,24,17,0) 72%),
+    linear-gradient(to top, rgba(8,24,17,.96) 0%, rgba(8,24,17,.62) 36%, rgba(8,24,17,0) 68%),
+    linear-gradient(to bottom, rgba(8,24,17,.6) 0%, rgba(8,24,17,0) 24%);
 }
-.hero-inner { padding-block: calc(var(--header-h) + 32px) clamp(28px, 5vw, 64px); }
-.hero-place { font-stretch: 85%; font-weight: 550; font-size: var(--t-sm); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-.hero-place::before { content: ""; width: 28px; height: 1.5px; background: var(--sand); }
-.hero h1 { font-size: var(--t-hero); max-width: 11ch; }
-.hero-sub { margin-top: 20px; font-size: var(--t-md); line-height: 1.45; max-width: 40ch; color: rgba(244,240,230,.88); }
-.hero .btn-row { margin-top: 28px; }
+.hero-inner { padding-block: calc(var(--header-h) + 40px) clamp(32px, 5vw, 72px); }
+.hero-place {
+  font-size: .75rem; font-weight: 650; letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 22px; display: flex; align-items: center; gap: 12px;
+  text-shadow: 0 1px 12px rgba(0,0,0,.4);
+}
+.hero-place::before { content: ""; width: 28px; height: 1.5px; background: var(--sand); flex: none; }
+.hero h1 { font-size: var(--t-hero); max-width: 12ch; text-shadow: 0 2px 24px rgba(0,0,0,.3); }
+.hero-sub {
+  margin-top: 22px; font-size: var(--t-md); line-height: 1.55; max-width: 38ch;
+  color: rgba(244,240,230,.92); text-shadow: 0 1px 16px rgba(0,0,0,.35);
+}
+.hero .btn-row { margin-top: 36px; }
 .hero-facts {
-  margin-top: clamp(28px, 4vw, 48px); padding-top: 16px; border-top: 1px solid var(--line-light);
+  margin-top: clamp(32px, 4vw, 52px); padding-top: 18px; border-top: 1px solid var(--line-light);
   display: none; gap: 10px 32px; grid-template-columns: 1fr;
-  font-size: var(--t-sm); color: rgba(244,240,230,.85);
+  font-size: var(--t-sm); color: rgba(244,240,230,.88);
 }
 @media (min-width: 720px) { .hero-facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; } }
 

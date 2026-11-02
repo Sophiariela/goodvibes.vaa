@@ -10,7 +10,7 @@ Site estático gerado por um script Python sem dependências. Uma landing page d
 build.py                 conteúdo PT/EN + templates + geração do site
 src/assets/css/site.css  design system (tokens, componentes, seções)
 src/assets/js/site.js    navegação, formulários, ponto de integração
-src/assets/fonts/        Archivo variável, auto-hospedada (licença OFL)
+src/assets/fonts/        Archivo (texto/nav) + Fraunces (marca/títulos), auto-hospedadas (licença OFL)
 src/assets/img/          fotos oficiais (ver lista abaixo)
 dist/                    site pronto para publicar (gerado)
 ```
