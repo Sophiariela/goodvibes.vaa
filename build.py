@@ -28,8 +28,8 @@ SITE = {
     "instagram": "https://www.instagram.com/goodvibes.vaa/",
     "instagram_handle": "@goodvibes.vaa",
     "captains": [
-        {"name": "Jesse Coutinho", "handle": "jesse_coutinho", "img": "captain-jesse.jpg"},
-        {"name": "Nala Rodrigues", "handle": "nalarodrigues", "img": "captain-nala.jpg"},
+        {"name": "Jesse Coutinho", "handle": "jesse_coutinho", "photo": "captain_jesse"},
+        {"name": "Nala Rodrigues", "handle": "nalarodrigues", "photo": "captain_nala"},
     ],
     "maps_embed": "https://www.google.com/maps?q=Praia+da+Pregui%C3%A7a,+Salvador,+BA&output=embed",
     "maps_link": "https://www.google.com/maps/search/?api=1&query=Praia+da+Pregui%C3%A7a+Salvador+BA",
@@ -40,6 +40,88 @@ SITE = {
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
+
+# ---------------------------------------------------------------------------
+# Fotos — uma entrada por espaço de foto do site. Trocar uma foto é trocar
+# o "file" de uma linha aqui; nada mais no resto do build.py precisa mudar.
+# "focus" é o object-position da foto dentro do quadro (ver .media img no
+# site.css) — "center" serve pra quase tudo; só ajuste quando um rosto ou
+# detalhe importante for cortado pelo enquadramento quadrado/retangular.
+# ---------------------------------------------------------------------------
+PHOTOS = {
+    "hero": {
+        "file": "hero.jpg",
+        "alt_pt": "Equipe Good Vibes Va'a remando uma canoa havaiana ao amanhecer na Baía de Todos-os-Santos",
+        "alt_en": "Good Vibes Va'a crew paddling an outrigger canoe at sunrise on the Bay of All Saints",
+        "focus": "center",
+    },
+    "captain_jesse": {
+        "file": "captain-jesse.jpg",
+        "alt_pt": "Retrato de Jesse Coutinho, capitão do Good Vibes Va'a",
+        "alt_en": "Portrait of Jesse Coutinho, Good Vibes Va'a captain",
+        "focus": "center",
+    },
+    "captain_nala": {
+        "file": "captain-nala.jpg",
+        "alt_pt": "Retrato de Nala Rodrigues, capitã do Good Vibes Va'a",
+        "alt_en": "Portrait of Nala Rodrigues, Good Vibes Va'a captain",
+        "focus": "center top",
+    },
+    "community_1": {
+        "file": "comunidade-1.jpg",
+        "alt_pt": "Equipe Good Vibes Va'a comemorando em grupo, abraçados, após o treino",
+        "alt_en": "Good Vibes Va'a crew celebrating together, arms around each other, after training",
+        "focus": "center",
+    },
+    "community_2": {
+        "file": "comunidade-2.jpg",
+        "alt_pt": "Abraço entre integrantes da equipe durante a campanha Outubro Rosa",
+        "alt_en": "Crew members hugging during the Pink October campaign",
+        "focus": "center",
+    },
+    "community_3": {
+        "file": "comunidade-3.jpg",
+        "alt_pt": "Integrante da equipe na comemoração de 1 ano do clube, de olhos fechados e braços erguidos",
+        "alt_en": "Crew member at the club's 1-year anniversary celebration, eyes closed, arms raised",
+        "focus": "center",
+    },
+    "community_4": {
+        "file": "comunidade-canoa.jpg",
+        "alt_pt": "Equipe remando em canoa havaiana no mar",
+        "alt_en": "Crew paddling an outrigger canoe at sea",
+        "focus": "center 60%",
+    },
+    "product_1": {
+        "file": "produto-1.jpg",
+        "alt_pt": "Camisa UV Atleta Good Vibes Va'a sobre a areia da praia",
+        "alt_en": "Good Vibes Va'a Atleta UV shirt on the beach sand",
+        "focus": "center",
+    },
+    "product_2": {
+        "file": "produto-2.jpg",
+        "alt_pt": "Sacola Good Vibes Va'a sobre a areia da praia",
+        "alt_en": "Good Vibes Va'a drawstring bag on the beach sand",
+        "focus": "center",
+    },
+    "product_3": {
+        "file": "produto-3.jpg",
+        "alt_pt": "Viseira Good Vibes Va'a sobre a areia da praia",
+        "alt_en": "Good Vibes Va'a visor on the beach sand",
+        "focus": "center",
+    },
+    "product_4": {
+        "file": "produto-4.jpg",
+        "alt_pt": "Boné Good Vibes Va'a sobre a areia da praia",
+        "alt_en": "Good Vibes Va'a cap on the beach sand",
+        "focus": "center",
+    },
+    "product_5": {
+        "file": "produto-5.jpg",
+        "alt_pt": "Camisa de algodão comemorativa Good Vibes Va'a sobre a areia da praia",
+        "alt_en": "Good Vibes Va'a commemorative cotton shirt on the beach sand",
+        "focus": "center",
+    },
+}
 
 # ---------------------------------------------------------------------------
 # Conteúdo por idioma
@@ -76,9 +158,6 @@ CONTENT = {
             ("Clube", "Aulas, treinos e planos recorrentes para quem quer evoluir no esporte e fazer parte da equipe."),
             ("Good Vibes lifestyle", "Produtos, eventos e parcerias que levam a identidade do clube para fora da água."),
         ],
-        "about_slot": "Foto oficial: canoas Good Vibes na areia da Praia da Preguiça · 2400×1000 · clube.jpg",
-        "about_alt": "Canoas do clube Good Vibes Va'a alinhadas na areia da Praia da Preguiça",
-
         "journeys_title": "Três formas de entrar no mar.",
         "journeys_lead": "Escolha o caminho que combina com você. Cada um tem sua própria conversa com a equipe.",
         "journeys": [
@@ -90,8 +169,6 @@ CONTENT = {
         "a_kicker": "Quero experimentar",
         "a_title": "Sua primeira vez na canoa havaiana.",
         "a_lead": "Não é preciso ter experiência. Os capitães explicam a técnica, o ritmo e a segurança antes de entrar no mar.",
-        "a_slot": "Foto oficial: turmas no passeio de pôr do sol · 1200×1500 · experimentar.jpg",
-        "a_alt": "Grupo remando no passeio de pôr do sol na Baía de Todos-os-Santos",
         "a_offers": [
             ("Primeira experiência", "Para quem nunca remou. Uma introdução ao esporte com orientação do capitão."),
             ("Nascer do sol", "Saída cedo, mar calmo e a cidade acordando vista da baía."),
@@ -132,14 +209,10 @@ CONTENT = {
         "captain_role": "Capitão",
         "captain_role_f": "Capitã",
         "captain_slot": "Foto oficial: retrato do(a) capitão(ã) na canoa · 1200×1500",
-        "captain_alt": "Retrato de {name}, capitão do Good Vibes Va'a",
-        "captain_alt_f": "Retrato de {name}, capitã do Good Vibes Va'a",
 
         "community_title": "Uma comunidade que se encontra no mar.",
         "community_lead": "Treinos ao amanhecer, ações como o Outubro Rosa e um ano de histórias contadas por quem rema com a gente.",
-        "community_slots": ["Foto oficial: equipe celebrando após o treino · comunidade-1.jpg", "Foto oficial: Outubro Rosa · comunidade-2.jpg", "Foto oficial: aniversário de 1 ano do clube · comunidade-3.jpg", "Foto oficial: remadores na canoa · comunidade-canoa.jpg", "Foto oficial: detalhe de remo e mar · comunidade-5.jpg"],
-        "community_canoa_alt": "Equipe remando em canoa havaiana no mar",
-        "community_alt": "Comunidade Good Vibes Va'a",
+        "community_slots": ["Foto oficial: equipe celebrando após o treino · comunidade-1.jpg", "Foto oficial: Outubro Rosa · comunidade-2.jpg", "Foto oficial: aniversário de 1 ano do clube · comunidade-3.jpg", "Foto oficial: remadores na canoa · comunidade-canoa.jpg"],
         "community_cta": "Ver depoimentos no Instagram",
         "community_note": "Depoimentos em vídeo de quem já remou com o clube estão no nosso Instagram.",
 
@@ -213,8 +286,6 @@ CONTENT = {
 
         "final_title": "O mar está esperando.",
         "final_lead": "Escolha sua experiência ou fale direto com a equipe.",
-        "final_slot": "Foto oficial: canoa no mar ao pôr do sol · 2400×1200 · final.jpg",
-        "final_alt": "Canoa havaiana ao pôr do sol na Baía de Todos-os-Santos",
 
         "footer_about": "Clube de canoa havaiana na Praia da Preguiça, Salvador, Bahia.",
         "footer_nav": "Navegue",
@@ -269,9 +340,6 @@ CONTENT = {
             ("Club", "Classes, training sessions and recurring plans for those who want to progress in the sport and join the crew."),
             ("Good Vibes lifestyle", "Gear, events and partnerships that carry the club's identity beyond the water."),
         ],
-        "about_slot": "Official photo: Good Vibes canoes on the sand at Praia da Preguiça · 2400×1000 · clube.jpg",
-        "about_alt": "Good Vibes Va'a canoes lined up on the sand at Praia da Preguiça",
-
         "journeys_title": "Three ways onto the water.",
         "journeys_lead": "Pick the path that fits you. Each one starts its own conversation with the team.",
         "journeys": [
@@ -283,8 +351,6 @@ CONTENT = {
         "a_kicker": "I want to try it",
         "a_title": "Your first time in an outrigger canoe.",
         "a_lead": "No experience needed. The captains walk you through technique, timing and safety before you head out.",
-        "a_slot": "Official photo: group on the sunset paddle · 1200×1500 · experimentar.jpg",
-        "a_alt": "Group paddling at sunset on the Bay of All Saints",
         "a_offers": [
             ("First-time session", "For people who have never paddled. An introduction to the sport, guided by a captain."),
             ("Sunrise paddle", "An early start, calm water and the city waking up, seen from the bay."),
@@ -325,14 +391,10 @@ CONTENT = {
         "captain_role": "Captain",
         "captain_role_f": "Captain",
         "captain_slot": "Official photo: captain's portrait in the canoe · 1200×1500",
-        "captain_alt": "Portrait of {name}, Good Vibes Va'a captain",
-        "captain_alt_f": "Portrait of {name}, Good Vibes Va'a captain",
 
         "community_title": "A community that meets at sea.",
         "community_lead": "Sunrise training, campaigns like Pink October and a year of stories told by the people who paddle with us.",
-        "community_slots": ["Official photo: crew celebrating after training · comunidade-1.jpg", "Official photo: Pink October · comunidade-2.jpg", "Official photo: club's first anniversary · comunidade-3.jpg", "Official photo: paddlers in the canoe · comunidade-canoa.jpg", "Official photo: paddle and sea detail · comunidade-5.jpg"],
-        "community_canoa_alt": "Crew paddling an outrigger canoe at sea",
-        "community_alt": "Good Vibes Va'a community",
+        "community_slots": ["Official photo: crew celebrating after training · comunidade-1.jpg", "Official photo: Pink October · comunidade-2.jpg", "Official photo: club's first anniversary · comunidade-3.jpg", "Official photo: paddlers in the canoe · comunidade-canoa.jpg"],
         "community_cta": "Watch testimonials on Instagram",
         "community_note": "Video testimonials from people who have paddled with the club are on our Instagram.",
 
@@ -406,8 +468,6 @@ CONTENT = {
 
         "final_title": "The sea is waiting.",
         "final_lead": "Choose your experience or talk to the team directly.",
-        "final_slot": "Official photo: canoe at sea at sunset · 2400×1200 · final.jpg",
-        "final_alt": "Outrigger canoe at sunset on the Bay of All Saints",
 
         "footer_about": "Outrigger canoe club at Praia da Preguiça, Salvador, Bahia, Brazil.",
         "footer_nav": "Explore",
@@ -455,15 +515,19 @@ def wa_link(text=None):
     return url
 
 
-def media(img, slot, alt, prefix, cls="", w=1600, h=1000, eager=False, light=False):
-    """Slot de fotografia. Mostra a foto oficial se assets/img/<img> existir;
-    caso contrário, o slot exibe a descrição da foto a inserir."""
+def media(photo_key, locale, slot, prefix, cls="", w=1600, h=1000, eager=False, light=False):
+    """Slot de fotografia, lido do dicionário PHOTOS. Mostra a foto oficial
+    se assets/img/<file> existir; caso contrário, o slot exibe a descrição
+    da foto a inserir. Trocar a foto, o alt ou o enquadramento é editar a
+    entrada correspondente em PHOTOS — nada aqui precisa mudar."""
+    p = PHOTOS[photo_key]
+    alt = p["alt_pt"] if locale == "pt" else p["alt_en"]
     loading = 'fetchpriority="high"' if eager else 'loading="lazy"'
     klass = "media" + (" media--light" if light else "") + (f" {cls}" if cls else "")
     return (
         f'<figure class="{klass}" data-slot="{e(slot)}">'
-        f'<img src="{prefix}assets/img/{img}" alt="{e(alt)}" width="{w}" height="{h}" '
-        f'{loading} decoding="async" onerror="this.remove()">'
+        f'<img src="{prefix}assets/img/{p["file"]}" alt="{e(alt)}" width="{w}" height="{h}" '
+        f'style="--focus:{e(p["focus"])}" {loading} decoding="async" onerror="this.remove()">'
         f"</figure>"
     )
 
@@ -604,7 +668,7 @@ def render(code):
     facts = "".join(f"<li>{e(f)}</li>" for f in c["hero_facts"])
     hero = f"""
 <section class="hero" aria-labelledby="hero-title">
-  {media('hero.jpg', c['hero_slot'], c['hero_alt'], prefix, w=2400, h=1600, eager=True)}
+  {media('hero', code, c['hero_slot'], prefix, w=2400, h=1600, eager=True)}
   <div class="wrap hero-inner">
     <p class="hero-place">{e(c['hero_place'])}</p>
     <h1 class="display" id="hero-title">{e(c['hero_title'])}</h1>
@@ -716,20 +780,14 @@ def render(code):
     for i, cap in enumerate(SITE["captains"]):
         fem = i == 1
         role = c["captain_role_f"] if fem else c["captain_role"]
-        alt = (c["captain_alt_f"] if fem else c["captain_alt"]).format(name=cap["name"])
         caps += f"""
         <figure class="captain">
-          {media(cap['img'], cap['img'], alt, prefix, cls='captain-media', w=600, h=600, light=True)}
+          {media(cap['photo'], code, c['captain_slot'], prefix, cls='captain-media', w=600, h=600, light=True)}
           <figcaption><span class="meta">{e(role)}</span><strong>{e(cap['name'])}</strong>
             <a class="link" href="https://www.instagram.com/{cap['handle']}/" target="_blank" rel="noopener">@{e(cap['handle'])}</a></figcaption>
         </figure>"""
     tiles = "".join(
-        media(
-            "comunidade-canoa.jpg" if i == 3 else f"comunidade-{i+1}.jpg",
-            s,
-            c["community_canoa_alt"] if i == 3 else c["community_alt"],
-            prefix, w=900, h=900,
-        )
+        media(f"community_{i+1}", code, s, prefix, w=900, h=900)
         for i, s in enumerate(c["community_slots"][:4])
     )
     club = f"""
@@ -758,7 +816,7 @@ def render(code):
 
     # ---- Produtos (faixa compacta) ----
     prods = "".join(
-        f"""<figure class="product">{media(f'produto-{n}.jpg', f'produto-{n}.jpg', c['shop_item'], prefix, cls='product-media', w=800, h=800, light=True)}
+        f"""<figure class="product">{media(f'product_{n}', code, c['shop_item'], prefix, cls='product-media', w=800, h=800, light=True)}
         <figcaption>{e(c['shop_item_meta'])}</figcaption></figure>"""
         for n in range(1, 6)
     )

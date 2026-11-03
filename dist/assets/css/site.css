@@ -172,12 +172,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
     radial-gradient(rgba(244,240,230,.05) 1px, transparent 1px);
   background-size: 6px 6px;
 }
+/* object-position vem de --focus, definida por imagem via style inline
+   (ver PHOTOS em build.py) — trocar o enquadramento de uma foto é mudar
+   "focus" naquele dicionário, nunca precisa editar CSS. */
 .media img { width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, center); position: relative; z-index: 1; }
-
-/* Enquadramento por imagem — ajusta o ponto focal sem recortar o arquivo nem afetar as demais fotos. */
-.media img[src$="captain-jesse.jpg"] { --focus: center 10%; }
-.media img[src$="captain-nala.jpg"] { --focus: center top; }
-.media img[src$="comunidade-canoa.jpg"] { --focus: center 60%; }
 .media[data-slot]::after {
   content: attr(data-slot);
   position: absolute; left: 14px; bottom: 12px; right: 14px; z-index: 0;
