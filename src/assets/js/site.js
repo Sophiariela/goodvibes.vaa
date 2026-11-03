@@ -2,12 +2,16 @@
    Good Vibes Va'a — comportamento do site
    - Navegação (header sólido ao rolar, menu mobile acessível)
    - Barra fixa mobile
-   - Formulários das três jornadas → solicitação via WhatsApp
-   - Ponto único de integração para reservas/pagamentos futuros
+   - Formulários de Treinar/Particular → solicitação via site ou WhatsApp,
+     conforme GVV_CONFIG.bookingMode ("demo" | "live" | "off")
+   - Reserva de Experimentar (booking.js) e pop-up do WhatsApp (wa-widget.js)
 
    Os textos de cada idioma vêm do HTML da própria página
    (<script type="application/json" id="i18n">), nunca de troca de texto via JS.
    ========================================================================== */
+
+import { initBooking } from './booking.js';
+import { initWaWidget } from './wa-widget.js';
 
 const CONFIG = window.GVV_CONFIG || {};
 const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
@@ -102,21 +106,28 @@ function validate(form) {
 }
 
 /**
- * Ponto único de envio. Hoje: abre o WhatsApp com a solicitação pronta.
- * Quando houver backend de reservas/pagamentos, defina GVV_CONFIG.requestEndpoint
- * e esta função enviará o JSON { journey, locale, fields } por POST.
+ * Ponto único de envio das jornadas Treinar/Particular. Depende de
+ * GVV_CONFIG.bookingMode:
+ *  - "off"  -> abre o WhatsApp com a solicitação pronta (como sempre foi).
+ *  - "demo" -> não envia nada de verdade; só confirma na tela (apresentação).
+ *  - "live" -> envia { journey, locale, fields } por POST a CONFIG.apiBase.
  */
 async function submitRequest(form, rows) {
   const journey = form.dataset.journey;
-  if (CONFIG.requestEndpoint) {
-    const res = await fetch(CONFIG.requestEndpoint, {
+  const mode = CONFIG.bookingMode || 'off';
+
+  if (mode === 'live' && CONFIG.apiBase) {
+    const res = await fetch(`${CONFIG.apiBase.replace(/\/$/, '')}/requests`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ journey, locale: I18N.locale, fields: rows }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return 'sent';
+    return 'live';
   }
+
+  if (mode === 'demo') return 'demo';
+
   const text = encodeURIComponent(buildMessage(form, rows));
   const url = `https://wa.me/${CONFIG.whatsapp}?text=${text}`;
   // Abre em nova aba via link real (window.open com 'noopener' sempre retorna null,
@@ -153,7 +164,9 @@ function initForms() {
       btn.disabled = true;
       try {
         const result = await submitRequest(form, collect(form));
-        status.textContent = result === 'sent' ? I18N.sent : I18N.openedWhatsapp;
+        status.textContent = result === 'live' ? I18N.bk.req_live
+          : result === 'demo' ? I18N.bk.req_demo
+          : I18N.openedWhatsapp;
       } catch (err) {
         status.textContent = I18N.sendError;
       } finally {
@@ -248,3 +261,5 @@ initTabs();
 initForms();
 initPreselect();
 initYear();
+initBooking({ config: CONFIG, i18n: I18N });
+initWaWidget({ config: CONFIG });

@@ -44,7 +44,33 @@ PHOTOS = {
 (texto) e `PHOTOS` (fotos). Rodar depois de qualquer mudança em `build.py`
 ou nos arquivos de `src/`. Nunca editar `dist/` diretamente — é gerado.
 
-## Backend de reservas
+## Reserva no site (`SITE["booking_mode"]`)
+
+**⚠️ Regra crítica: nunca publicar/divulgar o site com `booking_mode =
+"demo"`.** Demo é só para apresentação — experiências, vagas e preços são
+fictícios (`booking_content.py`), "Simular pagamento aprovado" confirma sem
+cobrar nada de verdade. Antes de divulgar o link publicamente, trocar para
+`"off"` (volta ao WhatsApp) ou `"live"` (backend real em `SITE["api_base"]`
+— ver seção de backend abaixo). Hoje o repositório está em `"demo"`.
+
+- `src/assets/js/booking.js` — jornada "Experimentar", cartão de 6 etapas.
+  Lê `GVV_CONFIG` (`bookingMode`, `apiBase`, `seats`) e `I18N.bk`/
+  `I18N.demoExperiences` do `<script id="i18n">`.
+- `src/assets/js/wa-widget.js` — pop-up do WhatsApp, abre automaticamente
+  uma vez por visita, **nunca enquanto `[data-booking]` está visível na
+  tela** (checagem síncrona de geometria em `bookingOnScreen()`, não só
+  `IntersectionObserver` — evita corrida entre o gatilho "saiu do hero" e o
+  observer do cartão ainda não ter processado a posição nova).
+- `build.py`: `contact_fields()` adiciona nome/WhatsApp aos formulários de
+  Treinar/Particular quando `booking_mode != "off"`; `form_shell()` troca o
+  texto de privacidade e remove o ícone do WhatsApp do botão nesse caso
+  também (o envio não é mais necessariamente uma conversa de WhatsApp).
+- Todo texto novo (passos, erros, Pix, pop-up) vem de `booking_content.py`
+  (`BOOKING`, `WA_WIDGET`, `DEMO_EXPERIENCES`), importado por `build.py` e
+  mesclado em `CONTENT[locale]["i18n"]` — mesmo padrão de sempre, nunca
+  texto solto em JS.
+
+## Backend de reservas (live)
 
 Ver README.md § "Backend de reservas" e `docs/SETUP.md`. Em desenvolvimento,
 ainda sem credenciais reais configuradas — nenhum endpoint `/api` deve ser

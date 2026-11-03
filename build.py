@@ -16,6 +16,8 @@ import shutil
 from html import escape
 from pathlib import Path
 
+from booking_content import DEMO_EXPERIENCES, BOOKING, WA_WIDGET
+
 # ---------------------------------------------------------------------------
 # Configuração do negócio. Tudo que é dado comercial fica aqui.
 # ---------------------------------------------------------------------------
@@ -33,8 +35,14 @@ SITE = {
     ],
     "maps_embed": "https://www.google.com/maps?q=Praia+da+Pregui%C3%A7a,+Salvador,+BA&output=embed",
     "maps_link": "https://www.google.com/maps/search/?api=1&query=Praia+da+Pregui%C3%A7a+Salvador+BA",
-    # Integração futura: endpoint que recebe as solicitações (POST JSON). Vazio = WhatsApp.
-    "request_endpoint": "",
+    # Modo do sistema de reservas (ver src/assets/js/booking.js):
+    #   "demo" -> dados ilustrativos, aviso visível, nada é cobrado de verdade.
+    #   "live" -> usa o backend em api_base (contrato no README/docs/SETUP.md).
+    #   "off"  -> volta ao formulário de WhatsApp de cada jornada.
+    # NUNCA publicar em "demo": é só para apresentação interna.
+    "booking_mode": "demo",
+    "api_base": "",
+    "booking_seats": 6,
 }
 
 ROOT = Path(__file__).parent
@@ -131,6 +139,8 @@ PHOTOS = {
 # ---------------------------------------------------------------------------
 CONTENT = {
     "pt": {
+        "bk": BOOKING["pt"],
+        "wa": WA_WIDGET["pt"],
         "lang": "pt-BR",
         "og_locale": "pt_BR",
         "path": "/",
@@ -192,6 +202,7 @@ CONTENT = {
         "tab_short": ["Experimentar", "Treinar", "Particular"],
         "f_submit": "Enviar pelo WhatsApp",
         "f_privacy": "Seus dados são usados só para responder a esta solicitação, pela conversa de WhatsApp que você mesmo envia.",
+        "f_privacy_site": "Seus dados são usados só para responder a esta solicitação, pelo WhatsApp informado.",
 
         "steps_title": "Como funciona a primeira remada.",
         "steps_lead": "Do primeiro contato até a canoa na água.",
@@ -292,10 +303,7 @@ CONTENT = {
         "footer_contact": "Contato",
         "footer_follow": "Acompanhe",
         "footer_rights": "Todos os direitos reservados.",
-        "dock_book": "Experiências",
-        "float_wa_label": "Fale com a gente no WhatsApp",
-        "float_wa_msg": "Olá! Gostaria de saber mais sobre as experiências do Good Vibes Va'a.",
-
+        "dock_book": "Reservar",
         "i18n": {
             "locale": "pt",
             "menuOpen": "Abrir menu",
@@ -306,6 +314,9 @@ CONTENT = {
             "openedWhatsapp": "Abrimos o WhatsApp com sua solicitação. É só enviar a mensagem.",
             "sent": "Solicitação enviada. A equipe vai responder em breve.",
             "sendError": "Não foi possível enviar agora. Fale com a equipe pelo WhatsApp " + SITE["whatsapp_display"] + ".",
+            "bk": BOOKING["pt"],
+            "wa": WA_WIDGET["pt"],
+            "demoExperiences": DEMO_EXPERIENCES["pt"],
         },
         "not_found_title": "Página não encontrada.",
         "not_found_lead": "O endereço pode ter mudado. Volte para o início e escolha sua experiência.",
@@ -313,6 +324,8 @@ CONTENT = {
     },
 
     "en": {
+        "bk": BOOKING["en"],
+        "wa": WA_WIDGET["en"],
         "lang": "en",
         "og_locale": "en_US",
         "path": "/en/",
@@ -374,6 +387,7 @@ CONTENT = {
         "tab_short": ["Try it", "Train", "Private"],
         "f_submit": "Send on WhatsApp",
         "f_privacy": "Your details are only used to answer this request, through the WhatsApp message you send yourself.",
+        "f_privacy_site": "Your details are only used to answer this request, on the WhatsApp number you provided.",
 
         "steps_title": "How your first paddle works.",
         "steps_lead": "From first message to canoe on the water.",
@@ -474,10 +488,7 @@ CONTENT = {
         "footer_contact": "Contact",
         "footer_follow": "Follow",
         "footer_rights": "All rights reserved.",
-        "dock_book": "Experiences",
-        "float_wa_label": "Chat with us on WhatsApp",
-        "float_wa_msg": "Hi! I'd like to know more about Good Vibes Va'a experiences.",
-
+        "dock_book": "Book now",
         "i18n": {
             "locale": "en",
             "menuOpen": "Open menu",
@@ -488,6 +499,9 @@ CONTENT = {
             "openedWhatsapp": "We opened WhatsApp with your request. Just send the message.",
             "sent": "Request sent. The team will reply soon.",
             "sendError": "We couldn't send it right now. Message the team on WhatsApp at +55 71 99978-9710.",
+            "bk": BOOKING["en"],
+            "wa": WA_WIDGET["en"],
+            "demoExperiences": DEMO_EXPERIENCES["en"],
         },
         "not_found_title": "Page not found.",
         "not_found_lead": "The address may have changed. Go back to the home page and choose your experience.",
@@ -558,16 +572,19 @@ def textarea(fid, name, label, hint=False):
 
 
 def form_shell(journey, title, intro, wa_intro, fields_html, submit, c, extra_cls=""):
+    off = SITE["booking_mode"] == "off"
+    icon = ICON_WA if off else ""
+    privacy = c["f_privacy"] if off else c["f_privacy_site"]
     return f"""
       <form class="form{extra_cls}" data-journey="{journey}" data-intro="{e(wa_intro)}" novalidate aria-labelledby="{journey}-form-title">
         <h3 class="h3" id="{journey}-form-title">{e(title)}</h3>
         <p class="form-intro">{e(intro)}</p>
         <div class="fields">{fields_html}</div>
         <div class="form-actions">
-          <button class="btn btn--primary" type="submit">{ICON_WA}{e(submit)}</button>
+          <button class="btn btn--primary" type="submit">{icon}{e(submit)}</button>
           <p class="form-status" role="status" aria-live="polite"></p>
         </div>
-        <p class="form-privacy">{e(c["f_privacy"])}</p>
+        <p class="form-privacy">{e(privacy)}</p>
       </form>"""
 
 
@@ -654,13 +671,13 @@ def render(code):
     <nav class="nav" aria-label="Principal"><ul>{nav_items}</ul></nav>
     <div class="header-actions">
       {lang_switch}
-      <a class="btn btn--primary header-cta" href="{wa_link()}" target="_blank" rel="noopener">{e(c['cta_team'])}</a>
+      <a class="btn btn--primary header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="{e(c['menu_open'])}"><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobile-nav">
     <ul>{nav_items}</ul>
-    <a class="btn btn--dark" href="{wa_link()}" target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+    <a class="btn btn--dark" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
   </div>
 </header>"""
 
@@ -675,7 +692,7 @@ def render(code):
     <p class="hero-sub">{e(c['hero_sub'])}</p>
     <div class="btn-row">
       <a class="btn btn--primary" href="#experiencias">{e(c['hero_cta1'])}</a>
-      <a class="btn btn--outline" href="{wa_link()}" target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+      <a class="btn btn--outline" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
     </div>
     <ul class="hero-facts">{facts}</ul>
   </div>
@@ -697,14 +714,21 @@ def render(code):
                 + "</details>")
 
     # A — experimentar
-    a_fields = (
-        field("a-exp", c["f_experience"], select("a-exp", "experience", c["f_experience"], c["a_options"], c), full=True)
-        + field("a-date", c["f_date"], text_input("a-date", "date", c["f_date"], kind="date"))
-        + field("a-people", c["f_people"], text_input("a-people", "people", c["f_people"], kind="number", extra='min="1" max="60" inputmode="numeric" value="1"'))
-        + more_field("a-notes", "notes", c["f_notes"], c["f_notes_hint"])
-    )
     steps = "".join(f'<li class="step"><strong>{e(t)}</strong><span>{e(d)}</span></li>' for t, d in c["steps"])
-    panel_a = f"""
+    steps_block = f"""<div class="first-paddle" id="primeira-remada">
+        <h3 class="h3">{e(c['steps_title'])}</h3>
+        <ol class="steps">{steps}</ol>
+      </div>"""
+
+    if SITE["booking_mode"] == "off":
+        # Sem sistema de reservas: formulário de WhatsApp de sempre.
+        a_fields = (
+            field("a-exp", c["f_experience"], select("a-exp", "experience", c["f_experience"], c["a_options"], c), full=True)
+            + field("a-date", c["f_date"], text_input("a-date", "date", c["f_date"], kind="date"))
+            + field("a-people", c["f_people"], text_input("a-people", "people", c["f_people"], kind="number", extra='min="1" max="60" inputmode="numeric" value="1"'))
+            + more_field("a-notes", "notes", c["f_notes"], c["f_notes_hint"])
+        )
+        panel_a = f"""
     <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
       <div class="panel-grid">
         <div>
@@ -715,18 +739,45 @@ def render(code):
         </div>
         {form_shell('experimentar', c['a_form_title'], c['a_form_intro'], c['a_wa_intro'], a_fields, c['f_submit'], c)}
       </div>
-      <div class="first-paddle" id="primeira-remada">
-        <h3 class="h3">{e(c['steps_title'])}</h3>
-        <ol class="steps">{steps}</ol>
+      {steps_block}
+    </div>"""
+    else:
+        demo_note = (
+            f'<p class="bk-demo-note">{e(c["bk"]["demo"])}</p>' if SITE["booking_mode"] == "demo" else ""
+        )
+        panel_a = f"""
+    <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
+      <div class="panel-grid panel-grid--booking">
+        {steps_block}
+        <div class="bk" data-booking>
+          {demo_note}
+          <div class="bk-root"></div>
+        </div>
       </div>
     </div>"""
 
     # B — treinar
+    # Nome e WhatsApp só entram quando a solicitação não abre mais o
+    # WhatsApp sozinha (demo/live) — no modo "off", a conversa de WhatsApp
+    # já identifica a pessoa, como sempre foi.
+    def contact_fields(prefix):
+        if SITE["booking_mode"] == "off":
+            return ""
+        return (
+            field(f"{prefix}-name", c["f_name"], text_input(f"{prefix}-name", "name", c["f_name"], extra='autocomplete="name"'))
+            + field(
+                f"{prefix}-phone", c["bk"]["phone"],
+                text_input(f"{prefix}-phone", "phone", c["bk"]["phone"], kind="tel", extra='autocomplete="tel" placeholder="(71) 9 0000-0000"', hint=True),
+                hint=c["bk"]["phone_hint"],
+            )
+        )
+
     plans = "".join(
         f'<div><dt>{e(t)}</dt><dd>{e(d)} <span class="price">{e(p)}</span></dd></div>' for t, d, p in c["plans"]
     )
     b_fields = (
-        field("b-mod", c["f_modality"], select("b-mod", "modality", c["f_modality"], c["b_options"], c), full=True)
+        contact_fields("b")
+        + field("b-mod", c["f_modality"], select("b-mod", "modality", c["f_modality"], c["b_options"], c), full=True)
         + field("b-period", c["f_period"], select("b-period", "period", c["f_period"], c["f_periods"], c))
         + field("b-level", c["f_experience_level"], select("b-level", "level", c["f_experience_level"], c["f_levels"], c))
         + more_field("b-notes", "notes", c["f_notes"], None)
@@ -740,13 +791,14 @@ def render(code):
           <dl class="offers">{plans}</dl>
           <p class="note">{c['b_note']}</p>
         </div>
-        {form_shell('treinar', c['b_form_title'], c['b_form_intro'], c['b_wa_intro'], b_fields, c['f_submit'], c)}
+        {form_shell('treinar', c['b_form_title'], c['b_form_intro'], c['b_wa_intro'], b_fields, c['f_submit'] if SITE["booking_mode"] == "off" else c['bk']['send_request'], c)}
       </div>
     </div>"""
 
     # C — particular
     c_fields = (
-        field("c-type", c["f_type"], select("c-type", "type", c["f_type"], c["c_options"], c), full=True)
+        contact_fields("c")
+        + field("c-type", c["f_type"], select("c-type", "type", c["f_type"], c["c_options"], c), full=True)
         + field("c-date", c["f_date"], text_input("c-date", "date", c["f_date"], kind="date"))
         + field("c-people", c["f_people"], text_input("c-people", "people", c["f_people"], kind="number", extra='min="1" max="200" inputmode="numeric"'))
         + more_field("c-details", "details", c["f_details"], c["f_details_hint"])
@@ -759,7 +811,7 @@ def render(code):
           <p class="panel-lead">{e(c['c_lead'])}</p>
           {offer_list(c['formats'])}
         </div>
-        {form_shell('particular', c['c_form_title'], c['c_form_intro'], c['c_wa_intro'], c_fields, c['f_submit_quote'], c)}
+        {form_shell('particular', c['c_form_title'], c['c_form_intro'], c['c_wa_intro'], c_fields, c['f_submit_quote'] if SITE["booking_mode"] == "off" else c['bk']['send_quote'], c)}
       </div>
     </div>"""
 
@@ -876,12 +928,29 @@ def render(code):
   </div>
 </footer>
 <div class="dock" inert>
-  <a class="btn btn--dark" href="#experiencias">{e(c['dock_book'])}</a>
-  <a class="btn btn--primary" href="{wa_link()}" target="_blank" rel="noopener">{ICON_WA}WhatsApp</a>
+  <a class="btn btn--dark" href="#experimentar">{e(c['dock_book'])}</a>
 </div>
-<a class="float-wa" href="{wa_link(c['float_wa_msg'])}" target="_blank" rel="noopener" aria-label="{e(c['float_wa_label'])}">{ICON_WA}</a>"""
+<div class="wa-widget" data-wa-widget data-default="{e(c['wa']['default'])}">
+  <div class="wa-card" hidden>
+    <div class="wa-head">
+      <div><strong>{e(c['wa']['title'])}</strong><span>{e(c['wa']['status'])}</span></div>
+      <button type="button" data-wa-close aria-label="{e(c['wa']['close'])}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <p class="wa-msg">{e(c['wa']['msg'])}</p>
+    <form data-wa-form>
+      <textarea rows="2" placeholder="{e(c['wa']['placeholder'])}" aria-label="{e(c['wa']['placeholder'])}"></textarea>
+      <button type="submit" class="btn btn--primary">{ICON_WA}{e(c['wa']['send'])}</button>
+    </form>
+  </div>
+  <button type="button" class="wa-fab" data-wa-toggle aria-expanded="false" aria-label="{e(c['wa']['open'])}">{ICON_WA}</button>
+</div>"""
 
-    config = {"whatsapp": SITE["whatsapp"], "requestEndpoint": SITE["request_endpoint"]}
+    config = {
+        "whatsapp": SITE["whatsapp"],
+        "bookingMode": SITE["booking_mode"],
+        "apiBase": SITE["api_base"],
+        "seats": SITE["booking_seats"],
+    }
     scripts = f"""
 <script type="application/json" id="i18n">{json.dumps(c['i18n'], ensure_ascii=False)}</script>
 <script>window.GVV_CONFIG = {json.dumps(config)};</script>

@@ -24,10 +24,49 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
 
-### Formulários e integrações
-- As três jornadas (experimentar, treinar, particular) têm formulários separados. Hoje, cada envio abre o WhatsApp do clube com a mensagem já preenchida.
-- Para ligar um sistema de reservas ou pagamentos, defina `request_endpoint` em `SITE` no `build.py`. O JS passa a enviar `POST` JSON `{ journey, locale, fields }` para esse endereço, sem mudar o HTML.
-- Nada no site simula disponibilidade, pagamento ou confirmação.
+### Reserva e formulários — `SITE["booking_mode"]`
+
+O comportamento das três jornadas (experimentar, treinar, particular) depende
+de uma única chave em `build.py`:
+
+| Modo | O que acontece |
+|---|---|
+| `"off"` | Formulário de sempre: abre o WhatsApp do clube com a mensagem pronta. Nenhum dado sai do navegador da pessoa. |
+| `"demo"` | **Só para apresentação interna.** Experiências, horários e vagas vem de `booking_content.py` (`DEMO_EXPERIENCES`), ilustrativos, com aviso visível em toda etapa. "Simular pagamento aprovado" confirma a reserva sem cobrar nada de verdade. Treinar/Particular mostram uma confirmação na tela, sem enviar a solicitação a lugar nenhum de verdade. |
+| `"live"` | Usa o backend real em `SITE["api_base"]` (ver seção de backend abaixo) — disponibilidade, Pix e confirmação de verdade. |
+
+**⚠️ Nunca publicar o site em produção com `booking_mode = "demo"`.** É um
+modo de demonstração com dados fictícios; existe só para apresentar o fluxo
+antes do backend estar pronto. Hoje o repositório está em `"demo"` — trocar
+para `"off"` ou `"live"` antes de divulgar o link publicamente.
+
+- `src/assets/js/booking.js` — a jornada "Experimentar" (cartão de reserva
+  de 6 etapas: experiência → dia/horário → participantes → termo →
+  pagamento Pix → confirmação). Renderiza em `[data-booking] .bk-root`.
+- `src/assets/js/wa-widget.js` — pop-up do WhatsApp (ver seção própria
+  abaixo).
+- Treinar e Particular continuam formulários simples (`form[data-journey]`
+  em `site.js`), mas agora com campos de nome/WhatsApp quando o modo não é
+  `"off"`, e leem `GVV_CONFIG.bookingMode` para decidir se enviam de
+  verdade, simulam (demo) ou abrem o WhatsApp.
+- Textos de PT/EN do fluxo de reserva e do pop-up ficam em
+  `booking_content.py` (`BOOKING`, `WA_WIDGET`), importado por `build.py` —
+  mesmo padrão de `CONTENT['pt']`/`CONTENT['en']`, nunca troca de texto via
+  JS solto.
+
+### Pop-up do WhatsApp
+- Botão redondo fixo no canto inferior direito (`src/assets/js/wa-widget.js`
+  + `.wa-widget`/`.wa-card`/`.wa-fab` em `site.css`). Abre um cartão com a
+  mensagem da equipe, campo de texto e "Continuar no WhatsApp".
+- Abre sozinho uma vez por visita (8s ou ao sair do hero ao rolar), nunca
+  enquanto o cartão de reserva (`[data-booking]`) está visível na tela, e
+  não reabre sozinho depois de fechado (controlado por `sessionStorage`).
+- Todo botão "Fale com a equipe" do site (`data-wa-open`) abre esse pop-up
+  em vez de navegar para o WhatsApp direto — o `href` continua lá como
+  reforço para quando JavaScript está desligado.
+- No mobile, a barra fixa inferior mostra só "Reservar"; o botão do
+  WhatsApp fica ao lado, sem sobrepor (`--dock-fab-space` em `site.css`
+  reserva o espaço).
 
 ## Backend de reservas (em andamento)
 
@@ -73,7 +112,7 @@ o enquadramento dentro do quadro, mas não remove texto de dentro da
 própria imagem.
 
 ### 2. Conteúdo a confirmar com o clube
-- Domínio definitivo (`base_url` no `build.py`; hoje está `example.com`).
+- Trocar `SITE["booking_mode"]` de `"demo"` para `"off"` ou `"live"` antes de publicar (ver seção de reserva acima).
 - Valores, durações e horários de passeios e aulas (o site diz "sob consulta").
 - Política de remarcação por condições do mar (FAQ).
 - Idade mínima e regras para crianças; se é preciso saber nadar.
