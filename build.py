@@ -65,7 +65,7 @@ PHOTOS = {
         "file": "captain-nala.jpg",
         "alt_pt": "Retrato de Nala Rodrigues, capitã do Good Vibes Va'a",
         "alt_en": "Portrait of Nala Rodrigues, Good Vibes Va'a captain",
-        "focus": "center top",
+        "focus": "center",
     },
     "community_1": {
         "file": "comunidade-1.jpg",
