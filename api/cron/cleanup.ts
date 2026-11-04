@@ -14,9 +14,9 @@
  * mas evita que qualquer um dispare a faxina manualmente.
  */
 
-import type { VercelRequest, VercelResponse } from '../../lib/http';
-import { requireMethod } from '../../lib/http';
-import { query } from '../../lib/db';
+import type { VercelRequest, VercelResponse } from '../../lib/http.js';
+import { requireMethod } from '../../lib/http.js';
+import { query } from '../../lib/db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!requireMethod(req, res, 'GET')) return;

@@ -7,9 +7,9 @@
  * atualizado pelo webhook (fonte da verdade) — este endpoint só lê.
  */
 
-import type { VercelRequest, VercelResponse } from '../../../lib/http';
-import { requireMethod } from '../../../lib/http';
-import { query } from '../../../lib/db';
+import type { VercelRequest, VercelResponse } from '../../../lib/http.js';
+import { requireMethod } from '../../../lib/http.js';
+import { query } from '../../../lib/db.js';
 
 interface StatusRow {
   id: string;

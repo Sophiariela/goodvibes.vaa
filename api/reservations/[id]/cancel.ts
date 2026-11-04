@@ -6,9 +6,9 @@
  * (api/admin/*, etapa futura), não deste endpoint público.
  */
 
-import type { VercelRequest, VercelResponse } from '../../../lib/http';
-import { requireMethod } from '../../../lib/http';
-import { cancelPendingReservation } from '../../../lib/reservations';
+import type { VercelRequest, VercelResponse } from '../../../lib/http.js';
+import { requireMethod } from '../../../lib/http.js';
+import { cancelPendingReservation } from '../../../lib/reservations.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!requireMethod(req, res, 'POST')) return;

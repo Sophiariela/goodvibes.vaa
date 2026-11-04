@@ -5,8 +5,8 @@
  * testes unitários; aqui só orquestra a transação.
  */
 
-import { withTransaction, query } from './db';
-import { computeHoldExpiry, isSessionInPast } from './availability';
+import { withTransaction, query } from './db.js';
+import { computeHoldExpiry, isSessionInPast } from './availability.js';
 
 export type ReservationErrorCode = 'NOT_FOUND' | 'PAST_SESSION' | 'CANCELLED' | 'NO_CAPACITY' | 'INVALID_INPUT';
 

@@ -6,10 +6,10 @@
  * sem lock: o lock de verdade acontece em POST /api/reservations.
  */
 
-import type { VercelRequest, VercelResponse } from '../lib/http';
-import { requireMethod } from '../lib/http';
-import { query } from '../lib/db';
-import { labelFromSeatsAvailable } from '../lib/availability';
+import type { VercelRequest, VercelResponse } from '../lib/http.js';
+import { requireMethod } from '../lib/http.js';
+import { query } from '../lib/db.js';
+import { labelFromSeatsAvailable } from '../lib/availability.js';
 
 interface SessionRow {
   session_id: string;

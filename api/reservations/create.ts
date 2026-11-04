@@ -19,11 +19,11 @@
  * }
  */
 
-import type { VercelRequest, VercelResponse } from '../../lib/http';
-import { requireMethod } from '../../lib/http';
-import { createReservationWithHold, ReservationError, type ReservationErrorCode } from '../../lib/reservations';
-import { createPixPayment, MercadoPagoError } from '../../lib/mercadopago';
-import { query } from '../../lib/db';
+import type { VercelRequest, VercelResponse } from '../../lib/http.js';
+import { requireMethod } from '../../lib/http.js';
+import { createReservationWithHold, ReservationError, type ReservationErrorCode } from '../../lib/reservations.js';
+import { createPixPayment, MercadoPagoError } from '../../lib/mercadopago.js';
+import { query } from '../../lib/db.js';
 
 const STATUS_BY_CODE: Record<ReservationErrorCode, number> = {
   NOT_FOUND: 404,

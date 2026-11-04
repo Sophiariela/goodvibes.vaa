@@ -21,12 +21,12 @@
  * teste — ver docs/SETUP.md e o aviso em lib/mercadopago-webhook.ts.
  */
 
-import type { VercelRequest, VercelResponse } from '../../lib/http';
-import { requireMethod } from '../../lib/http';
-import { verifyMercadoPagoSignature } from '../../lib/mercadopago-webhook';
-import { getPayment } from '../../lib/mercadopago';
-import { applyPaymentStatus } from '../../lib/reservations';
-import { query } from '../../lib/db';
+import type { VercelRequest, VercelResponse } from '../../lib/http.js';
+import { requireMethod } from '../../lib/http.js';
+import { verifyMercadoPagoSignature } from '../../lib/mercadopago-webhook.js';
+import { getPayment } from '../../lib/mercadopago.js';
+import { applyPaymentStatus } from '../../lib/reservations.js';
+import { query } from '../../lib/db.js';
 
 function extractDataId(req: VercelRequest): string | null {
   const fromQuery = req.query['data.id'];
