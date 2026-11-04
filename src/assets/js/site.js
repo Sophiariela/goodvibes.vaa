@@ -26,9 +26,13 @@ function initHeader() {
   if (!header) return;
 
   const hero = document.querySelector('.hero');
+  // Sem hero (páginas internas) o cabeçalho é sempre sólido: o estado
+  // transparente só existe para ficar sobre a fotografia do hero — sobre o
+  // off-white da página o menu claro seria invisível. build.py já entrega
+  // essas páginas com .is-solid; aqui garantimos que o scroll não remova.
   const setSolid = () => {
-    const limit = hero ? hero.offsetHeight - 120 : 40;
-    header.classList.toggle('is-solid', window.scrollY > Math.min(limit, 80));
+    if (!hero) { header.classList.add('is-solid'); return; }
+    header.classList.toggle('is-solid', window.scrollY > Math.min(hero.offsetHeight - 120, 80));
   };
   setSolid();
   window.addEventListener('scroll', setSolid, { passive: true });

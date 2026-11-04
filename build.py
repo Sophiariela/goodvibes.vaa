@@ -171,6 +171,12 @@ CONTENT = {
             ("Clube", "Aulas, treinos e planos recorrentes para quem quer evoluir no esporte e fazer parte da equipe."),
             ("Good Vibes lifestyle", "Produtos, eventos e parcerias que levam a identidade do clube para fora da água."),
         ],
+        "kicker_journeys": "Experiências",
+        "kicker_club": "O clube",
+        "kicker_shop": "Moda Good Vibes",
+        "kicker_info": "Onde e como",
+        "kicker_closing": "Reserve sua remada",
+        "kicker_legal": "Documento",
         "journeys_title": "Três formas de entrar no mar.",
         "journeys_lead": "Escolha o caminho que combina com você. Cada um tem sua própria conversa com a equipe.",
         "journeys": [
@@ -338,6 +344,7 @@ CONTENT = {
         "footer_contact": "Contato",
         "footer_follow": "Acompanhe",
         "footer_rights": "Todos os direitos reservados.",
+        "footer_privacy": "Política de privacidade",
         "dock_book": "Reservar",
         "i18n": {
             "locale": "pt",
@@ -388,6 +395,12 @@ CONTENT = {
             ("Club", "Classes, training sessions and recurring plans for those who want to progress in the sport and join the crew."),
             ("Good Vibes lifestyle", "Gear, events and partnerships that carry the club's identity beyond the water."),
         ],
+        "kicker_journeys": "Experiences",
+        "kicker_club": "The club",
+        "kicker_shop": "Moda Good Vibes",
+        "kicker_info": "Where and how",
+        "kicker_closing": "Book your paddle",
+        "kicker_legal": "Document",
         "journeys_title": "Three ways onto the water.",
         "journeys_lead": "Pick the path that fits you. Each one starts its own conversation with the team.",
         "journeys": [
@@ -555,6 +568,7 @@ CONTENT = {
         "footer_contact": "Contact",
         "footer_follow": "Follow",
         "footer_rights": "All rights reserved.",
+        "footer_privacy": "Privacy policy",
         "dock_book": "Book now",
         "i18n": {
             "locale": "en",
@@ -579,12 +593,28 @@ CONTENT = {
 # Componentes
 # ---------------------------------------------------------------------------
 ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.1 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1 .2-.5.2-1 .1-1.1l-.5-.2Z"/></svg>'
-ICON_ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M13 6l6 6-6 6"/></svg>'
-ICON_IG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg>'
+ICON_ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg>'
+ICON_IG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg>'
 
 
 def e(s):
     return escape(str(s), quote=True)
+
+
+def eyebrow(text, cls=""):
+    """Olho editorial: versalete douradinho com filete curto à esquerda."""
+    return f'<p class="eyebrow{(" " + cls) if cls else ""}">{e(text)}</p>'
+
+
+def slug(text, fallback):
+    """Âncora estável a partir de um título de seção (usada no índice da
+    página de privacidade). Sem acento, sem pontuação, sempre minúscula."""
+    import unicodedata
+    norm = unicodedata.normalize("NFKD", str(text)).encode("ascii", "ignore").decode()
+    out = "".join(ch if ch.isalnum() else "-" for ch in norm.lower()).strip("-")
+    while "--" in out:
+        out = out.replace("--", "-")
+    return out[:48] or fallback
 
 
 def wa_link(text=None):
@@ -719,24 +749,28 @@ def page_header(code, prefix, page):
     nav_items = nav_items_html(code, page)
     lang_switch = lang_switch_html(code, page)
     brand_href = "./" if page == "home" else root
+    # Só a home tem hero (fotografia atrás do cabeçalho). Nas demais rotas o
+    # cabeçalho já nasce sólido — sem isso o menu ficaria off-white sobre
+    # fundo off-white enquanto a página não rola.
+    solid = "" if page == "home" else " is-solid"
     return f"""
 <a class="skip" href="#conteudo">{e(c['skip'])}</a>
-<header class="header">
-  <div class="wrap">
+<header class="header{solid}">
+  <div class="wrap wrap--wide">
     <a class="brand" href="{brand_href}" aria-label="{e(SITE['name'])}">
       <img class="brand-logo" src="{prefix}assets/img/logo.png" alt="" width="40" height="40" onerror="this.remove()">
       <span class="brand-word">Good Vibes Va'a<small>{e(c['brand_sub'])}</small></span>
     </a>
-    <nav class="nav" aria-label="Principal"><ul>{nav_items}</ul></nav>
+    <nav class="nav" aria-label="{e(c['footer_nav'])}"><ul>{nav_items}</ul></nav>
     <div class="header-actions">
       {lang_switch}
-      <a class="btn btn--primary header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
+      <a class="btn btn--sm btn--gold header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="{e(c['menu_open'])}"><span></span></button>
     </div>
   </div>
   <div class="mobile-nav" id="mobile-nav">
     <ul>{nav_items}</ul>
-    <a class="btn btn--dark" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+    <a class="btn btn--solid" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
   </div>
 </header>"""
 
@@ -745,25 +779,33 @@ def page_footer(code, prefix, page):
     c = CONTENT[code]
     root = "/" if code == "pt" else "/en/"
     fnav = nav_items_html(code, page)
-    lang_switch_footer = lang_switch_html(code, page, extra_style="color:var(--ivory)")
+    lang_switch_footer = lang_switch_html(code, page)
     dock_href = "#experimentar" if page == "home" else f"{root}#experimentar"
     return f"""
 <footer class="footer">
-  <div class="wrap">
+  <div class="wrap wrap--wide">
     <div class="footer-grid">
-      <div><p class="brand-word">Good Vibes Va'a</p><p style="margin-top:12px;max-width:36ch">{e(c['footer_about'])}</p></div>
-      <div><h2>{e(c['footer_nav'])}</h2><ul>{fnav}</ul></div>
-      <div><h2>{e(c['footer_contact'])}</h2><ul>
+      <div class="footer-brand">
+        <p class="brand-word">Good Vibes Va'a</p>
+        <p>{e(c['footer_about'])}</p>
+        <a class="btn btn--line btn--sm" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+      </div>
+      <div class="footer-col"><h2>{e(c['footer_nav'])}</h2><ul>{fnav}</ul></div>
+      <div class="footer-col"><h2>{e(c['footer_contact'])}</h2><ul>
         <li><a href="{wa_link()}" target="_blank" rel="noopener">WhatsApp {e(SITE['whatsapp_display'])}</a></li>
         <li>Praia da Preguiça, Salvador, BA</li></ul></div>
-      <div><h2>{e(c['footer_follow'])}</h2><ul>
+      <div class="footer-col"><h2>{e(c['footer_follow'])}</h2><ul>
         <li><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {e(SITE['instagram_handle'])}</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><span>© <span data-year></span> Good Vibes Va'a. {e(c['footer_rights'])}</span>{lang_switch_footer}</div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Good Vibes Va'a. {e(c['footer_rights'])}</span>
+      <nav aria-label="{e(c['kicker_legal'])}"><a href="{c['privacy_path']}">{e(c['footer_privacy'])}</a></nav>
+      {lang_switch_footer}
+    </div>
   </div>
 </footer>
 <div class="dock" inert>
-  <a class="btn btn--dark" href="{dock_href}">{e(c['dock_book'])}</a>
+  <a class="btn btn--gold" href="{dock_href}">{e(c['dock_book'])}</a>
 </div>
 <div class="wa-widget" data-wa-widget data-default="{e(c['wa']['default'])}">
   <div class="wa-card" hidden>
@@ -774,7 +816,7 @@ def page_footer(code, prefix, page):
     <p class="wa-msg">{e(c['wa']['msg'])}</p>
     <form data-wa-form>
       <textarea rows="2" placeholder="{e(c['wa']['placeholder'])}" aria-label="{e(c['wa']['placeholder'])}"></textarea>
-      <button type="submit" class="btn btn--primary">{ICON_WA}{e(c['wa']['send'])}</button>
+      <button type="submit" class="btn btn--solid">{ICON_WA}{e(c['wa']['send'])}</button>
     </form>
   </div>
   <button type="button" class="wa-fab" data-wa-toggle aria-expanded="false" aria-label="{e(c['wa']['open'])}">{ICON_WA}</button>
@@ -847,7 +889,7 @@ def form_shell(journey, title, intro, wa_intro, fields_html, submit, c, extra_cl
         <p class="form-intro">{e(intro)}</p>
         <div class="fields">{fields_html}</div>
         <div class="form-actions">
-          <button class="btn btn--primary" type="submit">{icon}{e(submit)}</button>
+          <button class="btn btn--gold" type="submit">{icon}{e(submit)}</button>
           <p class="form-status" role="status" aria-live="polite"></p>
         </div>
         <p class="form-privacy">{e(privacy)}</p>
@@ -898,7 +940,7 @@ def render(code):
 <meta name="description" content="{e(c['description'])}">
 <link rel="canonical" href="{canonical}">
 {alternates}
-<meta name="theme-color" content="#123D2B">
+<meta name="theme-color" content="#0D3527">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{e(SITE['name'])}">
 <meta property="og:title" content="{e(c['title'])}">
@@ -911,7 +953,8 @@ def render(code):
 <meta property="og:locale:alternate" content="{CONTENT[other]['og_locale']}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/archivo-latin-standard-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/manrope-latin-standard-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/dmserifdisplay-latin-standard-normal.woff2" crossorigin>
 <link rel="preload" as="image" href="{prefix}assets/img/hero.jpg" fetchpriority="high">
 <link rel="stylesheet" href="{prefix}assets/css/site.css">
 <script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>
@@ -921,17 +964,21 @@ def render(code):
     header = page_header(code, prefix, "home")
 
     # ---- hero ----
+    # Desktop: manchete em coluna larga à esquerda, "fatos" num trilho
+    # vertical à direita — composição de 2 colunas, não a pilha do celular.
     facts = "".join(f"<li>{e(f)}</li>" for f in c["hero_facts"])
     hero = f"""
 <section class="hero" aria-labelledby="hero-title">
-  {media('hero', code, c['hero_slot'], prefix, w=2400, h=1600, eager=True)}
-  <div class="wrap hero-inner">
-    <p class="hero-place">{e(c['hero_place'])}</p>
-    <h1 class="display" id="hero-title">{e(c['hero_title'])}</h1>
-    <p class="hero-sub">{e(c['hero_sub'])}</p>
-    <div class="btn-row">
-      <a class="btn btn--primary" href="#experiencias">{e(c['hero_cta1'])}</a>
-      <a class="btn btn--outline" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+  {media('hero', code, c['hero_slot'], prefix, cls='hero-media', w=2400, h=1600, eager=True)}
+  <div class="wrap wrap--wide hero-inner">
+    <div class="hero-lead">
+      <p class="eyebrow hero-place">{e(c['hero_place'])}</p>
+      <h1 class="display" id="hero-title">{e(c['hero_title'])}</h1>
+      <p class="hero-sub">{e(c['hero_sub'])}</p>
+      <div class="btn-row">
+        <a class="btn btn--light" href="#experiencias">{e(c['hero_cta1'])}</a>
+        <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+      </div>
     </div>
     <ul class="hero-facts">{facts}</ul>
   </div>
@@ -940,8 +987,9 @@ def render(code):
     # ---- Jornadas em abas (uma de cada vez na tela) ----
     tabs = "".join(
         f'<a class="tab" role="tab" id="tab-{h[1:]}" href="{h}" aria-controls="{h[1:]}">'
+        f'<span class="tab-num" aria-hidden="true">{i + 1:02d}</span>'
         f'<span class="tab-title">{e(t)}</span><span class="tab-short" aria-hidden="true">{e(go_short)}</span><span class="tab-desc">{e(d)}</span></a>'
-        for (h, t, d, go), go_short in zip(c["journeys"], c["tab_short"])
+        for i, ((h, t, d, go), go_short) in enumerate(zip(c["journeys"], c["tab_short"]))
     )
 
     def offer_list(items):
@@ -955,9 +1003,9 @@ def render(code):
     # A — experimentar
     steps = "".join(f'<li class="step"><strong>{e(t)}</strong><span>{e(d)}</span></li>' for t, d in c["steps"])
     steps_block = f"""<div class="first-paddle" id="primeira-remada">
-        <h3 class="h3">{e(c['steps_title'])}</h3>
-        <ol class="steps">{steps}</ol>
-      </div>"""
+            <h3 class="h3">{e(c['steps_title'])}</h3>
+            <ol class="steps">{steps}</ol>
+          </div>"""
 
     if SITE["booking_mode"] == "off":
         # Sem sistema de reservas: formulário de WhatsApp de sempre.
@@ -967,30 +1015,30 @@ def render(code):
             + field("a-people", c["f_people"], text_input("a-people", "people", c["f_people"], kind="number", extra='min="1" max="60" inputmode="numeric" value="1"'))
             + more_field("a-notes", "notes", c["f_notes"], c["f_notes_hint"])
         )
-        panel_a = f"""
-    <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
-      <div class="panel-grid">
-        <div>
-          <h3 class="h3">{e(c['a_title'])}</h3>
-          <p class="panel-lead">{e(c['a_lead'])}</p>
-          {offer_list(c['a_offers'])}
-          <p class="note">{c['a_note']}</p>
-        </div>
-        {form_shell('experimentar', c['a_form_title'], c['a_form_intro'], c['a_wa_intro'], a_fields, c['f_submit'], c)}
-      </div>
-      {steps_block}
-    </div>"""
+        panel_a_main = form_shell("experimentar", c["a_form_title"], c["a_form_intro"], c["a_wa_intro"], a_fields, c["f_submit"], c)
+        panel_a_aside = offer_list(c["a_offers"]) + f'<p class="note">{c["a_note"]}</p>'
     else:
         demo_note = (
             f'<p class="bk-demo-note">{e(c["bk"]["demo"])}</p>' if SITE["booking_mode"] == "demo" else ""
         )
-        panel_a = f"""
+        panel_a_main = f"""<div class="bk" data-booking data-modality="experimentar">
+            {demo_note}
+            <div class="bk-root"></div>
+          </div>"""
+        panel_a_aside = steps_block
+
+    # Coluna estreita (narrativa) + coluna larga (reserva): no desktop a
+    # reserva ocupa 8 das 12 colunas, em vez do cartão fixo de 420px.
+    panel_a = f"""
     <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
-      <div class="panel-grid panel-grid--booking">
-        {steps_block}
-        <div class="bk" data-booking data-modality="experimentar">
-          {demo_note}
-          <div class="bk-root"></div>
+      <div class="panel-grid">
+        <div class="panel-intro">
+          <h3 class="h3">{e(c['a_title'])}</h3>
+          <p class="lead">{e(c['a_lead'])}</p>
+          {panel_a_aside}
+        </div>
+        <div class="panel-main">
+          {panel_a_main}
         </div>
       </div>
     </div>"""
@@ -1022,31 +1070,24 @@ def render(code):
             + field("b-level", c["f_experience_level"], select("b-level", "level", c["f_experience_level"], c["f_levels"], c))
             + more_field("b-notes", "notes", c["f_notes"], None)
         )
-        panel_b = f"""
+        panel_b_main = form_shell("treinar", c["b_form_title"], c["b_form_intro"], c["b_wa_intro"], b_fields, c["f_submit"], c)
+    else:
+        panel_b_main = f"""<div class="bk" data-booking data-modality="treinar">
+            {demo_note}
+            <div class="bk-root"></div>
+          </div>"""
+
+    panel_b = f"""
     <div class="panel" id="treinar" role="tabpanel" aria-labelledby="tab-treinar" tabindex="-1">
       <div class="panel-grid">
-        <div>
+        <div class="panel-intro">
           <h3 class="h3">{e(c['b_title'])}</h3>
-          <p class="panel-lead">{e(c['b_lead'])}</p>
+          <p class="lead">{e(c['b_lead'])}</p>
           <dl class="offers">{plans}</dl>
           <p class="note">{c['b_note']}</p>
         </div>
-        {form_shell('treinar', c['b_form_title'], c['b_form_intro'], c['b_wa_intro'], b_fields, c['f_submit'], c)}
-      </div>
-    </div>"""
-    else:
-        panel_b = f"""
-    <div class="panel" id="treinar" role="tabpanel" aria-labelledby="tab-treinar" tabindex="-1">
-      <div class="panel-grid panel-grid--booking">
-        <div>
-          <h3 class="h3">{e(c['b_title'])}</h3>
-          <p class="panel-lead">{e(c['b_lead'])}</p>
-          <dl class="offers">{plans}</dl>
-          <p class="note">{c['b_note']}</p>
-        </div>
-        <div class="bk" data-booking data-modality="treinar">
-          {demo_note}
-          <div class="bk-root"></div>
+        <div class="panel-main">
+          {panel_b_main}
         </div>
       </div>
     </div>"""
@@ -1060,37 +1101,32 @@ def render(code):
             + field("c-people", c["f_people"], text_input("c-people", "people", c["f_people"], kind="number", extra='min="1" max="200" inputmode="numeric"'))
             + more_field("c-details", "details", c["f_details"], c["f_details_hint"])
         )
-        panel_c = f"""
-    <div class="panel" id="particular" role="tabpanel" aria-labelledby="tab-particular" tabindex="-1">
-      <div class="panel-grid">
-        <div>
-          <h3 class="h3">{e(c['c_title'])}</h3>
-          <p class="panel-lead">{e(c['c_lead'])}</p>
-          {offer_list(c['formats'])}
-        </div>
-        {form_shell('particular', c['c_form_title'], c['c_form_intro'], c['c_wa_intro'], c_fields, c['f_submit_quote'], c)}
-      </div>
-    </div>"""
+        panel_c_main = form_shell("particular", c["c_form_title"], c["c_form_intro"], c["c_wa_intro"], c_fields, c["f_submit_quote"], c)
     else:
-        panel_c = f"""
+        panel_c_main = f"""<div class="bk" data-booking data-modality="particular">
+            {demo_note}
+            <div class="bk-root"></div>
+          </div>"""
+
+    panel_c = f"""
     <div class="panel" id="particular" role="tabpanel" aria-labelledby="tab-particular" tabindex="-1">
-      <div class="panel-grid panel-grid--booking">
-        <div>
+      <div class="panel-grid panel-grid--quote">
+        <div class="panel-intro">
           <h3 class="h3">{e(c['c_title'])}</h3>
-          <p class="panel-lead">{e(c['c_lead'])}</p>
+          <p class="lead">{e(c['c_lead'])}</p>
           {offer_list(c['formats'])}
         </div>
-        <div class="bk" data-booking data-modality="particular">
-          {demo_note}
-          <div class="bk-root"></div>
+        <div class="panel-main">
+          {panel_c_main}
         </div>
       </div>
     </div>"""
 
     journeys = f"""
-<section class="section journeys" id="experiencias" aria-labelledby="journeys-title">
-  <div class="wrap">
+<section class="section journeys band-dark" id="experiencias" aria-labelledby="journeys-title">
+  <div class="wrap wrap--wide">
     <div class="section-head section-head--split">
+      {eyebrow(c['kicker_journeys'])}
       <h2 class="h2" id="journeys-title">{e(c['journeys_title'])}</h2>
       <p class="lead">{e(c['journeys_lead'])}</p>
     </div>
@@ -1111,19 +1147,23 @@ def render(code):
             <a class="link" href="https://www.instagram.com/{cap['handle']}/" target="_blank" rel="noopener">@{e(cap['handle'])}</a></figcaption>
         </figure>"""
     tiles = "".join(
-        media(f"community_{i+1}", code, s, prefix, w=900, h=900)
+        media(f"community_{i+1}", code, s, prefix, cls="media--zoom", w=900, h=1125)
         for i, s in enumerate(c["community_slots"][:4])
     )
+    pillars = "".join(f"<div><dt>{e(t)}</dt><dd>{e(d)}</dd></div>" for t, d in c["about_pillars"])
     club = f"""
 <section class="section club" id="clube" aria-labelledby="club-title">
-  <div class="wrap">
+  <div class="wrap wrap--wide">
     <div class="club-grid">
-      <div>
+      <div class="club-manifesto">
+        {eyebrow(c['kicker_club'])}
         <h2 class="h2" id="club-title">{e(c['about_title'])}</h2>
-        <p class="about-statement">{e(c['about_statement'])}</p>
+        <p class="club-statement">{e(c['about_statement'])}</p>
+        <dl class="club-pillars">{pillars}</dl>
       </div>
-      <div id="equipe">
+      <div class="club-team" id="equipe">
         <h3 class="h3">{e(c['team_title'])}</h3>
+        <p class="lead" style="font-size:var(--t-sm);margin-top:10px">{e(c['team_lead'])}</p>
         <div class="captains">{caps}
         </div>
       </div>
@@ -1133,20 +1173,24 @@ def render(code):
     <div class="testimonials"></div>
     <div class="community-foot">
       <p>{e(c['community_note'])}</p>
-      <a class="btn btn--dark" href="{SITE['instagram']}" target="_blank" rel="noopener">{ICON_IG}{e(c['community_cta'])}</a>
+      <a class="btn btn--line-dark" href="{SITE['instagram']}" target="_blank" rel="noopener">{ICON_IG}{e(c['community_cta'])}</a>
     </div>
   </div>
 </section>"""
 
     # ---- Produtos (chamada para a loja em /produtos) ----
+    # Divisão painel/fotografia em vez de texto centralizado sobre a imagem.
     teaser_photo = PRODUCTS[1]["photo"] if len(PRODUCTS) > 1 else PRODUCTS[0]["photo"]
     shop = f"""
-<section class="section shop-teaser" aria-labelledby="shop-teaser-title">
-  {media(teaser_photo, code, c['shop_slot'], prefix, cls='shop-teaser-media', w=1600, h=1000)}
-  <div class="wrap shop-teaser-inner">
-    <h2 class="h2" id="shop-teaser-title">{e(c['shop_teaser_title'])}</h2>
-    <p class="lead">{e(c['shop_teaser_text'])}</p>
-    <a class="btn btn--primary" href="{c['produtos_path']}">{e(c['shop_teaser_cta'])}</a>
+<section class="shop-teaser" aria-labelledby="shop-teaser-title">
+  <div class="shop-split">
+    <div class="shop-teaser-panel">
+      {eyebrow(c['kicker_shop'])}
+      <h2 class="h2" id="shop-teaser-title">{e(c['shop_teaser_title'])}</h2>
+      <p class="lead">{e(c['shop_teaser_text'])}</p>
+      <a class="btn btn--gold" href="{c['produtos_path']}">{e(c['shop_teaser_cta'])}</a>
+    </div>
+    {media(teaser_photo, code, c['shop_slot'], prefix, cls='shop-teaser-media', w=1600, h=1200)}
   </div>
 </section>"""
 
@@ -1162,19 +1206,36 @@ def render(code):
     }
     place = f"""
 <section class="section info" id="local" aria-labelledby="place-title">
-  <div class="wrap info-grid">
-    <div>
-      <h2 class="h2" id="place-title">{e(c['place_title'])}</h2>
-      <div class="map"><iframe src="{SITE['maps_embed']}" title="{e(c['map_title'])}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-      <dl class="place-list">{pitems}</dl>
-      <a class="btn btn--dark" href="{SITE['maps_link']}" target="_blank" rel="noopener">{e(c['place_maps'])}</a>
-    </div>
-    <div id="faq">
-      <h2 class="h2">{e(c['faq_title'])}</h2>
-      <div class="faq">{qa}</div>
+  <div class="wrap wrap--wide">
+    {eyebrow(c['kicker_info'])}
+    <div class="info-grid" style="margin-top:clamp(28px,3vw,48px)">
+      <div class="info-place">
+        <h2 class="h2" id="place-title">{e(c['place_title'])}</h2>
+        <div class="map"><iframe src="{SITE['maps_embed']}" title="{e(c['map_title'])}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <dl class="place-list">{pitems}</dl>
+        <a class="btn btn--line-dark" href="{SITE['maps_link']}" target="_blank" rel="noopener">{e(c['place_maps'])}</a>
+      </div>
+      <div class="info-faq" id="faq">
+        <h2 class="h2">{e(c['faq_title'])}</h2>
+        <div class="faq">{qa}</div>
+      </div>
     </div>
   </div>
   <script type="application/ld+json">{json.dumps(faq_ld, ensure_ascii=False)}</script>
+</section>"""
+
+    # ---- Chamada final ----
+    closing = f"""
+<section class="section closing band-dark" aria-labelledby="closing-title">
+  <div class="wrap wrap--wide closing-inner">
+    {eyebrow(c['kicker_closing'])}
+    <h2 class="h2" id="closing-title">{e(c['final_title'])}</h2>
+    <p class="lead">{e(c['final_lead'])}</p>
+    <div class="btn-row">
+      <a class="btn btn--gold" href="#experimentar">{e(c['dock_book'])}</a>
+      <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+    </div>
+  </div>
 </section>"""
 
     # ---- footer ----
@@ -1182,7 +1243,8 @@ def render(code):
     scripts = page_scripts(code, prefix)
 
     body = (
-        "<body>" + header + '<main id="conteudo">' + hero + journeys + club + shop + place + "</main>" + footer + scripts + "</body></html>"
+        "<body>" + header + '<main id="conteudo">' + hero + journeys + club + shop + place + closing
+        + "</main>" + footer + scripts + "</body></html>"
     )
     return head + "\n" + body
 
@@ -1210,7 +1272,7 @@ def render_produtos(code):
 <meta name="description" content="{e(c['produtos_description'])}">
 <link rel="canonical" href="{canonical}">
 {alternates}
-<meta name="theme-color" content="#123D2B">
+<meta name="theme-color" content="#0D3527">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{e(SITE['name'])}">
 <meta property="og:title" content="{e(c['produtos_title'])}">
@@ -1223,7 +1285,8 @@ def render_produtos(code):
 <meta property="og:locale:alternate" content="{CONTENT[other]['og_locale']}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/archivo-latin-standard-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/manrope-latin-standard-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/dmserifdisplay-latin-standard-normal.woff2" crossorigin>
 <link rel="stylesheet" href="{prefix}assets/css/site.css">
 </head>"""
 
@@ -1240,7 +1303,7 @@ def render_produtos(code):
         return f"""
     <article class="pcard">
       <button type="button" class="pcard-trigger" data-open-product="{e(p['id'])}" aria-haspopup="dialog">
-        {media(p['photo'], code, p['name'][code], prefix, cls='pcard-media', w=900, h=900, light=True)}
+        {media(p['photo'], code, p['name'][code], prefix, cls='pcard-media media--zoom', w=900, h=1125, light=True)}
         <span class="pcard-body">
           <span class="pcard-cat">{e(cat)}</span>
           <strong class="pcard-name">{e(p['name'][code])}</strong>
@@ -1253,21 +1316,23 @@ def render_produtos(code):
     grid = f'<div class="pgrid">{cards}</div>' if PRODUCTS else f'<p class="meta">{e(c["produtos_empty"])}</p>'
 
     main_html = f"""
-<section class="section produtos-hero">
-  <div class="wrap">
-    <p class="meta">{e(c['nav_produtos'])}</p>
-    <h1 class="display" style="font-size:var(--t-xl)">{e(c['shop_title'])}</h1>
-    <p class="lead">{e(c['shop_lead'])}</p>
-    <a class="btn btn--outline-dark" href="{wa_link(c['shop_wa'])}" target="_blank" rel="noopener">{ICON_WA}{e(c['shop_cta'])}</a>
+<section class="section--tight produtos-hero">
+  <div class="wrap wrap--wide produtos-hero-grid">
+    {eyebrow(c['nav_produtos'])}
+    <h1 class="display">{e(c['shop_title'])}</h1>
+    <div class="produtos-hero-aside">
+      <p class="lead">{e(c['shop_lead'])}</p>
+      <a class="btn btn--line-dark" href="{wa_link(c['shop_wa'])}" target="_blank" rel="noopener">{ICON_WA}{e(c['shop_cta'])}</a>
+    </div>
   </div>
 </section>
 <section class="section produtos-grid">
-  <div class="wrap">{grid}</div>
+  <div class="wrap wrap--wide">{grid}</div>
 </section>
 <div class="pmodal-overlay" data-pmodal-overlay hidden>
   <div class="pmodal" role="dialog" aria-modal="true" aria-labelledby="pmodal-title">
     <button type="button" class="pmodal-close" data-pmodal-close aria-label="{e(c['produtos_close'])}">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
     <div class="pmodal-body" data-pmodal-body></div>
   </div>
@@ -1302,27 +1367,38 @@ def render_privacy(code):
 <meta name="description" content="{e(c['privacy_description'])}">
 <link rel="canonical" href="{canonical}">
 {alternates}
-<meta name="theme-color" content="#123D2B">
+<meta name="theme-color" content="#0D3527">
 <link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{prefix}assets/css/site.css">
 </head>"""
 
     header = page_header(code, prefix, "privacidade")
 
+    # Índice lateral (só no desktop, via CSS) gerado a partir dos próprios
+    # títulos das seções — nenhum texto novo, só âncoras estáveis.
+    anchors = [(slug(h, f"sec-{i+1}"), h, t) for i, (h, t) in enumerate(c["privacy_sections"])]
     sections = "".join(
-        f'<section><h2 class="h3">{e(h)}</h2><p>{e(t)}</p></section>'
-        for h, t in c["privacy_sections"]
+        f'<section id="{a}"><h2>{e(h)}</h2><p>{e(t)}</p></section>' for a, h, t in anchors
     )
+    toc = "".join(f'<a href="#{a}">{e(h)}</a>' for a, h, _ in anchors)
     home_href = "/" if code == "pt" else "/en/"
     main_html = f"""
 <section class="section legal">
-  <div class="wrap legal-wrap">
-    <h1 class="display" style="font-size:var(--t-xl)">{e(c['privacy_h1'])}</h1>
-    <p class="lead">{e(c['privacy_lead'])}</p>
-    <p class="meta">{e(c['privacy_updated'])}</p>
-    <div class="legal-body">{sections}</div>
-    <p class="note">{e(c['privacy_note'])}</p>
-    <a class="btn btn--dark" href="{home_href}">{e(c['privacy_back'])}</a>
+  <div class="wrap wrap--wide">
+    <div class="legal-head">
+      {eyebrow(c['kicker_legal'])}
+      <h1 class="display">{e(c['privacy_h1'])}</h1>
+      <p class="lead">{e(c['privacy_lead'])}</p>
+      <p class="meta">{e(c['privacy_updated'])}</p>
+    </div>
+    <div class="legal-grid">
+      <nav class="legal-toc" aria-label="{e(c['privacy_h1'])}">{toc}</nav>
+      <div class="legal-body">
+        {sections}
+        <p class="note">{e(c['privacy_note'])}</p>
+        <div class="legal-foot"><a class="btn btn--solid" href="{home_href}">{e(c['privacy_back'])}</a></div>
+      </div>
+    </div>
   </div>
 </section>"""
 
@@ -1339,12 +1415,16 @@ def render_404():
     return f"""<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404 · Good Vibes Va'a</title><meta name="robots" content="noindex">
+<meta name="theme-color" content="#0D3527">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/site.css"></head>
-<body style="background:var(--forest);color:var(--ivory);min-height:100svh;display:grid;align-items:center">
-<main class="wrap"><h1 class="display" style="font-size:var(--t-xl)">{e(c['not_found_title'])}</h1>
-<p class="lead" style="color:rgba(244,240,230,.8);margin-top:20px">{e(c['not_found_lead'])}</p>
-<div class="btn-row" style="margin-top:32px"><a class="btn btn--primary" href="/">{e(c['not_found_cta'])}</a>
-<a class="btn btn--outline" href="/en/" lang="en">{e(en['not_found_cta'])}</a></div></main></body></html>"""
+<body class="band-dark">
+<main class="wrap wrap--wide nf">
+<p class="eyebrow">404</p>
+<h1 class="display">{e(c['not_found_title'])}</h1>
+<p class="lead">{e(c['not_found_lead'])}</p>
+<div class="btn-row"><a class="btn btn--gold" href="/">{e(c['not_found_cta'])}</a>
+<a class="btn btn--line" href="/en/" lang="en">{e(en['not_found_cta'])}</a></div></main></body></html>"""
 
 
 def sitemap():

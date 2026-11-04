@@ -191,11 +191,17 @@ function initModality(host, modality, config, i18n) {
 
   function stopTimers() { clearInterval(S.timer); clearInterval(S.poll); S.timer = S.poll = null; }
   const err = (k) => (S.errors[k] ? `<p class="bk-err" id="${uid}-${k}-err">${esc(S.errors[k])}</p>` : '');
-  const footer = (nextLabel, disabled = false, showBack = false) => `
+  // Sem botão nenhum (ex.: etapa do Pix, que avança sozinha) o rodapé não é
+  // renderizado — uma barra vazia só somaria peso visual ao modal.
+  const footer = (nextLabel, disabled = false, showBack = false) => (!nextLabel && !showBack ? '' : `
     <div class="bk-foot">
-      ${showBack ? `<button type="button" class="btn btn--ghost" data-bk="back">${esc(T.back)}</button>` : '<span></span>'}
-      ${nextLabel ? `<button type="button" class="btn btn--dark" data-bk="go" ${disabled ? 'aria-disabled="true"' : ''} ${S.busy ? 'disabled' : ''}>${S.busy ? esc(T.sending) : esc(nextLabel)}</button>` : ''}
-    </div>`;
+      ${showBack ? `<button type="button" class="btn btn--ghost" data-bk="back">${esc(T.back)}</button>` : ''}
+      ${nextLabel ? `<button type="button" class="btn btn--gold" data-bk="go" ${disabled ? 'aria-disabled="true"' : ''} ${S.busy ? 'disabled' : ''}>${S.busy ? esc(T.sending) : esc(nextLabel)}</button>` : ''}
+    </div>`);
+
+  /* O acento de cada jornada vem de MODALITIES (booking_content.py) como
+     "ocean" | "forest" | "sand" e resolve para os tokens --accent-* do CSS. */
+  const accentVar = `--card-accent: var(--accent-${modality.accent})`;
 
   /* ----- calendário + cartões ----- */
   function renderCalendar() {
@@ -203,40 +209,52 @@ function initModality(host, modality, config, i18n) {
       const top = i === 0 ? T.today : T.weekdays[d.getDay()];
       return `<button type="button" class="bk-day" data-day="${i}" aria-pressed="${S.dayIdx === i}"><small>${esc(top)}</small><b>${d.getDate()}</b><small>${esc(T.months[d.getMonth()])}</small></button>`;
     }).join('');
-    return `<div class="bk-cal"><p class="bk-label" id="${uid}-day-l">${esc(T.day)}</p><div class="bk-days" role="group" aria-labelledby="${uid}-day-l">${chips}</div></div>`;
+    return `<div class="bk-cal">
+      <p class="bk-label" id="${uid}-day-l">${esc(T.day)}</p>
+      <div class="bk-days" role="group" aria-labelledby="${uid}-day-l">${chips}</div>
+    </div>`;
   }
 
   function cardHtml(a) {
     const full = a.available <= 0;
+    const capacity = a.capacity || a.available || 1;
+    const pct = Math.max(0, Math.min(100, Math.round((a.available / capacity) * 100)));
     const price = a.price != null
-      ? `${money(a.price)}${flow === 'calendar+pix' ? `<small>${esc(T.per_person)}</small>` : ''}`
-      : `<small>${esc(T.price_on_request)}</small>`;
+      ? `<span class="bk-card-price">${money(a.price)}${flow === 'calendar+pix' ? `<small>${esc(T.per_person)}</small>` : ''}</span>`
+      : `<span class="bk-card-price bk-card-price--request">${esc(T.price_on_request)}</span>`;
     const instr = a.instructor
-      ? `<div class="bk-card-instr">${a.instructorPhoto ? `<img src="${esc(a.instructorPhoto)}" alt="" width="28" height="28">` : ''}<span>${esc(fmt(T.with_instructor, { name: a.instructor }))}</span></div>`
+      ? `<p class="bk-card-instr">${a.instructorPhoto ? `<img src="${esc(a.instructorPhoto)}" alt="" width="30" height="30">` : ''}<span>${esc(fmt(T.with_instructor, { name: a.instructor }))}</span></p>`
       : '';
-    return `<article class="bk-card" style="--card-accent: var(--${modality.accent})">
-      <div class="bk-card-head"><h4>${esc(a.name)}</h4><span class="bk-card-time">${esc(timeLabel(a.time))} · ${esc(a.dur)}</span></div>
+    return `<article class="bk-card${full ? ' bk-card--full' : ''}" style="${accentVar}">
+      <div class="bk-card-top">
+        <span class="bk-card-time">${esc(timeLabel(a.time))}</span>
+        <span class="bk-card-dur">${esc(a.dur)}</span>
+      </div>
+      <h4>${esc(a.name)}</h4>
       <p class="bk-card-desc">${esc(a.desc)}</p>
       ${instr}
       <div class="bk-card-foot">
-        <span class="bk-card-seats">${full ? esc(T.full) : esc(fmt(T.seats_n, { n: a.available }))}</span>
-        <span class="bk-card-price">${price}</span>
+        <span class="bk-seats">
+          <span class="bk-card-seats">${full ? esc(T.full) : esc(fmt(T.seats_n, { n: a.available }))}</span>
+          <span class="bk-meter" aria-hidden="true"><i style="--pct:${pct}%"></i></span>
+        </span>
+        ${price}
       </div>
-      <button type="button" class="btn btn--dark bk-card-cta" data-reserve="${esc(a.id)}" ${full ? 'disabled' : ''}>${esc(T.reserve)}</button>
+      <button type="button" class="btn btn--solid bk-card-cta" data-reserve="${esc(a.id)}" ${full ? 'disabled' : ''}>${esc(T.reserve)}</button>
     </article>`;
   }
 
   function renderCards() {
-    if (S.cardsLoading) return `<p class="bk-wait">${esc(T.loading)}</p>`;
+    if (S.cardsLoading) return `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
     if (!S.cards.length) return `<p class="bk-note">${esc(T.no_dates)}</p>`;
     return `<div class="bk-cards">${S.cards.map(cardHtml).join('')}</div>`;
   }
 
   function renderQuoteCard() {
-    return `<div class="bk-cards bk-cards--quote"><article class="bk-card" style="--card-accent: var(--${modality.accent})">
-      <div class="bk-card-head"><h4>${esc(T.quote_title)}</h4></div>
+    return `<div class="bk-cards bk-cards--quote"><article class="bk-card bk-card--quote" style="${accentVar}">
+      <h4>${esc(T.quote_title)}</h4>
       <p class="bk-card-desc">${esc(T.quote_lead)}</p>
-      <button type="button" class="btn btn--dark bk-card-cta" data-reserve="quote">${esc(T.send_quote)}</button>
+      <button type="button" class="btn btn--solid bk-card-cta" data-reserve="quote">${esc(T.send_quote)}</button>
     </article></div>`;
   }
 
@@ -244,7 +262,6 @@ function initModality(host, modality, config, i18n) {
   function peopleStep() {
     const left = S.activity.available - S.people;
     return `<div class="bk-body">
-      <p class="bk-note">${esc(dayLabel(S.activity.dateKey))} · ${esc(timeLabel(S.activity.time))}</p>
       <div class="bk-row"><span class="bk-label">${esc(T.people)}</span>
         <div class="bk-stepper"><button type="button" data-bk="minus" aria-label="−1" ${S.people <= 1 ? 'disabled' : ''}>−</button>
           <output aria-live="polite">${S.people}</output>
@@ -272,19 +289,19 @@ function initModality(host, modality, config, i18n) {
     const left = Math.max(0, S.booking.expiresAt - Date.now());
     const mm = pad(Math.floor(left / 60000)), ss = pad(Math.floor((left % 60000) / 1000));
     const expired = S.payStatus === 'expired' || left <= 0;
-    const qr = S.booking.pix.qrImage ? `<img src="${esc(S.booking.pix.qrImage)}" alt="QR Code Pix" width="180" height="180">` : `<span role="img" aria-label="${esc(T.pix_alt)}">${demoQR(S.booking.code)}</span>`;
+    const qr = S.booking.pix.qrImage ? `<img src="${esc(S.booking.pix.qrImage)}" alt="QR Code Pix" width="184" height="184">` : `<span role="img" aria-label="${esc(T.pix_alt)}">${demoQR(S.booking.code)}</span>`;
     return `<div class="bk-body">
       <dl class="bk-sum">
         <div><dt>${S.people}× ${esc(S.activity.name)}</dt><dd>${money(total)}</dd></div>
         <div><dt>${esc(T.remaining)}</dt><dd>${money(total - S.booking.amount)}</dd></div>
         <div class="bk-strong"><dt>${esc(T.deposit)}</dt><dd>${money(S.booking.amount)}</dd></div>
       </dl>
-      ${expired ? `<div class="bk-pix"><p class="bk-err">${esc(T.expired)}</p><button type="button" class="btn btn--dark" data-bk="regen">${esc(T.regen)}</button></div>` : `
+      ${expired ? `<div class="bk-pix"><p class="bk-err">${esc(T.expired)}</p><button type="button" class="btn btn--solid" data-bk="regen">${esc(T.regen)}</button></div>` : `
       <div class="bk-pix">${qr}
-        <p class="bk-note" data-bk-timer>${esc(fmt(T.pix_valid, { t: `${mm}:${ss}` }))}</p>
-        <button type="button" class="btn btn--ghost bk-copy" data-bk="copy">${esc(T.copy)}</button>
+        <p class="bk-note bk-timer" data-bk-timer>${esc(fmt(T.pix_valid, { t: `${mm}:${ss}` }))}</p>
+        <button type="button" class="btn btn--line-dark btn--sm bk-copy" data-bk="copy">${esc(T.copy)}</button>
         <p class="bk-wait" aria-live="polite"><span class="bk-dot" aria-hidden="true"></span>${esc(T.waiting)}</p>
-        ${api.demo ? `<button type="button" class="btn btn--dark" data-bk="simpay">${esc(T.sim_pay)}</button>` : ''}
+        ${api.demo ? `<button type="button" class="btn btn--gold" data-bk="simpay">${esc(T.sim_pay)}</button>` : ''}
       </div>`}
     </div>${footer(null)}`;
   }
@@ -302,7 +319,7 @@ function initModality(host, modality, config, i18n) {
       </dl>
       <p class="bk-note">${esc(T.meeting)}<br>${esc(T.wa_note)}</p>
       <div class="bk-foot bk-foot--stack">
-        <button type="button" class="btn btn--dark" data-bk="ics">${esc(T.ics)}</button>
+        <button type="button" class="btn btn--solid" data-bk="ics">${esc(T.ics)}</button>
         <button type="button" class="btn btn--ghost" data-bk="close">${esc(T.again)}</button>
       </div>
     </div>`;
@@ -310,9 +327,10 @@ function initModality(host, modality, config, i18n) {
 
   /* ----- modal: Treinar (sem Pix) ----- */
   function requestStep() {
-    const instr = S.activity.instructor ? ` · ${esc(fmt(T.with_instructor, { name: S.activity.instructor }))}` : '';
+    const instr = S.activity.instructor
+      ? `<p class="bk-note">${esc(fmt(T.with_instructor, { name: S.activity.instructor }))}</p>` : '';
     return `<div class="bk-body">
-      <p class="bk-note">${esc(dayLabel(S.activity.dateKey))} · ${esc(timeLabel(S.activity.time))}${instr}</p>
+      ${instr}
       <div class="bk-field"><label for="${uid}-name">${esc(T.name)}</label>
         <input id="${uid}-name" autocomplete="name" value="${esc(S.name)}" ${S.errors.name ? 'aria-invalid="true"' : ''}>${err('name')}</div>
       <div class="bk-field"><label for="${uid}-phone">${esc(T.phone)}</label>
@@ -375,20 +393,44 @@ function initModality(host, modality, config, i18n) {
     if (flow === 'calendar+request') return T.request_title;
     return T.quote_title;
   }
+  /* Olho do modal: dia e horário escolhidos (dado que a pessoa acabou de
+     selecionar), para o corpo não repetir essa linha. */
+  function modalKicker() {
+    if (flow === 'quote' || !S.activity || !S.activity.dateKey) return '';
+    return `${dayLabel(S.activity.dateKey)} · ${timeLabel(S.activity.time)}`;
+  }
+  /* Trilha de etapas — só o fluxo com pagamento tem mais de um passo de
+     preenchimento. Os rótulos vêm de T.steps (booking_content.py): os três
+     últimos são Participantes / Termo / Pagamento. */
+  function modalSteps() {
+    if (flow !== 'calendar+pix') return '';
+    const labels = (T.steps || []).slice(-3);
+    if (labels.length < 3) return '';
+    const items = labels.map((label, i) => {
+      const state = S.step > i ? 'done' : S.step === i ? 'on' : 'next';
+      return `<li data-state="${state}"${state === 'on' ? ' aria-current="step"' : ''}><b>${String(i + 1).padStart(2, '0')}</b>${esc(label)}</li>`;
+    }).join('');
+    return `<ol class="bk-steps">${items}</ol>`;
+  }
   function modalBody() {
     if (flow === 'calendar+pix') return [peopleStep, termsStep, paymentStep, doneStepPix][S.step]();
     if (flow === 'calendar+request') return [requestStep, doneStepRequest][S.step]();
     return [quoteStep, doneStepQuote][S.step]();
   }
   function renderModal() {
+    const kicker = modalKicker();
     return `<div class="bk-overlay" data-bk-overlay>
       <div class="bk-modal" role="dialog" aria-modal="true" aria-labelledby="${uid}-modal-title">
         <div class="bk-modal-head">
-          <h4 id="${uid}-modal-title" class="bk-title" tabindex="-1">${esc(modalTitle())}</h4>
+          <div>
+            ${kicker ? `<p class="eyebrow">${esc(kicker)}</p>` : ''}
+            <h4 id="${uid}-modal-title" class="bk-title" tabindex="-1">${esc(modalTitle())}</h4>
+          </div>
           <button type="button" class="bk-modal-close" data-bk="close" aria-label="${esc(T.modal_close)}">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"/></svg>
           </button>
         </div>
+        ${modalSteps()}
         ${modalBody()}
       </div>
     </div>`;
