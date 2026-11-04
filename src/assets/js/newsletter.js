@@ -65,7 +65,7 @@ export function initNewsletter({ config, i18n }) {
         <button type="button" class="nl-close" data-nl-close aria-label="${esc(T.close)}">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg>
         </button>
-        <figure class="nl-media"><img src="${esc(T.image)}" alt="${esc(T.image_alt)}" loading="lazy"></figure>
+        <figure class="nl-media"><img src="${esc(T.image)}" alt="${esc(T.image_alt)}" width="900" height="1125" loading="lazy"></figure>
         <div class="nl-panel" data-nl-panel></div>
       </div>
     </div>`;
@@ -75,6 +75,7 @@ export function initNewsletter({ config, i18n }) {
 
   function formView() {
     return `
+      <p class="eyebrow">Good Vibes Va'a</p>
       <h3 class="nl-title" id="nl-title" tabindex="-1">${esc(title)}</h3>
       <p class="nl-text">${esc(text)}</p>
       <form data-nl-form novalidate>
@@ -89,7 +90,7 @@ export function initNewsletter({ config, i18n }) {
         ${error ? `<p class="nl-err">${esc(error)}</p>` : ''}
         <p class="nl-privacy">${esc(T.privacy_prefix)}<a href="${esc(i18n.privacyHref)}" target="_blank" rel="noopener">${esc(T.privacy_link)}</a></p>
         <div class="nl-hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-        <button type="submit" class="btn btn--primary nl-submit" ${busy ? 'disabled' : ''}>${busy ? esc(T.sending) : esc(T.cta)}</button>
+        <button type="submit" class="btn btn--gold nl-submit" ${busy ? 'disabled' : ''}>${busy ? esc(T.sending) : esc(T.cta)}</button>
       </form>`;
   }
 

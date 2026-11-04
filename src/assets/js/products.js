@@ -42,15 +42,17 @@ export function initProducts({ config, i18n }) {
           <div class="pmodal-opts pmodal-opts--color">${p.colors.map((c) => `<button type="button" class="pmodal-color" data-color="${esc(c.name)}" aria-pressed="${selection.color === c.name}" style="--swatch:${esc(c.hex)}" aria-label="${esc(c.name)}"></button>`).join('')}</div></div>`
       : '';
     bodyEl.innerHTML = `
-      <figure class="pmodal-media"><img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="900" height="900" loading="lazy"></figure>
+      <figure class="pmodal-media"><img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="900" height="1125" loading="lazy"></figure>
       <div class="pmodal-info">
         <span class="pmodal-cat">${esc(p.category)}</span>
         <h3 class="pmodal-title" id="pmodal-title" tabindex="-1">${esc(p.name)}</h3>
         <p class="pmodal-desc">${esc(p.description)}</p>
-        <p class="pmodal-price">${esc(p.priceLabel)}</p>
-        <p class="pmodal-stock pmodal-stock--${esc(p.stock)}">${esc(p.stockLabel)}</p>
+        <div class="pmodal-meta">
+          <span class="pmodal-price">${esc(p.priceLabel)}</span>
+          <span class="pmodal-stock pmodal-stock--${esc(p.stock)}">${esc(p.stockLabel)}</span>
+        </div>
         ${sizesHtml}${colorsHtml}
-        <a class="btn btn--dark pmodal-buy" data-pmodal-buy href="${waLink(p)}" target="_blank" rel="noopener">${ICON_WA}${esc(T.buyCta)}</a>
+        <a class="btn btn--gold pmodal-buy" data-pmodal-buy href="${waLink(p)}" target="_blank" rel="noopener">${ICON_WA}${esc(T.buyCta)}</a>
       </div>`;
   }
 
