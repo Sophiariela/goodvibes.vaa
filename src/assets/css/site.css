@@ -106,10 +106,10 @@
   --t-sm: .9375rem;
   --t-base: 1.0625rem;
   --t-md: clamp(1.125rem, 1.04rem + .36vw, 1.375rem);
-  --t-lg: clamp(1.3125rem, 1.05rem + 1.1vw, 2rem);
-  --t-xl: clamp(1.875rem, 1.2rem + 2.9vw, 4rem);
-  --t-2xl: clamp(2.25rem, 1.3rem + 4.2vw, 5.25rem);
-  --t-hero: clamp(2.875rem, 1.5rem + 5.8vw, 7.5rem);
+  --t-lg: clamp(1.3125rem, 1rem + 1.3vw, 2.125rem);
+  --t-xl: clamp(1.875rem, 1.05rem + 3.4vw, 4.75rem);
+  --t-2xl: clamp(2.25rem, 1.1rem + 4.6vw, 6rem);
+  --t-hero: clamp(2.875rem, 1.3rem + 6.4vw, 8.75rem);
 
   /* Ritmo e grade */
   --gutter: 20px;
@@ -514,10 +514,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
    ========================================================================== */
 .hero {
   position: relative; isolation: isolate; overflow: hidden;
-  min-height: 92svh; min-height: max(600px, 92svh);
-  display: flex; align-items: flex-end; color: var(--c-shell);
+  min-height: 92svh; min-height: max(620px, 92svh);
+  display: flex; flex-direction: column; justify-content: flex-end; color: var(--c-shell);
 }
-@media (min-width: 1100px) { .hero { min-height: max(740px, 94svh); } }
+@media (min-width: 1100px) { .hero { min-height: max(760px, 94svh); } }
 .hero-media { position: absolute; inset: 0; z-index: -2; background-color: var(--c-abyss); }
 .hero-media[data-slot]::after { left: auto; right: var(--gutter); top: calc(var(--header-h) + 20px); bottom: auto; max-width: 32ch; text-align: right; }
 .hero::before {
@@ -531,43 +531,61 @@ button, input, select, textarea { font: inherit; color: inherit; }
     linear-gradient(to bottom, rgba(6, 26, 20, .62) 0%, rgba(6, 26, 20, .28) 9%, rgba(6, 26, 20, 0) 18%);
 }
 .hero-inner {
-  width: 100%; display: grid; gap: clamp(32px, 4vw, 56px);
+  width: 100%;
   padding-block: calc(var(--header-h) + 44px) clamp(40px, 5.5vw, 88px);
 }
+.hero-lead { max-width: 820px; }
 .hero-place { color: rgba(247, 244, 237, .92); }
 .hero-place::before { background: var(--c-gold); opacity: 1; }
 .hero h1 {
-  margin-top: 26px; max-width: 11ch;
+  margin-top: 26px; max-width: 13ch;
   text-shadow: 0 2px 40px rgba(0, 0, 0, .35);
 }
+@media (min-width: 1100px) { .hero h1 { max-width: 11ch; } }
 .hero-sub {
   margin-top: clamp(20px, 2.2vw, 30px); font-size: var(--t-md); line-height: 1.5;
-  max-width: 40ch; color: rgba(247, 244, 237, .88);
+  max-width: 42ch; color: rgba(247, 244, 237, .88);
   text-shadow: 0 1px 24px rgba(0, 0, 0, .4);
 }
 .hero .btn-row { margin-top: clamp(28px, 3vw, 42px); }
 @media (max-width: 519px) { .hero .btn-row { display: grid; gap: 10px; } .hero .btn-row .btn { width: 100%; } }
 
-/* Trilho direito: os "fatos" do hero viram uma lista editorial vertical */
-.hero-facts { display: grid; gap: 0; align-content: end; }
-.hero-facts li {
-  padding: 14px 0; border-top: 1px solid rgba(247, 244, 237, .22);
-  font-size: var(--t-sm); color: rgba(247, 244, 237, .9);
-  display: flex; align-items: flex-start; gap: 14px; line-height: 1.4;
+/* Faixa de embarque: os "fatos" do hero viram uma régua horizontal de
+   ponta a ponta no rodapé da fotografia — usa a largura inteira da tela
+   em vez de empilhar num trilho estreito, e lê como o rodapé de um bilhete
+   de embarque (numeral editorial + texto), não como uma lista genérica. */
+.hero-manifest {
+  position: relative; z-index: 1;
+  border-top: 1px solid rgba(247, 244, 237, .24);
+  background: linear-gradient(to top, rgba(6, 26, 20, .58), rgba(6, 26, 20, .12));
 }
-.hero-facts li::before {
-  content: ""; width: 5px; height: 5px; margin-top: .55em; flex: none;
-  background: var(--c-gold); transform: rotate(45deg);
+.hero-manifest-row {
+  display: grid; grid-auto-flow: row; row-gap: 0;
+  padding-block: 16px;
 }
-.hero-facts li:last-child { border-bottom: 1px solid rgba(247, 244, 237, .22); }
-@media (max-width: 759px) { .hero-facts { display: none; } }
-@media (min-width: 760px) and (max-width: 1099px) {
-  .hero-facts { grid-template-columns: repeat(3, 1fr); gap: 0 28px; }
-  .hero-facts li:last-child { border-bottom: 0; }
+.hero-stat {
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 10px 0; border-top: 1px solid rgba(247, 244, 237, .16);
+}
+.hero-stat:first-child { border-top: 0; }
+.hero-stat-num {
+  font-family: var(--font-display); font-weight: 400; line-height: 1; flex: none;
+  font-size: clamp(1.0625rem, .9rem + .5vw, 1.375rem); color: var(--c-gold-2);
+}
+.hero-stat-text { font-size: var(--t-sm); line-height: 1.35; color: rgba(247, 244, 237, .92); }
+@media (min-width: 680px) {
+  .hero-manifest-row {
+    grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: center;
+  }
+  .hero-stat {
+    border-top: 0; border-left: 1px solid rgba(247, 244, 237, .22);
+    padding: 4px clamp(20px, 2.6vw, 44px);
+  }
+  .hero-stat:first-child { border-left: 0; padding-left: 0; }
 }
 @media (min-width: 1100px) {
-  .hero-inner { grid-template-columns: minmax(0, 1fr) minmax(250px, 340px); align-items: end; gap: clamp(48px, 5vw, 120px); }
-  .hero-facts { padding-bottom: 6px; }
+  .hero-stat-num { font-size: clamp(1.25rem, 1rem + .6vw, 1.625rem); }
+  .hero-stat-text { font-size: var(--t-base); max-width: 30ch; }
 }
 
 /* ==========================================================================
@@ -635,6 +653,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .panel-grid--quote .panel-intro { grid-column: 1 / span 5; }
   .panel-grid--quote .panel-main { grid-column: 7 / -1; }
 }
+/* Telas muito largas: a coluna narrativa fixa (sticky) não precisa de mais
+   espaço que isso pra continuar legível, então o excedente vai todo para o
+   calendário e os cartões — é ali que a largura extra realmente ajuda. */
+@media (min-width: 1600px) {
+  .panel-intro { grid-column: 1 / span 3; }
+  .panel-main { grid-column: 4 / -1; }
+}
 /* O trilho narrativo acompanha a rolagem só quando cabe inteiro na tela —
    fixá-lo numa janela baixa esconderia o fim do próprio texto. */
 @media (min-width: 1100px) and (min-height: 860px) {
@@ -696,6 +721,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .bk-days::-webkit-scrollbar { height: 3px; }
 .bk-days::-webkit-scrollbar-thumb { background: var(--rule-strong); }
+/* No desktop os 14 dias cabem inteiros, lado a lado, sem precisar rolar —
+   uma régua de calendário de verdade em vez de um trilho horizontal de
+   celular só esticado. */
+@media (min-width: 1100px) {
+  .bk-days {
+    grid-auto-flow: unset; grid-template-columns: repeat(14, minmax(0, 1fr));
+    overflow-x: visible; gap: 8px;
+  }
+}
 .bk-day {
   position: relative; scroll-snap-align: start;
   display: grid; gap: 2px; justify-items: center; align-content: center;
@@ -704,6 +738,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: 1px solid var(--rule-c); border-radius: var(--radius); cursor: pointer;
   transition: border-color .2s, background-color .2s, color .2s, transform .2s;
 }
+@media (min-width: 1100px) { .bk-day { min-height: 96px; padding-block: 16px 18px; } .bk-day b { font-size: 1.625rem; } }
 .bk-day:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
 .bk-day small { font-size: .625rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .bk-day b { font-family: var(--font-display); font-weight: 400; font-size: 1.375rem; line-height: 1.05; }
@@ -720,11 +755,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .band-dark .bk-day[aria-pressed="true"] small { color: rgba(13, 53, 39, .62); }
 
 /* --- Cartões de atividade --- */
-.bk-cards { display: grid; gap: clamp(12px, 1.2vw, 18px); }
-@media (min-width: 760px) { .bk-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) and (max-width: 1299px) { .bk-cards { grid-template-columns: minmax(0, 1fr); } }
+.bk-cards { display: grid; gap: clamp(12px, 1.2vw, 20px); }
+@media (min-width: 640px) { .bk-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* A partir de 1360px o painel de reserva (8/12 da grade) já tem largura de
+   sobra pra três cartões lado a lado — manter só duas colunas até aí era o
+   principal motivo de a reserva parecer uma tela de celular esticada. */
+@media (min-width: 1360px) { .bk-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 /* Dia com uma saída só: o cartão ocupa a largura toda em vez de deixar
-   metade da coluna vazia (acontece bastante na grade de Treinar). */
+   a maior parte da coluna vazia (acontece bastante na grade de Treinar). */
 .bk-cards:has(> :last-child:nth-child(1)) { grid-template-columns: minmax(0, 1fr); }
 .bk-cards--quote { display: block; }
 
@@ -1331,10 +1369,11 @@ body.nl-open { overflow: hidden; }
   --rule-c: rgba(247, 244, 237, .14);
 }
 .footer-grid { display: grid; gap: clamp(32px, 4vw, 56px); }
-.footer-brand .brand-word { color: var(--c-shell); font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); }
-.footer-brand p { margin-top: 16px; max-width: 34ch; line-height: 1.6; }
-.footer-brand .btn { margin-top: 26px; }
-.footer h2 { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .2em; text-transform: uppercase; color: var(--c-gold-2); margin-bottom: 12px; }
+.footer-brand .brand-word { color: var(--c-shell); font-size: clamp(2rem, 1.3rem + 2.8vw, 3.5rem); }
+.footer-brand p { margin-top: 18px; max-width: 34ch; line-height: 1.65; font-size: var(--t-base); }
+.footer-brand .btn { margin-top: 28px; }
+.footer h2 { font-size: var(--t-xs); font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: var(--c-gold-2); margin-bottom: 14px; }
+.footer-col li a, .footer-col li:not(:has(a)) { font-size: var(--t-base); }
 /* O espaçamento entre as linhas vem do padding do próprio link, não de
    uma margem: o ritmo visual é o mesmo e cada item vira um alvo de toque
    de ~36px em vez de 21px. O min-width é invisível (o link não desenha
@@ -1358,12 +1397,17 @@ body.nl-open { overflow: hidden; }
 .footer-bottom .lang-switch { color: rgba(247, 244, 237, .8); }
 @media (min-width: 680px) { .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .footer-brand { grid-column: 1 / -1; } }
 @media (min-width: 1100px) {
-  .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); }
-  .footer-brand { grid-column: 1 / span 4; }
-  .footer-col { grid-column: span 2; }
-  .footer-col:nth-of-type(2) { grid-column: 6 / span 2; }
-  .footer-col:nth-of-type(3) { grid-column: 8 / span 2; }
-  .footer-col:nth-of-type(4) { grid-column: 10 / span 3; }
+  .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: start; }
+  .footer-brand { grid-column: 1 / span 5; }
+  /* Encadeado pelo irmão seguinte, não por nth-of-type (todo filho direto
+     de .footer-grid é uma <div>, então nth-of-type contaria a marca
+     também) — assim a regra descreve exatamente "1º/2º/3º .footer-col
+     depois da marca", sem depender de coincidência de contagem. */
+  .footer-brand + .footer-col {
+    grid-column: 7 / span 2; border-left: 1px solid var(--rule-c); padding-left: clamp(20px, 2vw, 32px);
+  }
+  .footer-brand + .footer-col + .footer-col { grid-column: 9 / span 2; }
+  .footer-brand + .footer-col + .footer-col + .footer-col { grid-column: 11 / span 2; }
 }
 
 /* ==========================================================================

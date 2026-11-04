@@ -964,9 +964,15 @@ def render(code):
     header = page_header(code, prefix, "home")
 
     # ---- hero ----
-    # Desktop: manchete em coluna larga à esquerda, "fatos" num trilho
-    # vertical à direita — composição de 2 colunas, não a pilha do celular.
-    facts = "".join(f"<li>{e(f)}</li>" for f in c["hero_facts"])
+    # Composição de ticket de embarque: manchete grande ancorada à esquerda
+    # e, no rodapé do hero, uma faixa horizontal de ponta a ponta com os
+    # "fatos" — usa a largura inteira da tela no desktop em vez de empilhar
+    # tudo numa coluna estreita à direita (a leitura de "celular ampliado"
+    # que este redesenho veio corrigir).
+    stats = "".join(
+        f'<div class="hero-stat"><span class="hero-stat-num">{i + 1:02d}</span><span class="hero-stat-text">{e(f)}</span></div>'
+        for i, f in enumerate(c["hero_facts"])
+    )
     hero = f"""
 <section class="hero" aria-labelledby="hero-title">
   {media('hero', code, c['hero_slot'], prefix, cls='hero-media', w=2400, h=1600, eager=True)}
@@ -980,7 +986,9 @@ def render(code):
         <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
       </div>
     </div>
-    <ul class="hero-facts">{facts}</ul>
+  </div>
+  <div class="hero-manifest">
+    <div class="wrap wrap--wide hero-manifest-row">{stats}</div>
   </div>
 </section>"""
 
