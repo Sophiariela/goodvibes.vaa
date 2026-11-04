@@ -133,6 +133,112 @@ export async function createReservationWithHold(input: CreateReservationInput): 
   });
 }
 
+export interface CreateDirectRequestInput {
+  /** Obrigatório para "treinar" (trava vaga real numa turma/sessão). */
+  sessionId: string | null;
+  /** Obrigatório quando sessionId é null (ex.: "particular", sem agenda fixa). */
+  experienceSlug: string | null;
+  participantsCount: number;
+  locale: 'pt' | 'en';
+  contactName: string;
+  contactPhone: string | null;
+  contactEmail: string | null;
+  notes: string | null;
+}
+
+export interface CreateDirectRequestResult {
+  reservationId: string;
+  status: 'confirmed' | 'quote_requested';
+}
+
+/**
+ * Treinar e Particular: solicitação sem Pix (ver api/requests.ts).
+ *
+ * - Com `sessionId` (Treinar): trava a vaga na turma como
+ *   `createReservationWithHold`, mas confirma direto — não há cobrança
+ *   nesta etapa, então não existe "aguardando pagamento".
+ * - Sem `sessionId` (Particular): não há vaga pra travar, é sempre um
+ *   pedido de orçamento (`quote_requested`) — a equipe do clube responde
+ *   por fora com o valor.
+ */
+export async function createDirectRequest(input: CreateDirectRequestInput): Promise<CreateDirectRequestResult> {
+  if (!Number.isInteger(input.participantsCount) || input.participantsCount <= 0) {
+    throw new ReservationError('Número de participantes inválido.', 'INVALID_INPUT');
+  }
+  if (!input.contactName?.trim()) {
+    throw new ReservationError('Nome de contato é obrigatório.', 'INVALID_INPUT');
+  }
+
+  if (input.sessionId) {
+    return withTransaction(async (client) => {
+      const sessionRows = await client.query(
+        `select s.id, s.experience_id, s.capacity, s.status, s.starts_at, e.journey
+           from sessions s
+           join experiences e on e.id = s.experience_id
+          where s.id = $1
+          for update of s`,
+        [input.sessionId],
+      );
+      const session = sessionRows.rows[0];
+      if (!session) throw new ReservationError('Turma não encontrada.', 'NOT_FOUND');
+      if (session.status === 'cancelled') throw new ReservationError('Esta turma foi cancelada.', 'CANCELLED');
+      if (isSessionInPast(new Date(session.starts_at))) {
+        throw new ReservationError('Esta turma já aconteceu.', 'PAST_SESSION');
+      }
+
+      const takenRows = await client.query<{ taken: number }>(
+        `select coalesce(sum(participants_count), 0)::int as taken
+           from reservations
+          where session_id = $1
+            and (status = 'confirmed' or (status = 'pending_payment' and hold_expires_at > now()))`,
+        [input.sessionId],
+      );
+      const taken = takenRows.rows[0]?.taken ?? 0;
+      const available = session.capacity - taken;
+      if (available < input.participantsCount) {
+        throw new ReservationError(
+          available > 0 ? `Só restam ${available} vaga(s) nesta turma.` : 'Esta turma está esgotada.',
+          'NO_CAPACITY',
+        );
+      }
+
+      const inserted = await client.query<{ id: string }>(
+        `insert into reservations
+           (session_id, experience_id, journey, status, participants_count, locale, contact_name, contact_phone, contact_email, notes)
+         values ($1,$2,$3,'confirmed',$4,$5,$6,$7,$8,$9)
+         returning id`,
+        [
+          input.sessionId, session.experience_id, session.journey, input.participantsCount,
+          input.locale, input.contactName.trim(), input.contactPhone, input.contactEmail, input.notes,
+        ],
+      );
+      return { reservationId: inserted.rows[0]!.id, status: 'confirmed' };
+    });
+  }
+
+  if (!input.experienceSlug) {
+    throw new ReservationError('experienceSlug é obrigatório quando não há sessionId.', 'INVALID_INPUT');
+  }
+  const expRows = await query<{ id: string; journey: string }>(
+    `select id, journey from experiences where slug = $1 and active = true`,
+    [input.experienceSlug],
+  );
+  const experience = expRows[0];
+  if (!experience) throw new ReservationError('Experiência não encontrada.', 'NOT_FOUND');
+
+  const inserted = await query<{ id: string }>(
+    `insert into reservations
+       (session_id, experience_id, journey, status, participants_count, locale, contact_name, contact_phone, contact_email, notes)
+     values (null,$1,$2,'quote_requested',$3,$4,$5,$6,$7,$8)
+     returning id`,
+    [
+      experience.id, experience.journey, input.participantsCount,
+      input.locale, input.contactName.trim(), input.contactPhone, input.contactEmail, input.notes,
+    ],
+  );
+  return { reservationId: inserted[0]!.id, status: 'quote_requested' };
+}
+
 /** Cancela uma reserva própria — só funciona enquanto ainda está
  *  aguardando pagamento (não deixa cancelar uma já confirmada por aqui). */
 export async function cancelPendingReservation(reservationId: string): Promise<boolean> {

@@ -16,7 +16,7 @@ import shutil
 from html import escape
 from pathlib import Path
 
-from booking_content import DEMO_EXPERIENCES, BOOKING, WA_WIDGET
+from booking_content import MODALITIES, BOOKING, WA_WIDGET
 
 # ---------------------------------------------------------------------------
 # Configuração do negócio. Tudo que é dado comercial fica aqui.
@@ -316,7 +316,6 @@ CONTENT = {
             "sendError": "Não foi possível enviar agora. Fale com a equipe pelo WhatsApp " + SITE["whatsapp_display"] + ".",
             "bk": BOOKING["pt"],
             "wa": WA_WIDGET["pt"],
-            "demoExperiences": DEMO_EXPERIENCES["pt"],
         },
         "not_found_title": "Página não encontrada.",
         "not_found_lead": "O endereço pode ter mudado. Volte para o início e escolha sua experiência.",
@@ -501,7 +500,6 @@ CONTENT = {
             "sendError": "We couldn't send it right now. Message the team on WhatsApp at +55 71 99978-9710.",
             "bk": BOOKING["en"],
             "wa": WA_WIDGET["en"],
-            "demoExperiences": DEMO_EXPERIENCES["en"],
         },
         "not_found_title": "Page not found.",
         "not_found_lead": "The address may have changed. Go back to the home page and choose your experience.",
@@ -544,6 +542,23 @@ def media(photo_key, locale, slot, prefix, cls="", w=1600, h=1000, eager=False, 
         f'style="--focus:{e(p["focus"])}" {loading} decoding="async" onerror="this.remove()">'
         f"</figure>"
     )
+
+
+def resolve_modalities(code, prefix):
+    """Injeta a URL da foto do instrutor (quando houver instructorKey) nas
+    atividades de cada modalidade, pro JS do booking.js não precisar
+    conhecer PHOTOS/prefix — só recebe uma URL pronta."""
+    out = []
+    for m in MODALITIES[code]:
+        activities = []
+        for a in m["activities"]:
+            a2 = dict(a)
+            key = a.get("instructorKey")
+            if key and key in PHOTOS:
+                a2["instructorPhoto"] = f'{prefix}assets/img/{PHOTOS[key]["file"]}'
+            activities.append(a2)
+        out.append({**m, "activities": activities})
+    return out
 
 
 def field(fid, label, control, hint=None, full=False, error=True):
@@ -749,7 +764,7 @@ def render(code):
     <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
       <div class="panel-grid panel-grid--booking">
         {steps_block}
-        <div class="bk" data-booking>
+        <div class="bk" data-booking data-modality="experimentar">
           {demo_note}
           <div class="bk-root"></div>
         </div>
@@ -775,14 +790,15 @@ def render(code):
     plans = "".join(
         f'<div><dt>{e(t)}</dt><dd>{e(d)} <span class="price">{e(p)}</span></dd></div>' for t, d, p in c["plans"]
     )
-    b_fields = (
-        contact_fields("b")
-        + field("b-mod", c["f_modality"], select("b-mod", "modality", c["f_modality"], c["b_options"], c), full=True)
-        + field("b-period", c["f_period"], select("b-period", "period", c["f_period"], c["f_periods"], c))
-        + field("b-level", c["f_experience_level"], select("b-level", "level", c["f_experience_level"], c["f_levels"], c))
-        + more_field("b-notes", "notes", c["f_notes"], None)
-    )
-    panel_b = f"""
+    if SITE["booking_mode"] == "off":
+        b_fields = (
+            contact_fields("b")
+            + field("b-mod", c["f_modality"], select("b-mod", "modality", c["f_modality"], c["b_options"], c), full=True)
+            + field("b-period", c["f_period"], select("b-period", "period", c["f_period"], c["f_periods"], c))
+            + field("b-level", c["f_experience_level"], select("b-level", "level", c["f_experience_level"], c["f_levels"], c))
+            + more_field("b-notes", "notes", c["f_notes"], None)
+        )
+        panel_b = f"""
     <div class="panel" id="treinar" role="tabpanel" aria-labelledby="tab-treinar" tabindex="-1">
       <div class="panel-grid">
         <div>
@@ -791,19 +807,36 @@ def render(code):
           <dl class="offers">{plans}</dl>
           <p class="note">{c['b_note']}</p>
         </div>
-        {form_shell('treinar', c['b_form_title'], c['b_form_intro'], c['b_wa_intro'], b_fields, c['f_submit'] if SITE["booking_mode"] == "off" else c['bk']['send_request'], c)}
+        {form_shell('treinar', c['b_form_title'], c['b_form_intro'], c['b_wa_intro'], b_fields, c['f_submit'], c)}
+      </div>
+    </div>"""
+    else:
+        panel_b = f"""
+    <div class="panel" id="treinar" role="tabpanel" aria-labelledby="tab-treinar" tabindex="-1">
+      <div class="panel-grid panel-grid--booking">
+        <div>
+          <h3 class="h3">{e(c['b_title'])}</h3>
+          <p class="panel-lead">{e(c['b_lead'])}</p>
+          <dl class="offers">{plans}</dl>
+          <p class="note">{c['b_note']}</p>
+        </div>
+        <div class="bk" data-booking data-modality="treinar">
+          {demo_note}
+          <div class="bk-root"></div>
+        </div>
       </div>
     </div>"""
 
     # C — particular
-    c_fields = (
-        contact_fields("c")
-        + field("c-type", c["f_type"], select("c-type", "type", c["f_type"], c["c_options"], c), full=True)
-        + field("c-date", c["f_date"], text_input("c-date", "date", c["f_date"], kind="date"))
-        + field("c-people", c["f_people"], text_input("c-people", "people", c["f_people"], kind="number", extra='min="1" max="200" inputmode="numeric"'))
-        + more_field("c-details", "details", c["f_details"], c["f_details_hint"])
-    )
-    panel_c = f"""
+    if SITE["booking_mode"] == "off":
+        c_fields = (
+            contact_fields("c")
+            + field("c-type", c["f_type"], select("c-type", "type", c["f_type"], c["c_options"], c), full=True)
+            + field("c-date", c["f_date"], text_input("c-date", "date", c["f_date"], kind="date"))
+            + field("c-people", c["f_people"], text_input("c-people", "people", c["f_people"], kind="number", extra='min="1" max="200" inputmode="numeric"'))
+            + more_field("c-details", "details", c["f_details"], c["f_details_hint"])
+        )
+        panel_c = f"""
     <div class="panel" id="particular" role="tabpanel" aria-labelledby="tab-particular" tabindex="-1">
       <div class="panel-grid">
         <div>
@@ -811,7 +844,22 @@ def render(code):
           <p class="panel-lead">{e(c['c_lead'])}</p>
           {offer_list(c['formats'])}
         </div>
-        {form_shell('particular', c['c_form_title'], c['c_form_intro'], c['c_wa_intro'], c_fields, c['f_submit_quote'] if SITE["booking_mode"] == "off" else c['bk']['send_quote'], c)}
+        {form_shell('particular', c['c_form_title'], c['c_form_intro'], c['c_wa_intro'], c_fields, c['f_submit_quote'], c)}
+      </div>
+    </div>"""
+    else:
+        panel_c = f"""
+    <div class="panel" id="particular" role="tabpanel" aria-labelledby="tab-particular" tabindex="-1">
+      <div class="panel-grid panel-grid--booking">
+        <div>
+          <h3 class="h3">{e(c['c_title'])}</h3>
+          <p class="panel-lead">{e(c['c_lead'])}</p>
+          {offer_list(c['formats'])}
+        </div>
+        <div class="bk" data-booking data-modality="particular">
+          {demo_note}
+          <div class="bk-root"></div>
+        </div>
       </div>
     </div>"""
 
@@ -951,8 +999,10 @@ def render(code):
         "apiBase": SITE["api_base"],
         "seats": SITE["booking_seats"],
     }
+    i18n_data = dict(c["i18n"])
+    i18n_data["modalities"] = resolve_modalities(code, prefix)
     scripts = f"""
-<script type="application/json" id="i18n">{json.dumps(c['i18n'], ensure_ascii=False)}</script>
+<script type="application/json" id="i18n">{json.dumps(i18n_data, ensure_ascii=False)}</script>
 <script>window.GVV_CONFIG = {json.dumps(config)};</script>
 <script src="{prefix}assets/js/site.js" type="module"></script>"""
 

@@ -13,7 +13,6 @@ import type { VercelRequest, VercelResponse } from '../lib/http';
 function mockReqRes(overrides: Partial<VercelRequest> = {}) {
   const res: Partial<VercelResponse> = {
     statusCode: 200,
-    headers: {},
     setHeader: vi.fn(),
   };
   res.status = vi.fn((code: number) => {

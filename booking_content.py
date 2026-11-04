@@ -6,6 +6,8 @@ As experiências e valores abaixo são ILUSTRATIVOS e só aparecem no modo
 preços vêm do backend do clube.
 """
 
+import random
+
 DEMO_EXPERIENCES = {
     "pt": [
         {"id": "primeira", "name": "Primeira experiência", "desc": "Introdução ao esporte com o capitão. Ideal para quem nunca remou.", "time": "08:00", "dur": "cerca de 1h", "price": 100},
@@ -18,6 +20,81 @@ DEMO_EXPERIENCES = {
         {"id": "nascer", "name": "Sunrise paddle", "desc": "An early start, calm water and the city waking up, seen from the bay.", "time": "05:30", "dur": "about 1h30", "price": 120},
         {"id": "por", "name": "Sunset paddle", "desc": "Salvador's late afternoon, seen from inside the Bay of All Saints.", "time": "16:30", "dur": "about 1h30", "price": 120},
         {"id": "turismo", "name": "Sea tour", "desc": "The city's waterfront and history, seen from the water.", "time": "09:30", "dur": "about 2h", "price": 150},
+    ],
+}
+
+# Horários de "Treinar" ainda não definidos pelo clube — gerados com seed fixa
+# (sempre o mesmo resultado a cada build) só para servir de exemplo visual.
+# Trocar pelos horários reais quando o clube confirmar (ver docs/SETUP.md).
+def _generate_training_schedule(locale):
+    names = (
+        ["Treino regular", "Técnica de remada", "Condicionamento físico", "Treino de resistência"]
+        if locale == "pt" else
+        ["Regular training", "Paddling technique", "Fitness conditioning", "Endurance training"]
+    )
+    descs = (
+        [
+            "Treino de base do clube, remada em grupo com um capitão.",
+            "Foco em pegada, catch e sincronia de remada em dupla ou na canoa.",
+            "Trabalho físico fora da canoa para ganhar resistência na água.",
+            "Remada mais longa, ritmo constante, para quem já tem uma base.",
+        ] if locale == "pt" else [
+            "The club's base training, group paddling with a captain.",
+            "Focus on catch, stroke and timing, in pairs or in the canoe.",
+            "Off-water conditioning work to build stamina on the water.",
+            "A longer, steady-pace paddle for people who already have a base.",
+        ]
+    )
+    durs = (
+        ["cerca de 1h", "cerca de 1h30", "cerca de 1h", "cerca de 1h30"]
+        if locale == "pt" else
+        ["about 1h", "about 1h30", "about 1h", "about 1h30"]
+    )
+    # weekdays segue Date.getDay() do JS: 0=domingo ... 6=sábado.
+    slots = [
+        {"time": "06:00", "weekdays": [1, 3, 5], "instructorKey": "captain_jesse", "instructor": "Jesse", "capacity": 10},
+        {"time": "18:00", "weekdays": [2, 4], "instructorKey": "captain_nala", "instructor": "Nala", "capacity": 10},
+        {"time": "08:00", "weekdays": [6], "instructorKey": "captain_jesse", "instructor": "Jesse", "capacity": 6},
+        {"time": "07:00", "weekdays": [0], "instructorKey": "captain_nala", "instructor": "Nala", "capacity": 8},
+    ]
+    shuffled = slots[:]
+    random.Random(7).shuffle(shuffled)
+    out = [
+        {
+            "id": f"treino-{i}",
+            "name": names[i],
+            "desc": descs[i],
+            "dur": durs[i],
+            "price": None,
+            **slot,
+        }
+        for i, slot in enumerate(shuffled)
+    ]
+    out.sort(key=lambda a: (min(a["weekdays"]), a["time"]))
+    return out
+
+
+TRAINING_SCHEDULE = {
+    "pt": _generate_training_schedule("pt"),
+    "en": _generate_training_schedule("en"),
+}
+
+# As três jornadas de agendamento, mesma "casca" visual (calendário + cartões
+# + modal), comportamento por "flow":
+#   "calendar+pix"     -> Experimentar: calendário real, pagamento Pix.
+#   "calendar+request" -> Treinar: calendário (horários acima), sem cobrança
+#                         nesta etapa — a vaga é travada e confirmada direto.
+#   "quote"             -> Particular: sem calendário, é sempre orçamento.
+MODALITIES = {
+    "pt": [
+        {"key": "experimentar", "flow": "calendar+pix", "accent": "ocean", "activities": DEMO_EXPERIENCES["pt"]},
+        {"key": "treinar", "flow": "calendar+request", "accent": "forest", "activities": TRAINING_SCHEDULE["pt"]},
+        {"key": "particular", "flow": "quote", "accent": "sand", "activities": []},
+    ],
+    "en": [
+        {"key": "experimentar", "flow": "calendar+pix", "accent": "ocean", "activities": DEMO_EXPERIENCES["en"]},
+        {"key": "treinar", "flow": "calendar+request", "accent": "forest", "activities": TRAINING_SCHEDULE["en"]},
+        {"key": "particular", "flow": "quote", "accent": "sand", "activities": []},
     ],
 }
 
@@ -82,6 +159,32 @@ BOOKING = {
         "req_live": "Solicitação enviada. A equipe responde em breve pelo WhatsApp informado.",
         "send_request": "Enviar solicitação",
         "send_quote": "Pedir orçamento",
+        "reserve": "Reservar",
+        "seats_n": "{n} vaga(s)",
+        "price_on_request": "Sob consulta",
+        "with_instructor": "com {name}",
+        "modal_close": "Fechar",
+        "no_dates": "Sem turmas nos próximos dias.",
+        "already_train_q": "Você já treina no clube?",
+        "already_train_yes": "Sim, já treino",
+        "already_train_no": "Não, seria minha primeira vez",
+        "level_label": "Nível",
+        "level_options": [["nunca", "Nunca remei"], ["algumas", "Algumas vezes"], ["pratico", "Já pratico"]],
+        "notes_label": "Observações (opcional)",
+        "request_title": "Solicitar vaga",
+        "train_done_note": "Vaga garantida nesta turma. A equipe confirma os detalhes pelo WhatsApp informado.",
+        "quote_title": "Peça um orçamento",
+        "quote_lead": "Grupos, aniversários, eventos corporativos ou uma remada só para vocês — conte os detalhes e te mandamos uma proposta.",
+        "type_label": "Tipo de experiência",
+        "type_options": [["grupo", "Grupo"], ["aniversario", "Aniversário"], ["corporativo", "Evento corporativo"], ["privada", "Experiência privada"]],
+        "date_label": "Data desejada",
+        "people_label": "Número de pessoas",
+        "details_label": "Conte mais",
+        "details_hint": "Ocasião, horário preferido, se o grupo já remou.",
+        "quote_done_title": "Pedido de orçamento enviado",
+        "quote_done_note": "A equipe responde com uma proposta pelo WhatsApp informado.",
+        "sending": "Enviando…",
+        "loading": "Carregando…",
     },
     "en": {
         "title": "Book your paddle",
@@ -143,6 +246,32 @@ BOOKING = {
         "req_live": "Request sent. The team will reply soon on the WhatsApp number you gave.",
         "send_request": "Send request",
         "send_quote": "Request a quote",
+        "reserve": "Book",
+        "seats_n": "{n} seat(s)",
+        "price_on_request": "Price on request",
+        "with_instructor": "with {name}",
+        "modal_close": "Close",
+        "no_dates": "No classes in the next few days.",
+        "already_train_q": "Do you already train with the club?",
+        "already_train_yes": "Yes, I already train here",
+        "already_train_no": "No, this would be my first time",
+        "level_label": "Level",
+        "level_options": [["nunca", "Never paddled"], ["algumas", "A few times"], ["pratico", "I paddle regularly"]],
+        "notes_label": "Notes (optional)",
+        "request_title": "Request a spot",
+        "train_done_note": "Your spot in this class is guaranteed. The team confirms details on the WhatsApp number you gave.",
+        "quote_title": "Request a quote",
+        "quote_lead": "Groups, birthdays, corporate events or a paddle just for you — tell us the details and we'll send a proposal.",
+        "type_label": "Type of experience",
+        "type_options": [["grupo", "Group"], ["aniversario", "Birthday"], ["corporativo", "Corporate event"], ["privada", "Private experience"]],
+        "date_label": "Desired date",
+        "people_label": "Number of people",
+        "details_label": "Tell us more",
+        "details_hint": "Occasion, preferred time, whether the group has paddled before.",
+        "quote_done_title": "Quote request sent",
+        "quote_done_note": "The team will reply with a proposal on the WhatsApp number you gave.",
+        "sending": "Sending…",
+        "loading": "Loading…",
     },
 }
 

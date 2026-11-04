@@ -40,19 +40,27 @@ modo de demonstração com dados fictícios; existe só para apresentar o fluxo
 antes do backend estar pronto. Hoje o repositório está em `"demo"` — trocar
 para `"off"` ou `"live"` antes de divulgar o link publicamente.
 
-- `src/assets/js/booking.js` — a jornada "Experimentar" (cartão de reserva
-  de 6 etapas: experiência → dia/horário → participantes → termo →
-  pagamento Pix → confirmação). Renderiza em `[data-booking] .bk-root`.
+- `src/assets/js/booking.js` — **sistema único** de agendamento, usado
+  pelas três jornadas (Experimentar, Treinar, Particular): calendário
+  horizontal (próximos 14 dias) + cartões de atividade (nome, horário,
+  duração, instrutor, vagas, preço, botão "Reservar") + modal de reserva.
+  Uma instância por painel (`[data-booking][data-modality="..."]`), mesma
+  casca visual, comportamento por `flow` (ver `booking_content.py`,
+  `MODALITIES`):
+  - `calendar+pix` (Experimentar) — participantes → termo → Pix → confirmação.
+  - `calendar+request` (Treinar) — participantes/contato → confirmação
+    direta, sem cobrança (a vaga é travada na hora).
+  - `quote` (Particular) — sem calendário, um cartão fixo que abre o
+    formulário de orçamento (sem vaga, sem pagamento).
+  Modal com foco preso (Tab não escapa), `Esc` fecha, clique fora fecha.
 - `src/assets/js/wa-widget.js` — pop-up do WhatsApp (ver seção própria
   abaixo).
-- Treinar e Particular continuam formulários simples (`form[data-journey]`
-  em `site.js`), mas agora com campos de nome/WhatsApp quando o modo não é
-  `"off"`, e leem `GVV_CONFIG.bookingMode` para decidir se enviam de
-  verdade, simulam (demo) ou abrem o WhatsApp.
 - Textos de PT/EN do fluxo de reserva e do pop-up ficam em
-  `booking_content.py` (`BOOKING`, `WA_WIDGET`), importado por `build.py` —
-  mesmo padrão de `CONTENT['pt']`/`CONTENT['en']`, nunca troca de texto via
-  JS solto.
+  `booking_content.py` (`BOOKING`, `WA_WIDGET`, `MODALITIES`), importado
+  por `build.py` — mesmo padrão de `CONTENT['pt']`/`CONTENT['en']`, nunca
+  troca de texto via JS solto. O cronograma de Treinar em `MODALITIES` é
+  ilustrativo (gerado com seed fixa, estável entre builds) até o clube
+  confirmar os horários reais — ver `docs/SETUP.md` § 5.
 
 ### Pop-up do WhatsApp
 - Botão redondo fixo no canto inferior direito (`src/assets/js/wa-widget.js`
@@ -72,7 +80,9 @@ para `"off"` ou `"live"` antes de divulgar o link publicamente.
 
 Sistema de disponibilidade, reservas e pagamento Pix (Mercado Pago) sendo
 construído em `/api` (Vercel Serverless Functions) + Supabase Postgres, ao
-lado do site estático — sem alterar a stack do front. Ver:
+lado do site estático — sem alterar a stack do front.
+`/api/reservations/*` cobre Experimentar (com Pix); `/api/requests` cobre
+Treinar e Particular (sem cobrança — ver `docs/SETUP.md` § 5). Ver:
 
 - `docs/SETUP.md` — como configurar Supabase, Mercado Pago e Vercel.
 - `db/schema.sql` — schema do banco.

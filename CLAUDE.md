@@ -53,22 +53,45 @@ cobrar nada de verdade. Antes de divulgar o link publicamente, trocar para
 `"off"` (volta ao WhatsApp) ou `"live"` (backend real em `SITE["api_base"]`
 — ver seção de backend abaixo). Hoje o repositório está em `"demo"`.
 
-- `src/assets/js/booking.js` — jornada "Experimentar", cartão de 6 etapas.
+- `src/assets/js/booking.js` — sistema único (calendário + cartões + modal)
+  reaproveitado pelas três jornadas. `initBooking()` roda uma instância por
+  `[data-booking][data-modality]` (`build.py` renderiza um desses em cada
+  painel quando `booking_mode != "off"`). `initModality()` lê `modality.flow`
+  (`calendar+pix` | `calendar+request` | `quote`, de `MODALITIES` em
+  `booking_content.py`) pra decidir que passos o modal mostra — participantes
+  → termo → Pix → confirmação (Experimentar); contato → confirmação direta
+  sem cobrança (Treinar, trava vaga real na hora); orçamento → confirmação
+  (Particular, sem calendário). `demoApi()`/`liveApi()` são os únicos pontos
+  que sabem a diferença entre dado ilustrativo e o contrato real de
+  `/api/availability`, `/api/reservations/create` e `/api/requests` — o
+  resto do componente (render, validação, modal) é o mesmo nos dois modos.
   Lê `GVV_CONFIG` (`bookingMode`, `apiBase`, `seats`) e `I18N.bk`/
-  `I18N.demoExperiences` do `<script id="i18n">`.
+  `I18N.modalities` do `<script id="i18n">` (`modalities` já vem com a URL
+  da foto do instrutor resolvida por `resolve_modalities()` em `build.py`).
 - `src/assets/js/wa-widget.js` — pop-up do WhatsApp, abre automaticamente
-  uma vez por visita, **nunca enquanto `[data-booking]` está visível na
-  tela** (checagem síncrona de geometria em `bookingOnScreen()`, não só
-  `IntersectionObserver` — evita corrida entre o gatilho "saiu do hero" e o
-  observer do cartão ainda não ter processado a posição nova).
-- `build.py`: `contact_fields()` adiciona nome/WhatsApp aos formulários de
-  Treinar/Particular quando `booking_mode != "off"`; `form_shell()` troca o
-  texto de privacidade e remove o ícone do WhatsApp do botão nesse caso
-  também (o envio não é mais necessariamente uma conversa de WhatsApp).
-- Todo texto novo (passos, erros, Pix, pop-up) vem de `booking_content.py`
-  (`BOOKING`, `WA_WIDGET`, `DEMO_EXPERIENCES`), importado por `build.py` e
-  mesclado em `CONTENT[locale]["i18n"]` — mesmo padrão de sempre, nunca
-  texto solto em JS.
+  uma vez por visita, **nunca enquanto algum `[data-booking]` está visível
+  na tela** (checagem síncrona de geometria em `bookingOnScreen()`, feita
+  contra TODOS os `[data-booking]` da página — há um por jornada agora —
+  não só `IntersectionObserver` — evita corrida entre o gatilho "saiu do
+  hero" e o observer do cartão ainda não ter processado a posição nova).
+- `build.py`: `contact_fields()`/formulário simples só existem mais no modo
+  `"off"` (WhatsApp direto); em `"demo"`/`"live"` as três jornadas renderizam
+  o mesmo `<div class="bk" data-booking data-modality="...">`. `form_shell()`
+  troca o texto de privacidade e remove o ícone do WhatsApp do botão quando
+  o envio não é mais necessariamente uma conversa de WhatsApp.
+- Backend "live" para Treinar/Particular: `POST /api/requests` (não usa Pix)
+  → `lib/reservations.ts`, `createDirectRequest()` — trava vaga real numa
+  sessão pra Treinar (mesma lógica de `SELECT ... FOR UPDATE` de
+  Experimentar, só que confirma direto); grava pedido de orçamento sem
+  sessão pra Particular. Exige linhas em `experiences`/`sessions` cujo
+  `slug` bate com os `id` de `MODALITIES` — ver `docs/SETUP.md` § 5.
+- Todo texto novo (passos, erros, Pix, cartões, pop-up) vem de
+  `booking_content.py` (`BOOKING`, `WA_WIDGET`, `MODALITIES`), importado por
+  `build.py` e mesclado em `CONTENT[locale]["i18n"]` — mesmo padrão de
+  sempre, nunca texto solto em JS. `MODALITIES["treinar"]` vem de
+  `_generate_training_schedule()`, com seed fixa (`random.Random(7)`) —
+  estável entre builds, troque pelos horários reais quando o clube
+  confirmar.
 
 ## Backend de reservas (live)
 

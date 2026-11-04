@@ -373,45 +373,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--sand); color: var(--charcoal); font-size: var(--t-xs); font-weight: 650;
   text-align: center; padding: 9px 16px; letter-spacing: .01em;
 }
-.bk { background: var(--ivory); border-radius: var(--radius); overflow: hidden; box-shadow: 0 18px 50px rgba(8,24,17,.3); }
-.bk-root { display: flex; flex-direction: column; min-height: 460px; }
+.bk { background: var(--ivory); color: var(--charcoal); border-radius: var(--radius); overflow: hidden; box-shadow: 0 18px 50px rgba(8,24,17,.3); position: relative; }
+.bk-root { display: flex; flex-direction: column; min-height: 220px; padding: 18px 20px; gap: 16px; }
 
-/* Cabeçalho de cada etapa — escuro, com barra de progresso */
-.bk-steps { background: var(--forest); color: var(--ivory); padding: 18px 20px 16px; flex: none; }
-.bk-count { font-size: var(--t-xs); font-weight: 650; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
 .bk-title {
-  margin-top: 4px; font-family: var(--font-display); font-weight: 600; font-style: normal;
-  font-size: 1.375rem; line-height: 1.15;
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  font-size: 1.375rem; line-height: 1.15; color: var(--charcoal);
 }
-.bk-bar { display: flex; gap: 4px; margin-top: 14px; list-style: none; padding: 0; }
-.bk-bar li { flex: 1; height: 3px; background: rgba(244,240,230,.25); border-radius: 2px; }
-.bk-bar li.done, .bk-bar li.on { background: var(--sand); }
-
-/* Corpo — claro */
-.bk-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; background: var(--ivory); color: var(--charcoal); }
 .bk-label { font-size: var(--t-xs); font-weight: 650; color: var(--stone); text-transform: uppercase; letter-spacing: .03em; }
 .bk-note { font-size: var(--t-xs); color: var(--stone); }
 .bk-err { font-size: var(--t-xs); color: var(--bad, #B4442C); font-weight: 650; }
 
-/* Linhas de opção (experiência) */
-.bk-opts { display: grid; gap: 10px; }
-.bk-opt { position: relative; display: block; cursor: pointer; }
-.bk-opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.bk-opt-main, .bk-price { pointer-events: none; }
-.bk-opt {
-  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 14px;
-  padding: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  transition: border-color .15s, box-shadow .15s;
-}
-.bk-opt:has(input:checked) { border-color: var(--forest); box-shadow: inset 0 0 0 1px var(--forest); }
-.bk-opt:has(input:focus-visible) { outline: 2px solid var(--sand); outline-offset: 2px; }
-.bk-opt-main strong { display: block; font-size: var(--t-base); }
-.bk-opt-main small { display: block; color: var(--stone); font-size: var(--t-xs); margin-top: 2px; }
-.bk-opt-main .bk-meta { margin-top: 4px; }
-.bk-price { font-weight: 700; color: var(--forest); text-align: right; white-space: nowrap; }
-.bk-price small { display: block; font-weight: 500; color: var(--stone); font-size: var(--t-xs); }
-
-/* Dias (chips) e saídas */
+/* Calendário horizontal — topo, sempre visível */
+.bk-cal { flex: none; }
 .bk-days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
 .bk-day {
   flex: none; width: 54px; padding: 8px 0; text-align: center; line-height: 1.25;
@@ -422,18 +396,49 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-day[aria-pressed="true"] { background: var(--forest); border-color: var(--forest); color: var(--ivory); }
 .bk-day[aria-pressed="true"] small { color: rgba(244,240,230,.75); }
 
-.bk-slot {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
-  padding: 12px 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  text-align: left; cursor: pointer;
+/* Cartões de atividade — nome, horário, instrutor, vagas, preço, reservar */
+.bk-cards { display: grid; gap: 12px; }
+.bk-cards--quote { display: block; }
+.bk-card {
+  --card-accent: var(--forest);
+  background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--card-accent);
+  border-radius: var(--radius); padding: 16px; display: grid; gap: 8px;
 }
-.bk-slot[aria-pressed="true"] { border-color: var(--forest); box-shadow: inset 0 0 0 1px var(--forest); }
-.bk-slot:disabled { opacity: .45; cursor: not-allowed; }
-.bk-slot b { font-family: var(--font-display); font-weight: 580; font-size: 1.0625rem; }
-.bk-slot small { display: block; color: var(--stone); font-size: var(--t-xs); margin-top: 2px; }
-.bk-seats { display: flex; gap: 3px; flex: none; }
-.bk-seats i { display: block; width: 11px; height: 11px; border-radius: 2px; background: var(--ivory-2); border: 1px solid var(--line); }
-.bk-seats i.t { background: var(--charcoal); border-color: var(--charcoal); }
+.bk-card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.bk-card-head h4 { font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem; }
+.bk-card-time { font-size: var(--t-xs); color: var(--stone); white-space: nowrap; }
+.bk-card-desc { font-size: var(--t-sm); color: var(--stone); }
+.bk-card-instr { display: flex; align-items: center; gap: 8px; font-size: var(--t-xs); color: var(--stone); }
+.bk-card-instr img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex: none; }
+.bk-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+.bk-card-seats { font-size: var(--t-xs); color: var(--stone); }
+.bk-card-price { font-weight: 700; color: var(--card-accent); font-size: var(--t-sm); white-space: nowrap; }
+.bk-card-price small { display: block; font-weight: 500; color: var(--stone); font-size: var(--t-xs); }
+.bk-card-cta { width: 100%; }
+.bk-card-cta:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Modal de reserva — participantes/termo/pagamento ou solicitação/orçamento */
+.bk-overlay {
+  position: fixed; inset: 0; background: rgba(12,42,30,.55); z-index: 60;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.bk-modal {
+  width: 100%; max-width: 440px; max-height: 86vh; background: var(--ivory); color: var(--charcoal);
+  border-radius: var(--radius); box-shadow: 0 24px 60px rgba(8,24,17,.4);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.bk-modal-head {
+  flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 18px 20px; background: var(--forest); color: var(--ivory);
+}
+.bk-modal-head .bk-title { color: var(--ivory); }
+.bk-modal-close {
+  flex: none; width: 32px; height: 32px; display: grid; place-items: center;
+  background: transparent; border: 0; color: var(--ivory); cursor: pointer; border-radius: 50%;
+}
+.bk-modal-close:hover { background: rgba(244,240,230,.15); }
+.bk-modal-close svg { width: 18px; height: 18px; }
+body.bk-modal-open { overflow: hidden; }
 
 /* Participantes */
 .bk-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -445,14 +450,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-stepper button:disabled { opacity: .4; cursor: not-allowed; }
 .bk-stepper output { font-family: var(--font-display); font-weight: 600; font-size: 1.375rem; min-width: 22px; text-align: center; }
 
+.bk-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; background: var(--ivory); color: var(--charcoal); overflow-y: auto; }
+
 .bk-field { display: grid; gap: 6px; }
-.bk-field label { font-size: var(--t-xs); font-weight: 650; }
-.bk-field input {
+.bk-field label, .bk-field legend { font-size: var(--t-xs); font-weight: 650; padding: 0; }
+.bk-field input, .bk-field select, .bk-field textarea {
   width: 100%; min-height: 46px; padding: 10px 12px;
   border: 1px solid rgba(32,43,40,.28); border-radius: var(--radius); background: #fff; font: inherit;
 }
-.bk-field input:focus { outline: none; border-color: var(--ocean); box-shadow: 0 0 0 1px var(--ocean); }
-.bk-field input[aria-invalid="true"] { border-color: var(--bad, #B4442C); }
+.bk-field textarea { min-height: 72px; resize: vertical; }
+.bk-field input:focus, .bk-field select:focus, .bk-field textarea:focus { outline: none; border-color: var(--ocean); box-shadow: 0 0 0 1px var(--ocean); }
+.bk-field input[aria-invalid="true"], .bk-field select[aria-invalid="true"] { border-color: var(--bad, #B4442C); }
+.bk-radio { display: flex; align-items: center; gap: 8px; font-size: var(--t-sm); font-weight: 400; cursor: pointer; }
+.bk-radio input { width: 18px; height: 18px; flex: none; accent-color: var(--forest); }
 
 /* Termo */
 .bk-terms {
@@ -477,11 +487,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ocean); animation: bk-pulse 1.4s ease-in-out infinite; }
 @keyframes bk-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
 
-.bk-foot { display: flex; gap: 10px; margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--line); background: var(--ivory); }
+.bk-foot { flex: none; display: flex; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--line); background: var(--ivory); }
 .bk-foot .btn { flex: 1; }
 .bk-foot--stack { flex-direction: column; border: 0; padding: 0; margin-top: 4px; }
 .bk-foot--stack .btn { width: 100%; }
-.bk-body > .bk-foot { margin-inline: -20px; margin-bottom: -18px; }
 
 /* Confirmação */
 .bk-done { align-items: center; text-align: center; }

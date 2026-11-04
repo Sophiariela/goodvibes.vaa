@@ -64,12 +64,75 @@ cp .env.example .env.local   # preencha com os valores de teste
 vercel dev                    # serve o site estático + as funções /api juntos
 ```
 
+## 5. Dados que faltam cadastrar no banco (antes de trocar para "live")
+
+O site (`src/assets/js/booking.js`) já fala o protocolo real da API — ele só
+precisa que as linhas abaixo existam em `experiences`/`sessions` pra cada
+jornada funcionar. Sem isso, trocar `SITE["booking_mode"]` pra `"live"`
+deixa as três abas de agendamento sem nenhum cartão (não quebra, só fica
+vazio — ver `T.no_dates`).
+
+**Importante**: os `slug` abaixo precisam bater exatamente com os `id` que
+já existem em `booking_content.py` (`DEMO_EXPERIENCES`/`TRAINING_SCHEDULE`)
+— é assim que o front sabe qual experiência buscar em
+`/api/availability?experience=<slug>`.
+
+### Experimentar (`pricing_mode = 'fixed'`, Pix automático)
+
+| slug | nome | preço sugerido (ilustrativo) |
+|---|---|---|
+| `primeira` | Primeira experiência | R$ 100 |
+| `nascer` | Nascer do sol | R$ 120 |
+| `por` | Pôr do sol | R$ 120 |
+| `turismo` | Turismo náutico | R$ 150 |
+
+Pra cada uma, além da linha em `experiences`, criar as linhas em `sessions`
+com `starts_at` real (data/hora de cada saída) e `capacity` — é isso que
+preenche o calendário.
+
+### Treinar (`pricing_mode = 'quote'`, sem Pix — `/api/requests` confirma direto)
+
+Cronograma atualmente ilustrativo (gerado com seed fixa em
+`booking_content.py`, `_generate_training_schedule` — troque pelos horários
+reais do clube quando definidos; os `slug` abaixo são só os que existem
+*hoje*, mudam se a função for editada):
+
+| slug | nome | dia da semana | hora | capacidade | instrutor |
+|---|---|---|---|---|---|
+| `treino-0` | Treino regular | domingo | 07:00 | 8 | Nala |
+| `treino-1` | Técnica de remada | terça, quinta | 18:00 | 10 | Nala |
+| `treino-2` | Condicionamento físico | segunda, quarta, sexta | 06:00 | 10 | Jesse |
+| `treino-3` | Treino de resistência | sábado | 08:00 | 6 | Jesse |
+
+Como são turmas recorrentes, o ideal é um job/seed que recria as linhas de
+`sessions` toda semana (fora do escopo deste build — hoje é cadastro
+manual). Cada reserva de Treinar trava uma vaga real na sessão
+(`createDirectRequest` em `lib/reservations.ts`) e confirma na hora, sem
+cobrança.
+
+### Particular (`pricing_mode = 'quote'`, sem sessão fixa)
+
+| slug | nome |
+|---|---|
+| `particular` | Experiência particular / grupos / eventos |
+
+Só uma linha em `experiences` (sem `sessions` — é sempre pedido de
+orçamento, `POST /api/requests` com `journey: 'particular'`).
+
+### Novo endpoint: `POST /api/requests`
+
+Cobre Treinar e Particular (ver `api/requests.ts`) — nunca gera cobrança.
+Treinar trava a vaga na sessão e já confirma (`status: 'confirmed'`);
+Particular grava um pedido de orçamento (`status: 'quote_requested'`) pra
+equipe responder por fora com o valor.
+
 ## O que eu preciso que você me confirme, além das credenciais
 
 - Preço por participante de cada tipo de experiência em "Experimentar"
   (primeira experiência, nascer do sol, pôr do sol, turismo náutico).
 - Horários fixos oferecidos (dias da semana + hora) para eu cadastrar as
-  primeiras sessões.
+  primeiras sessões de Experimentar e Treinar (o cronograma de Treinar
+  hoje é ilustrativo — ver seção 5 acima).
 - Preços dos planos de "Treinar" e como o Gympass/TotalPass deve aparecer
   no fluxo (eles não pagam Pix).
 - Confirmação do modelo de orçamento→pagamento para "Particular" (descrito

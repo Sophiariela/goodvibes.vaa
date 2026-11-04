@@ -19,7 +19,7 @@ export function initWaWidget({ config }) {
   const fab = root.querySelector('[data-wa-toggle]');
   const form = root.querySelector('[data-wa-form]');
   const text = root.querySelector('textarea');
-  const booking = document.querySelector('[data-booking]');
+  const bookings = [...document.querySelectorAll('[data-booking]')];
 
   const open = (byUser) => {
     card.hidden = false;
@@ -63,12 +63,11 @@ export function initWaWidget({ config }) {
   // síncrona de geometria (não só IntersectionObserver) para não cair numa
   // corrida onde o gatilho de "saiu do hero" dispara antes do observer do
   // cartão processar a nova posição.
-  const bookingOnScreen = () => {
-    if (!booking) return false;
+  const bookingOnScreen = () => bookings.some((booking) => {
     const r = booking.getBoundingClientRect();
     return r.bottom > 0 && r.top < (window.innerHeight || document.documentElement.clientHeight);
-  };
-  const busy = () => bookingOnScreen() || (booking && booking.contains(document.activeElement));
+  });
+  const busy = () => bookingOnScreen() || bookings.some((booking) => booking.contains(document.activeElement));
   let auto = false;
   let retries = 0;
   const autoOpen = () => {
@@ -84,5 +83,7 @@ export function initWaWidget({ config }) {
     io.observe(hero);
   }
   // Se a pessoa começa a reservar, o cartão aberto automaticamente se recolhe
-  booking?.addEventListener('focusin', () => { if (!card.hidden && !root.contains(document.activeElement)) close(false); });
+  bookings.forEach((booking) => booking.addEventListener('focusin', () => {
+    if (!card.hidden && !root.contains(document.activeElement)) close(false);
+  }));
 }
