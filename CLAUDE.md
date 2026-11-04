@@ -99,3 +99,41 @@ Ver README.md § "Backend de reservas" e `docs/SETUP.md`. Em desenvolvimento,
 ainda sem credenciais reais configuradas — nenhum endpoint `/api` deve ser
 anunciado como funcional antes de testado contra Supabase/Mercado Pago de
 verdade.
+
+**Imports em `api/**/*.ts` e `lib/*.ts` precisam da extensão `.js` nos
+caminhos relativos** (`from '../lib/db.js'`, nunca `'../lib/db'`) — o
+runtime Node/ESM da Vercel (`"type": "module"` no `package.json`) exige
+isso; TypeScript e Vitest toleram sem a extensão, então esse tipo de erro
+só aparece em produção (`FUNCTION_INVOCATION_FAILED` nos logs) — já
+aconteceu uma vez nesse projeto, ver histórico do commit que corrigiu.
+
+## Loja (`/produtos`) e pop-up de newsletter
+
+Ver README.md § "Loja" e § "Pop-up de newsletter" para a visão geral. Pontos
+que não são óbvios lendo só o código:
+
+- `products.py`, `newsletter_content.py` seguem o mesmo padrão de
+  `booking_content.py`/`PHOTOS` — conteúdo editável em Python, nunca texto
+  solto em JS ou HTML hardcoded.
+- `page_header()`/`page_footer()`/`page_scripts()`/`nav_items_html()`/
+  `lang_switch_html()` em `build.py` são compartilhados entre `render()`
+  (home), `render_produtos()` e `render_privacy()` — qualquer mudança de
+  header/rodapé/nav deve passar por essas funções, não duplicar markup
+  numa página só.
+- **Dois overlays com atributo `hidden` sempre presentes no DOM**
+  (`.pmodal-overlay`, `.nl-overlay`) **precisam da regra
+  `[hidden] { display: none }` explícita no CSS** — `display: flex` na
+  classe base tem a mesma especificidade do `[hidden]` da UA stylesheet e
+  vence por ordem de cascata, deixando o overlay cobrindo (e bloqueando
+  cliques em) a página inteira mesmo "escondido". Já causou um bug real
+  nesta etapa (pop-up de newsletter bloqueando a home inteira assim que o
+  JS rodava) — testado e corrigido; não remover essas duas regras.
+- `resolve_campaign()` em `build.py` é a única porta de saída de
+  `CAMPAIGN` pro JS — bloqueia `type: "raffle"` sem `legal_cleared: True`
+  mesmo que alguém esqueça de checar isso na hora de editar
+  `newsletter_content.py`. Não remover essa checagem nem replicar a lógica
+  de campanha em outro lugar.
+- `api/subscribers.ts`: proteção contra spam é honeypot + tempo mínimo de
+  preenchimento, de propósito sem IP (minimização de dados, ver
+  `/privacidade/`). Duplicata de e-mail nunca é erro — é
+  `status: 'already_subscribed'`, 200.

@@ -17,6 +17,8 @@ from html import escape
 from pathlib import Path
 
 from booking_content import MODALITIES, BOOKING, WA_WIDGET
+from products import PRODUCTS
+from newsletter_content import NEWSLETTER, CAMPAIGN
 
 # ---------------------------------------------------------------------------
 # Configuração do negócio. Tudo que é dado comercial fica aqui.
@@ -149,6 +151,7 @@ CONTENT = {
         "skip": "Pular para o conteúdo",
         "brand_sub": "Clube de canoa havaiana",
         "nav": [("#experimentar", "Passeios"), ("#treinar", "Treinar"), ("#particular", "Particular"), ("#clube", "O clube"), ("#local", "Local"), ("#faq", "Dúvidas")],
+        "nav_produtos": "Produtos",
         "lang_label": "Idioma",
         "cta_team": "Fale com a equipe",
         "menu_open": "Abrir menu",
@@ -268,10 +271,42 @@ CONTENT = {
         "shop_title": "Good Vibes fora da água.",
         "shop_lead": "Peças da linha Moda Good Vibes para levar a identidade do clube para o dia a dia.",
         "shop_slot": "Foto oficial do produto · 1200×1500 · produto-{n}.jpg",
-        "shop_item": "Produto Good Vibes",
-        "shop_item_meta": "Nome e preço a confirmar",
         "shop_cta": "Pedir peças pelo WhatsApp",
         "shop_wa": "Olá, Good Vibes Va'a! Gostaria de saber sobre os produtos da Moda Good Vibes.",
+
+        "shop_teaser_title": "Leve a Good Vibes com você.",
+        "shop_teaser_text": "Conheça nossa coleção e leve um pouco da energia do mar para o seu dia a dia.",
+        "shop_teaser_cta": "EXPLORAR PRODUTOS",
+
+        "produtos_path": "/produtos/",
+        "produtos_title": "Produtos — Loja Good Vibes Va'a",
+        "produtos_description": "Peças oficiais da linha Moda Good Vibes Va'a: camisas, boné, viseira e sacola com a identidade do clube.",
+        "produtos_price_request": "Sob consulta",
+        "produtos_stock": {"available": "Disponível", "low": "Últimas unidades", "out": "Esgotado", "unknown": "Disponibilidade a confirmar"},
+        "produtos_size_label": "Tamanho",
+        "produtos_color_label": "Cor",
+        "produtos_buy_cta": "Comprar pelo WhatsApp",
+        "produtos_close": "Fechar detalhes",
+        "produtos_wa_intro": "Olá, Good Vibes Va'a! Tenho interesse nesta peça: {product}",
+        "produtos_empty": "Em breve, novas peças por aqui.",
+
+        "privacy_path": "/privacidade/",
+        "privacy_title": "Política de Privacidade — Good Vibes Va'a",
+        "privacy_description": "Como o Good Vibes Va'a coleta, usa e protege os dados pessoais de quem visita o site e se cadastra na lista de novidades.",
+        "privacy_h1": "Política de Privacidade.",
+        "privacy_lead": "Como tratamos os dados de quem visita o site, faz uma solicitação ou se cadastra na nossa lista — conforme a Lei Geral de Proteção de Dados (LGPD).",
+        "privacy_updated": "Última atualização: novembro de 2026.",
+        "privacy_sections": [
+            ("Quais dados coletamos", "Nome, WhatsApp e, quando aplicável, e-mail — só quando você mesmo os informa, ao solicitar uma reserva, pedir um orçamento ou se cadastrar na lista de novidades. Não coletamos dados de navegação, localização ou de outros sites."),
+            ("Para que usamos", "Para responder à sua solicitação (reserva, orçamento, dúvida) e, só com seu consentimento separado e explícito, para enviar novidades e ofertas da Good Vibes Va'a por e-mail."),
+            ("Cadastro na lista de novidades", "Guardamos o e-mail informado, o idioma do site no momento do cadastro e o texto exato do consentimento aceito — isso serve como prova de que você autorizou o envio, conforme exige a LGPD. Cada e-mail é cadastrado uma única vez."),
+            ("Armazenamento de preferências no navegador", "Usamos armazenamento local do navegador (sessionStorage/localStorage) só para lembrar que você já fechou um pop-up ou já concluiu um cadastro, evitando mostrá-lo de novo. Isso fica só no seu aparelho — não é enviado a nós nem a terceiros."),
+            ("Com quem compartilhamos", "Seus dados não são vendidos nem compartilhados publicamente. Quando o pagamento online estiver ativo, o valor da reserva é processado pelo Mercado Pago, que recebe só o necessário para a cobrança. O armazenamento dos dados é feito em banco de dados (Supabase) com acesso restrito à equipe do clube."),
+            ("Seus direitos", "Você pode pedir a qualquer momento para acessar, corrigir ou excluir seus dados, e cancelar o recebimento de e-mails de novidades quando quiser. Basta falar com a equipe pelo WhatsApp."),
+            ("Contato", "Dúvidas sobre esta política ou sobre seus dados: fale com a equipe pelo WhatsApp " + SITE["whatsapp_display"] + "."),
+        ],
+        "privacy_note": "Este texto é um resumo em linguagem simples das práticas do clube. Recomendamos revisão jurídica antes de qualquer uso comercial mais amplo dos dados coletados.",
+        "privacy_back": "Voltar ao início",
 
         "place_title": "Praia da Preguiça, Salvador.",
         "place_lead": "As saídas acontecem na Praia da Preguiça, de frente para a Baía de Todos-os-Santos.",
@@ -333,6 +368,7 @@ CONTENT = {
         "skip": "Skip to content",
         "brand_sub": "Outrigger canoe club",
         "nav": [("#experimentar", "Paddles"), ("#treinar", "Train"), ("#particular", "Private"), ("#clube", "The club"), ("#local", "Location"), ("#faq", "FAQ")],
+        "nav_produtos": "Products",
         "lang_label": "Language",
         "cta_team": "Talk to the team",
         "menu_open": "Open menu",
@@ -452,10 +488,42 @@ CONTENT = {
         "shop_title": "Good Vibes beyond the water.",
         "shop_lead": "Pieces from the Moda Good Vibes line that carry the club's identity into everyday life.",
         "shop_slot": "Official product photo · 1200×1500 · produto-{n}.jpg",
-        "shop_item": "Good Vibes product",
-        "shop_item_meta": "Name and price to be confirmed",
         "shop_cta": "Order on WhatsApp",
         "shop_wa": "Hi Good Vibes Va'a! I'd like to know about the Moda Good Vibes products.",
+
+        "shop_teaser_title": "Take Good Vibes with you.",
+        "shop_teaser_text": "Discover our collection and carry a bit of the sea's energy into your day.",
+        "shop_teaser_cta": "EXPLORE PRODUCTS",
+
+        "produtos_path": "/en/produtos/",
+        "produtos_title": "Products — Good Vibes Va'a Shop",
+        "produtos_description": "Official pieces from the Moda Good Vibes Va'a line: shirts, cap, visor and drawstring bag with the club's identity.",
+        "produtos_price_request": "Price on request",
+        "produtos_stock": {"available": "Available", "low": "Only a few left", "out": "Sold out", "unknown": "Availability to be confirmed"},
+        "produtos_size_label": "Size",
+        "produtos_color_label": "Color",
+        "produtos_buy_cta": "Buy on WhatsApp",
+        "produtos_close": "Close details",
+        "produtos_wa_intro": "Hi Good Vibes Va'a! I'm interested in this item: {product}",
+        "produtos_empty": "New pieces coming soon.",
+
+        "privacy_path": "/en/privacidade/",
+        "privacy_title": "Privacy Policy — Good Vibes Va'a",
+        "privacy_description": "How Good Vibes Va'a collects, uses and protects the personal data of site visitors and newsletter subscribers.",
+        "privacy_h1": "Privacy Policy.",
+        "privacy_lead": "How we handle the data of people who visit the site, make a request, or subscribe to our list — under Brazil's General Data Protection Law (LGPD).",
+        "privacy_updated": "Last updated: November 2026.",
+        "privacy_sections": [
+            ("What data we collect", "Name, WhatsApp number and, when applicable, email — only when you provide them yourself, when requesting a booking, a quote, or subscribing to our newsletter. We do not collect browsing data, location, or data from other sites."),
+            ("What we use it for", "To reply to your request (booking, quote, question) and, only with your separate and explicit consent, to send news and offers from Good Vibes Va'a by email."),
+            ("Newsletter sign-up", "We store the email you provide, the site language at the time of sign-up, and the exact consent text you accepted — this serves as proof of your authorization, as required by the LGPD. Each email is registered only once."),
+            ("Browser preference storage", "We use browser-local storage (sessionStorage/localStorage) only to remember that you've already closed a pop-up or completed a sign-up, so we don't show it again. This stays on your device only — it isn't sent to us or to third parties."),
+            ("Who we share data with", "Your data is never sold or shared publicly. When online payment is active, the booking amount is processed by Mercado Pago, which only receives what's needed to charge it. Data storage is handled in a database (Supabase) with access restricted to the club's team."),
+            ("Your rights", "You can ask at any time to access, correct or delete your data, and unsubscribe from newsletter emails whenever you want. Just message the team on WhatsApp."),
+            ("Contact", "Questions about this policy or your data: message the team on WhatsApp at +55 71 99978-9710."),
+        ],
+        "privacy_note": "This text is a plain-language summary of the club's practices. We recommend legal review before any broader commercial use of the data collected.",
+        "privacy_back": "Back to home",
 
         "place_title": "Praia da Preguiça, Salvador.",
         "place_lead": "Outings start from Praia da Preguiça, facing the Bay of All Saints.",
@@ -559,6 +627,189 @@ def resolve_modalities(code, prefix):
             activities.append(a2)
         out.append({**m, "activities": activities})
     return out
+
+
+def resolve_products(code, prefix):
+    """Monta a lista de produtos pro HTML/JS da página /produtos: nome,
+    descrição e categoria no idioma certo, foto resolvida via PHOTOS,
+    preço formatado (ou "sob consulta" quando price_cents é None — nunca
+    inventamos um valor)."""
+    c = CONTENT[code]
+    out = []
+    for p in PRODUCTS:
+        photo = PHOTOS.get(p["photo"], {})
+        price_cents = p["price_cents"]
+        price_label = (
+            "R$ " + f"{price_cents / 100:.2f}".replace(".", ",")
+            if price_cents is not None
+            else c["produtos_price_request"]
+        )
+        out.append({
+            "id": p["id"],
+            "name": p["name"][code],
+            "description": p["description"][code],
+            "category": p["category"][code],
+            "priceCents": price_cents,
+            "priceLabel": price_label,
+            "sizes": p["sizes"],
+            "colors": [{"name": col[code], "hex": col["hex"]} for col in p["colors"]],
+            "stock": p["stock"],
+            "stockLabel": c["produtos_stock"][p["stock"]],
+            "image": f'{prefix}assets/img/{photo.get("file", "")}',
+            "imageAlt": photo.get(f"alt_{code}", p["name"][code]),
+        })
+    return out
+
+
+def resolve_campaign(code):
+    """Resolve a campanha ativa do pop-up de newsletter pro JS.
+
+    "raffle" (sorteio/concorrer a prêmio) é tratado como DESLIGADO aqui a
+    não ser que CAMPAIGN["legal_cleared"] esteja True de verdade — ver o
+    aviso completo em newsletter_content.py. NÃO remover esta checagem."""
+    if not CAMPAIGN["enabled"]:
+        return {"enabled": False}
+    if CAMPAIGN["type"] == "raffle" and not CAMPAIGN.get("legal_cleared"):
+        return {"enabled": False}
+    data = CAMPAIGN[code]
+    return {
+        "enabled": True,
+        "type": CAMPAIGN["type"],
+        "key": f'{CAMPAIGN["type"]}-{code}',
+        "title": data["title"],
+        "text": data["text"],
+        "couponCode": data.get("coupon_code") or None,
+    }
+
+
+def nav_items_html(code, page):
+    """`page` é o slug da página atual ("home", "produtos", "privacidade").
+    Nas âncoras (#experimentar etc.) fora da home, usa link absoluto de
+    volta pra home (`/#experimentar`) em vez do hash puro — na home elas
+    continuam hash puro pro JS de abas (ver initTabs em site.js) continuar
+    funcionando sem mudança."""
+    c = CONTENT[code]
+    root = "/" if code == "pt" else "/en/"
+    parts = []
+    for h, t in c["nav"]:
+        href = h if page == "home" else f"{root}{h}"
+        parts.append(f'<li><a href="{href}">{e(t)}</a></li>')
+    cur = ' aria-current="page"' if page == "produtos" else ""
+    parts.append(f'<li><a href="{root}produtos/"{cur}>{e(c["nav_produtos"])}</a></li>')
+    return "".join(parts)
+
+
+def lang_switch_html(code, page, extra_style=""):
+    c = CONTENT[code]
+    pt_cur = code == "pt"
+    other_root = "/en/" if code == "pt" else "/"
+    page_suffix = "" if page == "home" else f"{page}/"
+    style_attr = f' style="{extra_style}"' if extra_style else ""
+    return (
+        f'<nav class="lang-switch"{style_attr} aria-label="{e(c["lang_label"])}">'
+        + ('<span aria-current="true"><b>PT</b></span>' if pt_cur else f'<a href="{other_root}{page_suffix}" hreflang="pt-BR" lang="pt-BR">PT</a>')
+        + ('<span aria-current="true"><b>EN</b></span>' if not pt_cur else f'<a href="{other_root}{page_suffix}" hreflang="en" lang="en">EN</a>')
+        + "</nav>"
+    )
+
+
+def page_header(code, prefix, page):
+    c = CONTENT[code]
+    root = "/" if code == "pt" else "/en/"
+    nav_items = nav_items_html(code, page)
+    lang_switch = lang_switch_html(code, page)
+    brand_href = "./" if page == "home" else root
+    return f"""
+<a class="skip" href="#conteudo">{e(c['skip'])}</a>
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="{brand_href}" aria-label="{e(SITE['name'])}">
+      <img class="brand-logo" src="{prefix}assets/img/logo.png" alt="" width="40" height="40" onerror="this.remove()">
+      <span class="brand-word">Good Vibes Va'a<small>{e(c['brand_sub'])}</small></span>
+    </a>
+    <nav class="nav" aria-label="Principal"><ul>{nav_items}</ul></nav>
+    <div class="header-actions">
+      {lang_switch}
+      <a class="btn btn--primary header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="{e(c['menu_open'])}"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <ul>{nav_items}</ul>
+    <a class="btn btn--dark" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+  </div>
+</header>"""
+
+
+def page_footer(code, prefix, page):
+    c = CONTENT[code]
+    root = "/" if code == "pt" else "/en/"
+    fnav = nav_items_html(code, page)
+    lang_switch_footer = lang_switch_html(code, page, extra_style="color:var(--ivory)")
+    dock_href = "#experimentar" if page == "home" else f"{root}#experimentar"
+    return f"""
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><p class="brand-word">Good Vibes Va'a</p><p style="margin-top:12px;max-width:36ch">{e(c['footer_about'])}</p></div>
+      <div><h2>{e(c['footer_nav'])}</h2><ul>{fnav}</ul></div>
+      <div><h2>{e(c['footer_contact'])}</h2><ul>
+        <li><a href="{wa_link()}" target="_blank" rel="noopener">WhatsApp {e(SITE['whatsapp_display'])}</a></li>
+        <li>Praia da Preguiça, Salvador, BA</li></ul></div>
+      <div><h2>{e(c['footer_follow'])}</h2><ul>
+        <li><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {e(SITE['instagram_handle'])}</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© <span data-year></span> Good Vibes Va'a. {e(c['footer_rights'])}</span>{lang_switch_footer}</div>
+  </div>
+</footer>
+<div class="dock" inert>
+  <a class="btn btn--dark" href="{dock_href}">{e(c['dock_book'])}</a>
+</div>
+<div class="wa-widget" data-wa-widget data-default="{e(c['wa']['default'])}">
+  <div class="wa-card" hidden>
+    <div class="wa-head">
+      <div><strong>{e(c['wa']['title'])}</strong><span>{e(c['wa']['status'])}</span></div>
+      <button type="button" data-wa-close aria-label="{e(c['wa']['close'])}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <p class="wa-msg">{e(c['wa']['msg'])}</p>
+    <form data-wa-form>
+      <textarea rows="2" placeholder="{e(c['wa']['placeholder'])}" aria-label="{e(c['wa']['placeholder'])}"></textarea>
+      <button type="submit" class="btn btn--primary">{ICON_WA}{e(c['wa']['send'])}</button>
+    </form>
+  </div>
+  <button type="button" class="wa-fab" data-wa-toggle aria-expanded="false" aria-label="{e(c['wa']['open'])}">{ICON_WA}</button>
+</div>
+<div class="nl-widget" data-nl-widget></div>"""
+
+
+def page_scripts(code, prefix):
+    c = CONTENT[code]
+    config = {
+        "whatsapp": SITE["whatsapp"],
+        "bookingMode": SITE["booking_mode"],
+        "apiBase": SITE["api_base"],
+        "seats": SITE["booking_seats"],
+        "campaign": resolve_campaign(code),
+    }
+    i18n_data = dict(c["i18n"])
+    i18n_data["modalities"] = resolve_modalities(code, prefix)
+    nl_photo = PHOTOS["community_1"]
+    i18n_data["newsletter"] = dict(NEWSLETTER[code])
+    i18n_data["newsletter"]["image"] = f'{prefix}assets/img/{nl_photo["file"]}'
+    i18n_data["products"] = resolve_products(code, prefix)
+    i18n_data["produtos"] = {
+        "sizeLabel": c["produtos_size_label"],
+        "colorLabel": c["produtos_color_label"],
+        "buyCta": c["produtos_buy_cta"],
+        "close": c["produtos_close"],
+        "waIntro": c["produtos_wa_intro"],
+    }
+    i18n_data["privacyHref"] = c["privacy_path"]
+    i18n_data["produtosHref"] = c["produtos_path"]
+    return f"""
+<script type="application/json" id="i18n">{json.dumps(i18n_data, ensure_ascii=False)}</script>
+<script>window.GVV_CONFIG = {json.dumps(config)};</script>
+<script src="{prefix}assets/js/site.js" type="module"></script>"""
 
 
 def field(fid, label, control, hint=None, full=False, error=True):
@@ -667,34 +918,7 @@ def render(code):
 </head>"""
 
     # ---- header ----
-    nav_items = "".join(f'<li><a href="{h}">{e(t)}</a></li>' for h, t in c["nav"])
-    pt_cur = code == "pt"
-    lang_switch = (
-        f'<nav class="lang-switch" aria-label="{e(c["lang_label"])}">'
-        + (f'<span aria-current="true"><b>PT</b></span>' if pt_cur else f'<a href="../" hreflang="pt-BR" lang="pt-BR">PT</a>')
-        + (f'<span aria-current="true"><b>EN</b></span>' if not pt_cur else f'<a href="en/" hreflang="en" lang="en">EN</a>')
-        + "</nav>"
-    )
-    header = f"""
-<a class="skip" href="#conteudo">{e(c['skip'])}</a>
-<header class="header">
-  <div class="wrap">
-    <a class="brand" href="{'./' if pt_cur else './'}" aria-label="{e(SITE['name'])}">
-      <img class="brand-logo" src="{prefix}assets/img/logo.png" alt="" width="40" height="40" onerror="this.remove()">
-      <span class="brand-word">Good Vibes Va'a<small>{e(c['brand_sub'])}</small></span>
-    </a>
-    <nav class="nav" aria-label="Principal"><ul>{nav_items}</ul></nav>
-    <div class="header-actions">
-      {lang_switch}
-      <a class="btn btn--primary header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
-      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="{e(c['menu_open'])}"><span></span></button>
-    </div>
-  </div>
-  <div class="mobile-nav" id="mobile-nav">
-    <ul>{nav_items}</ul>
-    <a class="btn btn--dark" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
-  </div>
-</header>"""
+    header = page_header(code, prefix, "home")
 
     # ---- hero ----
     facts = "".join(f"<li>{e(f)}</li>" for f in c["hero_facts"])
@@ -914,20 +1138,15 @@ def render(code):
   </div>
 </section>"""
 
-    # ---- Produtos (faixa compacta) ----
-    prods = "".join(
-        f"""<figure class="product">{media(f'product_{n}', code, c['shop_item'], prefix, cls='product-media', w=800, h=800, light=True)}
-        <figcaption>{e(c['shop_item_meta'])}</figcaption></figure>"""
-        for n in range(1, 6)
-    )
+    # ---- Produtos (chamada para a loja em /produtos) ----
+    teaser_photo = PRODUCTS[1]["photo"] if len(PRODUCTS) > 1 else PRODUCTS[0]["photo"]
     shop = f"""
-<section class="section shop" id="produtos" aria-labelledby="shop-title">
-  <div class="wrap">
-    <div class="row-head">
-      <div><h2 class="h2" id="shop-title">{e(c['shop_title'])}</h2><p class="meta" style="margin-top:8px">{e(c['shop_lead'])}</p></div>
-      <a class="btn btn--outline-dark" href="{wa_link(c['shop_wa'])}" target="_blank" rel="noopener">{ICON_WA}{e(c['shop_cta'])}</a>
-    </div>
-    <div class="shelf">{prods}</div>
+<section class="section shop-teaser" aria-labelledby="shop-teaser-title">
+  {media(teaser_photo, code, c['shop_slot'], prefix, cls='shop-teaser-media', w=1600, h=1000)}
+  <div class="wrap shop-teaser-inner">
+    <h2 class="h2" id="shop-teaser-title">{e(c['shop_teaser_title'])}</h2>
+    <p class="lead">{e(c['shop_teaser_text'])}</p>
+    <a class="btn btn--primary" href="{c['produtos_path']}">{e(c['shop_teaser_cta'])}</a>
   </div>
 </section>"""
 
@@ -959,56 +1178,158 @@ def render(code):
 </section>"""
 
     # ---- footer ----
-    fnav = "".join(f'<li><a href="{h}">{e(t)}</a></li>' for h, t in c["nav"])
-    footer = f"""
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div><p class="brand-word">Good Vibes Va'a</p><p style="margin-top:12px;max-width:36ch">{e(c['footer_about'])}</p></div>
-      <div><h2>{e(c['footer_nav'])}</h2><ul>{fnav}</ul></div>
-      <div><h2>{e(c['footer_contact'])}</h2><ul>
-        <li><a href="{wa_link()}" target="_blank" rel="noopener">WhatsApp {e(SITE['whatsapp_display'])}</a></li>
-        <li>Praia da Preguiça, Salvador, BA</li></ul></div>
-      <div><h2>{e(c['footer_follow'])}</h2><ul>
-        <li><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {e(SITE['instagram_handle'])}</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© <span data-year></span> Good Vibes Va'a. {e(c['footer_rights'])}</span>{lang_switch.replace('class="lang-switch"', 'class="lang-switch" style="color:var(--ivory)"')}</div>
-  </div>
-</footer>
-<div class="dock" inert>
-  <a class="btn btn--dark" href="#experimentar">{e(c['dock_book'])}</a>
-</div>
-<div class="wa-widget" data-wa-widget data-default="{e(c['wa']['default'])}">
-  <div class="wa-card" hidden>
-    <div class="wa-head">
-      <div><strong>{e(c['wa']['title'])}</strong><span>{e(c['wa']['status'])}</span></div>
-      <button type="button" data-wa-close aria-label="{e(c['wa']['close'])}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
-    </div>
-    <p class="wa-msg">{e(c['wa']['msg'])}</p>
-    <form data-wa-form>
-      <textarea rows="2" placeholder="{e(c['wa']['placeholder'])}" aria-label="{e(c['wa']['placeholder'])}"></textarea>
-      <button type="submit" class="btn btn--primary">{ICON_WA}{e(c['wa']['send'])}</button>
-    </form>
-  </div>
-  <button type="button" class="wa-fab" data-wa-toggle aria-expanded="false" aria-label="{e(c['wa']['open'])}">{ICON_WA}</button>
-</div>"""
-
-    config = {
-        "whatsapp": SITE["whatsapp"],
-        "bookingMode": SITE["booking_mode"],
-        "apiBase": SITE["api_base"],
-        "seats": SITE["booking_seats"],
-    }
-    i18n_data = dict(c["i18n"])
-    i18n_data["modalities"] = resolve_modalities(code, prefix)
-    scripts = f"""
-<script type="application/json" id="i18n">{json.dumps(i18n_data, ensure_ascii=False)}</script>
-<script>window.GVV_CONFIG = {json.dumps(config)};</script>
-<script src="{prefix}assets/js/site.js" type="module"></script>"""
+    footer = page_footer(code, prefix, "home")
+    scripts = page_scripts(code, prefix)
 
     body = (
         "<body>" + header + '<main id="conteudo">' + hero + journeys + club + shop + place + "</main>" + footer + scripts + "</body></html>"
     )
+    return head + "\n" + body
+
+
+def render_produtos(code):
+    c = CONTENT[code]
+    other = "en" if code == "pt" else "pt"
+    prefix = "../" if code == "pt" else "../../"
+    base = SITE["base_url"].rstrip("/")
+    canonical = base + c["produtos_path"]
+    og_image = base + "/assets/img/og.jpg"
+
+    alternates = (
+        f'<link rel="alternate" hreflang="pt-BR" href="{base}/produtos/">'
+        f'<link rel="alternate" hreflang="en" href="{base}/en/produtos/">'
+        f'<link rel="alternate" hreflang="x-default" href="{base}/produtos/">'
+    )
+
+    head = f"""<!doctype html>
+<html lang="{c['lang']}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(c['produtos_title'])}</title>
+<meta name="description" content="{e(c['produtos_description'])}">
+<link rel="canonical" href="{canonical}">
+{alternates}
+<meta name="theme-color" content="#123D2B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{e(SITE['name'])}">
+<meta property="og:title" content="{e(c['produtos_title'])}">
+<meta property="og:description" content="{e(c['produtos_description'])}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="{c['og_locale']}">
+<meta property="og:locale:alternate" content="{CONTENT[other]['og_locale']}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/archivo-latin-standard-normal.woff2" crossorigin>
+<link rel="stylesheet" href="{prefix}assets/css/site.css">
+</head>"""
+
+    header = page_header(code, prefix, "produtos")
+
+    def product_card(p):
+        cat = p["category"][code]
+        price = (
+            "R$ " + f"{p['price_cents'] / 100:.2f}".replace(".", ",")
+            if p["price_cents"] is not None
+            else c["produtos_price_request"]
+        )
+        stock_label = c["produtos_stock"][p["stock"]]
+        return f"""
+    <article class="pcard">
+      <button type="button" class="pcard-trigger" data-open-product="{e(p['id'])}" aria-haspopup="dialog">
+        {media(p['photo'], code, p['name'][code], prefix, cls='pcard-media', w=900, h=900, light=True)}
+        <span class="pcard-body">
+          <span class="pcard-cat">{e(cat)}</span>
+          <strong class="pcard-name">{e(p['name'][code])}</strong>
+          <span class="pcard-foot"><span class="pcard-price">{e(price)}</span><span class="pcard-stock pcard-stock--{e(p['stock'])}">{e(stock_label)}</span></span>
+        </span>
+      </button>
+    </article>"""
+
+    cards = "".join(product_card(p) for p in PRODUCTS)
+    grid = f'<div class="pgrid">{cards}</div>' if PRODUCTS else f'<p class="meta">{e(c["produtos_empty"])}</p>'
+
+    main_html = f"""
+<section class="section produtos-hero">
+  <div class="wrap">
+    <p class="meta">{e(c['nav_produtos'])}</p>
+    <h1 class="display" style="font-size:var(--t-xl)">{e(c['shop_title'])}</h1>
+    <p class="lead">{e(c['shop_lead'])}</p>
+    <a class="btn btn--outline-dark" href="{wa_link(c['shop_wa'])}" target="_blank" rel="noopener">{ICON_WA}{e(c['shop_cta'])}</a>
+  </div>
+</section>
+<section class="section produtos-grid">
+  <div class="wrap">{grid}</div>
+</section>
+<div class="pmodal-overlay" data-pmodal-overlay hidden>
+  <div class="pmodal" role="dialog" aria-modal="true" aria-labelledby="pmodal-title">
+    <button type="button" class="pmodal-close" data-pmodal-close aria-label="{e(c['produtos_close'])}">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <div class="pmodal-body" data-pmodal-body></div>
+  </div>
+</div>"""
+
+    footer = page_footer(code, prefix, "produtos")
+    scripts = page_scripts(code, prefix)
+
+    body = "<body>" + header + '<main id="conteudo">' + main_html + "</main>" + footer + scripts + "</body></html>"
+    return head + "\n" + body
+
+
+def render_privacy(code):
+    c = CONTENT[code]
+    other = "en" if code == "pt" else "pt"
+    prefix = "../" if code == "pt" else "../../"
+    base = SITE["base_url"].rstrip("/")
+    canonical = base + c["privacy_path"]
+
+    alternates = (
+        f'<link rel="alternate" hreflang="pt-BR" href="{base}/privacidade/">'
+        f'<link rel="alternate" hreflang="en" href="{base}/en/privacidade/">'
+        f'<link rel="alternate" hreflang="x-default" href="{base}/privacidade/">'
+    )
+
+    head = f"""<!doctype html>
+<html lang="{c['lang']}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(c['privacy_title'])}</title>
+<meta name="description" content="{e(c['privacy_description'])}">
+<link rel="canonical" href="{canonical}">
+{alternates}
+<meta name="theme-color" content="#123D2B">
+<link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{prefix}assets/css/site.css">
+</head>"""
+
+    header = page_header(code, prefix, "privacidade")
+
+    sections = "".join(
+        f'<section><h2 class="h3">{e(h)}</h2><p>{e(t)}</p></section>'
+        for h, t in c["privacy_sections"]
+    )
+    home_href = "/" if code == "pt" else "/en/"
+    main_html = f"""
+<section class="section legal">
+  <div class="wrap legal-wrap">
+    <h1 class="display" style="font-size:var(--t-xl)">{e(c['privacy_h1'])}</h1>
+    <p class="lead">{e(c['privacy_lead'])}</p>
+    <p class="meta">{e(c['privacy_updated'])}</p>
+    <div class="legal-body">{sections}</div>
+    <p class="note">{e(c['privacy_note'])}</p>
+    <a class="btn btn--dark" href="{home_href}">{e(c['privacy_back'])}</a>
+  </div>
+</section>"""
+
+    footer = page_footer(code, prefix, "privacidade")
+    scripts = page_scripts(code, prefix)
+
+    body = "<body>" + header + '<main id="conteudo">' + main_html + "</main>" + footer + scripts + "</body></html>"
     return head + "\n" + body
 
 
@@ -1028,14 +1349,20 @@ def render_404():
 
 def sitemap():
     base = SITE["base_url"].rstrip("/")
+    groups = [
+        ("/", "/en/"),
+        ("/produtos/", "/en/produtos/"),
+        ("/privacidade/", "/en/privacidade/"),
+    ]
     urls = ""
-    for path in ["/", "/en/"]:
-        urls += f"""
+    for pt_path, en_path in groups:
+        for path in (pt_path, en_path):
+            urls += f"""
   <url>
     <loc>{base}{path}</loc>
-    <xhtml:link rel="alternate" hreflang="pt-BR" href="{base}/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="{base}/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="{base}/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="{base}{pt_path}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="{base}{en_path}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="{base}{pt_path}"/>
   </url>"""
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">{urls}
@@ -1050,6 +1377,17 @@ def main():
     (DIST / "index.html").write_text(render("pt"), encoding="utf-8")
     (DIST / "en").mkdir(parents=True, exist_ok=True)
     (DIST / "en" / "index.html").write_text(render("en"), encoding="utf-8")
+
+    (DIST / "produtos").mkdir(parents=True, exist_ok=True)
+    (DIST / "produtos" / "index.html").write_text(render_produtos("pt"), encoding="utf-8")
+    (DIST / "en" / "produtos").mkdir(parents=True, exist_ok=True)
+    (DIST / "en" / "produtos" / "index.html").write_text(render_produtos("en"), encoding="utf-8")
+
+    (DIST / "privacidade").mkdir(parents=True, exist_ok=True)
+    (DIST / "privacidade" / "index.html").write_text(render_privacy("pt"), encoding="utf-8")
+    (DIST / "en" / "privacidade").mkdir(parents=True, exist_ok=True)
+    (DIST / "en" / "privacidade" / "index.html").write_text(render_privacy("en"), encoding="utf-8")
+
     (DIST / "404.html").write_text(render_404(), encoding="utf-8")
     (DIST / "sitemap.xml").write_text(sitemap(), encoding="utf-8")
     (DIST / "robots.txt").write_text(

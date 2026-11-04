@@ -12,6 +12,8 @@
 
 import { initBooking } from './booking.js';
 import { initWaWidget } from './wa-widget.js';
+import { initNewsletter } from './newsletter.js';
+import { initProducts } from './products.js';
 
 const CONFIG = window.GVV_CONFIG || {};
 const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
@@ -263,3 +265,5 @@ initPreselect();
 initYear();
 initBooking({ config: CONFIG, i18n: I18N });
 initWaWidget({ config: CONFIG });
+initProducts({ config: CONFIG, i18n: I18N });
+initNewsletter({ config: CONFIG, i18n: I18N });

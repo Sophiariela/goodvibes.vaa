@@ -126,6 +126,25 @@ Treinar trava a vaga na sessão e já confirma (`status: 'confirmed'`);
 Particular grava um pedido de orçamento (`status: 'quote_requested'`) pra
 equipe responder por fora com o valor.
 
+### Novo endpoint: `POST /api/subscribers` — pop-up de newsletter
+
+Sem seed necessário — a tabela `subscribers` (ver `db/schema.sql`) já está
+pronta assim que `SUPABASE_DB_URL` existir. O pop-up (`src/assets/js/
+newsletter.js`) funciona em qualquer `booking_mode`, inclusive `"off"`.
+
+## 6. Administração — como gerenciar cada parte hoje
+
+| O que | Como administrar hoje |
+|---|---|
+| Produtos, fotos, preços, categorias, tamanhos/cores, estoque | Editar `products.py` (na raiz do projeto) e rodar `python3 build.py` — mesmo padrão de `PHOTOS`/`MODALITIES`. Nunca inventar preço/estoque: usar `None`/`"unknown"` até confirmar. |
+| Campanha do pop-up (ligar/desligar, trocar texto) | Editar `CAMPAIGN` em `newsletter_content.py` — ver aviso sobre `type: "raffle"` lá dentro antes de mexer. |
+| E-mails cadastrados e consentimentos | **Supabase → Table Editor → `subscribers`** — já vem com busca, filtro e exportação prontos, sem precisar de um painel próprio. Nunca expor esses dados fora do painel do Supabase (acesso restrito à equipe do clube). |
+| Reservas e solicitações | Mesma tabela `reservations`/`payments` já documentada acima — idem, via Table Editor do Supabase. |
+
+Um painel administrativo dedicado (fora do Supabase) é um upgrade futuro —
+não foi construído nesta etapa porque exigiria autenticação própria, o que
+é um projeto à parte e mais arriscado de apressar.
+
 ## O que eu preciso que você me confirme, além das credenciais
 
 - Preço por participante de cada tipo de experiência em "Experimentar"

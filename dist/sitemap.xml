@@ -12,4 +12,28 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/"/>
   </url>
+  <url>
+    <loc>https://goodvibesvaa.vercel.app/produtos/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/produtos/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/produtos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/produtos/"/>
+  </url>
+  <url>
+    <loc>https://goodvibesvaa.vercel.app/en/produtos/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/produtos/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/produtos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/produtos/"/>
+  </url>
+  <url>
+    <loc>https://goodvibesvaa.vercel.app/privacidade/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/privacidade/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/privacidade/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/privacidade/"/>
+  </url>
+  <url>
+    <loc>https://goodvibesvaa.vercel.app/en/privacidade/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/privacidade/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/privacidade/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/privacidade/"/>
+  </url>
 </urlset>

@@ -205,3 +205,31 @@ left join reservations r on r.session_id = s.id
 group by s.id;
 
 comment on view session_availability is 'seats_available <= 0 => esgotado; seats_available entre 1 e 2 => "quase esgotado" (regra de UI, não armazenada); session_status=cancelled => sempre tratar como indisponível independente de seats_available.';
+
+-- ---------------------------------------------------------------------------
+-- subscribers — cadastros do pop-up de e-mail (ver api/subscribers.ts)
+--
+-- Minimização de dados (LGPD): guardamos só o necessário para operar a
+-- lista e provar o consentimento — nunca IP, user-agent ou qualquer dado
+-- de rastreamento. Proteção contra spam é feita na camada de API
+-- (honeypot + tempo mínimo de preenchimento), não por coleta de IP aqui.
+-- ---------------------------------------------------------------------------
+create table if not exists subscribers (
+  id                 uuid primary key default gen_random_uuid(),
+  email              text not null,
+  email_normalized   text generated always as (lower(trim(email))) stored,
+  locale             text not null check (locale in ('pt', 'en')),
+  marketing_consent  boolean not null,
+  consent_text       text not null,   -- snapshot do texto de consentimento aceito, prova de LGPD
+  consent_at         timestamptz not null default now(),
+  source             text not null default 'popup',
+  campaign_key       text,            -- chave da campanha ativa no momento do cadastro (se houver)
+  created_at         timestamptz not null default now()
+);
+
+create unique index if not exists uq_subscribers_email on subscribers (email_normalized);
+create index if not exists idx_subscribers_created on subscribers (created_at);
+
+comment on table subscribers is 'Cadastros do pop-up de newsletter. email_normalized garante 1 cadastro por e-mail (case/espaço insensível) — reenviar o mesmo e-mail responde "já cadastrado", não duplica.';
+
+alter table subscribers enable row level security;

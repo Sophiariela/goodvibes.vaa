@@ -20,9 +20,37 @@ Para gerar: `python3 build.py`. Publique a pasta `dist/`.
 ### Deploy
 Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` dispara um deploy automático de produção.
 
-### Idiomas
+### Idiomas e rotas
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
+- Rotas: `/` e `/en/` (institucional), `/produtos/` e `/en/produtos/` (loja), `/privacidade/` e `/en/privacidade/` (LGPD). O slug da rota (`produtos`, `privacidade`) é o mesmo nas duas línguas — só o texto visível muda, mesmo padrão das âncoras internas (`#particular` etc.).
+- `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — nav, rodapé, pop-up de WhatsApp e de newsletter aparecem em qualquer rota. `nav_items_html()` decide se um link de âncora é hash puro (na própria home, pro JS de abas) ou link absoluto de volta pra home (`/#experimentar`) nas outras páginas.
+
+### Loja — `/produtos`
+
+- Catálogo em `products.py` (raiz do projeto): nome, descrição, categoria, preço, tamanhos, cores e estoque por peça, PT/EN. **Trocar/adicionar produto é editar uma entrada ali** — mesmo padrão de `PHOTOS`/`MODALITIES`. Preço `None` e estoque `"unknown"` até o clube confirmar (nunca inventados).
+- `src/assets/js/products.js` — abre um modal de detalhes ao clicar num cartão (`render_produtos` em `build.py` gera os cartões; os dados completos vêm de `I18N.products`). Tamanho/cor só aparecem quando a lista do produto não está vazia. O botão "Comprar pelo WhatsApp" monta a mensagem com o nome da peça e a variação escolhida.
+- Na home, a antiga seção "Good Vibes fora da água" virou uma chamada compacta (`.shop-teaser`) que leva pra `/produtos` — texto em `shop_teaser_title`/`shop_teaser_text`/`shop_teaser_cta` no `CONTENT`.
+
+### Pop-up de newsletter
+
+- `src/assets/js/newsletter.js` — aparece em qualquer página (sitewide), depois de ~25s **ou** ao detectar intenção de saída (mouse saindo por cima da janela), o que vier primeiro. Nunca na primeira tela.
+- Não repete: quem já se cadastrou não vê mais (localStorage permanente); quem fechou sem cadastrar fica sem ver por 7 dias (localStorage com validade) — ver `SNOOZE_DAYS` no arquivo.
+- Consentimento de marketing é um checkbox **separado**, nunca marcado por padrão, com link pra `/privacidade/` — sem ele marcado, o cadastro não é enviado.
+- Proteção contra spam sem coletar IP (minimização de dados — ver `/privacidade/`): campo honeypot escondido + tempo mínimo de preenchimento, os dois validados de novo no servidor (`api/subscribers.ts`).
+- Textos em `newsletter_content.py` (`NEWSLETTER`, PT/EN) — mesmo padrão de `booking_content.py`.
+- Cadastros vão pra tabela `subscribers` no Supabase (ver `db/schema.sql`) via `POST /api/subscribers` — e-mail duplicado responde "já cadastrado" (200), nunca cria linha repetida.
+
+### Campanha do pop-up (desligada por padrão)
+
+`CAMPAIGN` em `newsletter_content.py`: `"enabled": False` por padrão — o
+pop-up mostra só o cadastro simples. Ligar com `"type": "early_access"` ou
+`"coupon"` troca o título/texto do pop-up por um benefício garantido a
+quem se cadastra. **`"type": "raffle"` (sorteio) é bloqueado em
+`build.py` (`resolve_campaign`) a não ser que `"legal_cleared": True`** —
+sorteio exige regulamento e autorizações conforme a legislação brasileira
+de promoções comerciais; não marcar `legal_cleared` sem isso estar pronto
+de verdade.
 
 ### Reserva e formulários — `SITE["booking_mode"]`
 
@@ -128,9 +156,10 @@ própria imagem.
 - Idade mínima e regras para crianças; se é preciso saber nadar.
 - Quais planos Gympass/TotalPass são aceitos.
 - Ponto de encontro exato na Praia da Preguiça.
-- Nomes e preços dos produtos.
+- Preços, tamanhos, cores e estoque real dos produtos — editar `products.py` (hoje todos com preço "sob consulta" e estoque "a confirmar", de propósito, até o clube informar os valores reais).
 - Mini bio dos capitães (opcional).
 - Depoimentos escritos: só publicar com autorização (estrutura comentada na seção Comunidade).
+- Revisão jurídica do texto de `/privacidade/` (`privacy_sections` no `CONTENT`) antes de tratar como política de privacidade oficial — hoje é um resumo honesto, não um documento validado por advogado.
 
 ### 3. Depois de publicar
 - Enviar `sitemap.xml` no Google Search Console.
