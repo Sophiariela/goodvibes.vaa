@@ -16,7 +16,7 @@
 
 import type { VercelRequest, VercelResponse } from '../../lib/http.js';
 import { requireMethod } from '../../lib/http.js';
-import { query } from '../../lib/db.js';
+import { query, DbNotConfiguredError } from '../../lib/db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!requireMethod(req, res, 'GET')) return;
@@ -41,6 +41,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     );
     res.status(200).json({ expiredCount: expired.length });
   } catch (err) {
+    if (err instanceof DbNotConfiguredError) {
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
+      return;
+    }
     console.error('Erro na faxina de reservas expiradas', err);
     res.status(500).json({ error: 'internal_error' });
   }

@@ -26,7 +26,7 @@ import { requireMethod } from '../../lib/http.js';
 import { verifyMercadoPagoSignature } from '../../lib/mercadopago-webhook.js';
 import { getPayment } from '../../lib/mercadopago.js';
 import { applyPaymentStatus } from '../../lib/reservations.js';
-import { query } from '../../lib/db.js';
+import { query, DbNotConfiguredError } from '../../lib/db.js';
 
 function extractDataId(req: VercelRequest): string | null {
   const fromQuery = req.query['data.id'];
@@ -73,19 +73,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const action = typeof req.body?.action === 'string' ? req.body.action : 'unknown';
   const eventId = `${dataId}:${action}`;
 
-  const existing = await query<{ status: string }>(
-    `select status from webhook_events where provider = 'mercadopago' and event_id = $1`,
-    [eventId],
-  );
-  if (existing[0]?.status === 'processed') {
-    res.status(200).json({ status: 'already_processed' });
-    return;
-  }
-  if (!existing[0]) {
-    await query(
-      `insert into webhook_events (provider, event_id, payload, status) values ('mercadopago', $1, $2, 'received')`,
-      [eventId, JSON.stringify(req.body ?? {})],
+  let existing: { status: string }[];
+  try {
+    existing = await query<{ status: string }>(
+      `select status from webhook_events where provider = 'mercadopago' and event_id = $1`,
+      [eventId],
     );
+    if (existing[0]?.status === 'processed') {
+      res.status(200).json({ status: 'already_processed' });
+      return;
+    }
+    if (!existing[0]) {
+      await query(
+        `insert into webhook_events (provider, event_id, payload, status) values ('mercadopago', $1, $2, 'received')`,
+        [eventId, JSON.stringify(req.body ?? {})],
+      );
+    }
+  } catch (err) {
+    if (err instanceof DbNotConfiguredError) {
+      console.error('Webhook do Mercado Pago recebido sem SUPABASE_DB_URL configurada.');
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
+      return;
+    }
+    throw err;
   }
 
   try {

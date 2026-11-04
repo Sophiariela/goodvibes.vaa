@@ -9,6 +9,7 @@
 import type { VercelRequest, VercelResponse } from '../../../lib/http.js';
 import { requireMethod } from '../../../lib/http.js';
 import { cancelPendingReservation } from '../../../lib/reservations.js';
+import { DbNotConfiguredError } from '../../../lib/db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!requireMethod(req, res, 'POST')) return;
@@ -30,6 +31,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     }
     res.status(200).json({ reservationId: id, status: 'cancelled' });
   } catch (err) {
+    if (err instanceof DbNotConfiguredError) {
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
+      return;
+    }
     console.error('Erro ao cancelar reserva', err);
     res.status(500).json({ error: 'internal_error' });
   }

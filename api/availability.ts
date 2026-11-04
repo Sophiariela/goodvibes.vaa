@@ -8,7 +8,7 @@
 
 import type { VercelRequest, VercelResponse } from '../lib/http.js';
 import { requireMethod } from '../lib/http.js';
-import { query } from '../lib/db.js';
+import { query, DbNotConfiguredError } from '../lib/db.js';
 import { labelFromSeatsAvailable } from '../lib/availability.js';
 
 interface SessionRow {
@@ -43,6 +43,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       [slug],
     );
   } catch (err) {
+    if (err instanceof DbNotConfiguredError) {
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
+      return;
+    }
     console.error('Erro ao buscar disponibilidade', err);
     res.status(500).json({ error: 'internal_error' });
     return;

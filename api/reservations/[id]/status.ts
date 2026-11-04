@@ -9,7 +9,7 @@
 
 import type { VercelRequest, VercelResponse } from '../../../lib/http.js';
 import { requireMethod } from '../../../lib/http.js';
-import { query } from '../../../lib/db.js';
+import { query, DbNotConfiguredError } from '../../../lib/db.js';
 
 interface StatusRow {
   id: string;
@@ -44,6 +44,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       [id],
     );
   } catch (err) {
+    if (err instanceof DbNotConfiguredError) {
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
+      return;
+    }
     console.error('Erro ao consultar status da reserva', err);
     res.status(500).json({ error: 'internal_error' });
     return;

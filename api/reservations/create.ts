@@ -23,7 +23,7 @@ import type { VercelRequest, VercelResponse } from '../../lib/http.js';
 import { requireMethod } from '../../lib/http.js';
 import { createReservationWithHold, ReservationError, type ReservationErrorCode } from '../../lib/reservations.js';
 import { createPixPayment, MercadoPagoError } from '../../lib/mercadopago.js';
-import { query } from '../../lib/db.js';
+import { query, DbNotConfiguredError } from '../../lib/db.js';
 
 const STATUS_BY_CODE: Record<ReservationErrorCode, number> = {
   NOT_FOUND: 404,
@@ -96,6 +96,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   } catch (err) {
     if (err instanceof ReservationError) {
       res.status(STATUS_BY_CODE[err.code]).json({ error: err.code, message: err.message });
+      return;
+    }
+    if (err instanceof DbNotConfiguredError) {
+      res.status(503).json({ error: 'server_not_configured', message: err.message });
       return;
     }
     console.error('Erro ao criar reserva', err);

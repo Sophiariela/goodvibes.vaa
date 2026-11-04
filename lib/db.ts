@@ -11,13 +11,23 @@
 
 import { Pool, type PoolClient } from 'pg';
 
+/** Lançado quando SUPABASE_DB_URL não está configurada — distinto de um
+ *  erro real de banco, pra endpoints responderem 503 "falta configurar"
+ *  em vez de 500 "algo quebrou". */
+export class DbNotConfiguredError extends Error {
+  constructor() {
+    super('SUPABASE_DB_URL não configurada — ver docs/SETUP.md.');
+    this.name = 'DbNotConfiguredError';
+  }
+}
+
 let pool: Pool | null = null;
 
 function getPool(): Pool {
   if (pool) return pool;
   const connectionString = process.env.SUPABASE_DB_URL;
   if (!connectionString) {
-    throw new Error('SUPABASE_DB_URL não configurada — ver docs/SETUP.md.');
+    throw new DbNotConfiguredError();
   }
   pool = new Pool({
     connectionString,
