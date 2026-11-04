@@ -1,11 +1,15 @@
 /* Interaction-state screenshots + functional smoke test of the demo booking
    flow, product modal, newsletter pop-up and mobile menu.
-   Usage: node tools/states.mjs <outDir> [baseUrl] [widthCsv]  */
+   Usage: node tools/states.mjs <outDir> [baseUrl] [widthCsv] [locale]
+   locale: "pt" (padrão, rotas em /) ou "en" (rotas em /en/).
+   É um código de idioma e não um caminho de propósito: um argumento
+   começando com "/" é convertido em caminho do Windows pelo Git Bash.  */
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 
 const OUT = process.argv[2] || 'states';
-const BASE = process.argv[3] || 'http://localhost:8777';
+const LOCALE = (process.argv[5] || 'pt').replace(/[^a-z]/gi, '').toLowerCase();
+const BASE = (process.argv[3] || 'http://localhost:8777') + (LOCALE === 'pt' ? '' : '/' + LOCALE);
 const WIDTHS = (process.argv[4] || '390,1440').split(',').map(Number);
 
 mkdirSync(OUT, { recursive: true });
@@ -146,6 +150,63 @@ for (const W of WIDTHS) {
     /wa\.me\/\d+\?text=/.test(href) ? ok(`buy link built @${tag}`) : bad(`buy link malformed @${tag}: ${href}`);
     await page.screenshot({ path: `${OUT}/pm-00-modal-${tag}.png` });
     if (page.__errors.length) bad(`console errors (products @${tag}): ${page.__errors.join(' | ')}`);
+    await page.close();
+  }
+
+  /* ---- product modal: seletores de tamanho/cor ----
+     Nenhuma peça real do catálogo tem variantes cadastradas hoje (products.py
+     usa listas vazias de propósito — não se inventa dado do clube), então o
+     caminho de código de tamanho/cor só é exercitável com um produto
+     sintético. O fixture vive aqui, no teste: injetamos as variantes no JSON
+     do <script id="i18n"> antes do parse, via interceptação da resposta HTML.
+     Nada é gravado em products.py nem no dist/.                            */
+  {
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+    page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
+    let patched = false;
+    await page.route(/\/produtos\/$/, async (route) => {
+      const res = await route.fetch();
+      const html = (await res.text())
+        .replace(/"sizes":\s*\[\]/, () => { patched = true; return '"sizes": ["P", "M", "G"]'; })
+        .replace(/"colors":\s*\[\]/, '"colors": [{"name": "Verde", "hex": "#0D3527"}, {"name": "Areia", "hex": "#E3D8C2"}]');
+      await route.fulfill({ response: res, body: html });
+    });
+    await page.goto(BASE + '/produtos/', { waitUntil: 'load' });
+    await page.waitForTimeout(500);
+    await hideNl(page);
+    await page.locator('[data-open-product]').first().click();
+    await page.waitForTimeout(400);
+
+    if (!patched) bad(`variant fixture not injected @${tag} (i18n payload shape changed?)`);
+    const size = page.locator('.pmodal [data-size]').first();
+    const color = page.locator('.pmodal [data-color]').first();
+    if (!(await size.count()) || !(await color.count())) {
+      bad(`variant selectors did not render @${tag} (size=${await size.count()} color=${await color.count()})`);
+    } else {
+      await size.click(); await page.waitForTimeout(200);
+      (await page.locator('.pmodal [data-size]').first().getAttribute('aria-pressed')) === 'true'
+        ? ok(`size variant selects @${tag}`) : bad(`size variant not selected @${tag}`);
+
+      await color.click(); await page.waitForTimeout(200);
+      (await page.locator('.pmodal [data-color]').first().getAttribute('aria-pressed')) === 'true'
+        ? ok(`color variant selects @${tag}`) : bad(`color variant not selected @${tag}`);
+
+      // a escolha tem de chegar na mensagem de WhatsApp
+      const vhref = decodeURIComponent(await page.locator('[data-pmodal-buy]').getAttribute('href') || '');
+      /\bP\b/.test(vhref) && /Verde/.test(vhref)
+        ? ok(`variant reaches buy link @${tag}`) : bad(`variant missing from buy link @${tag}: ${vhref}`);
+
+      // clicar de novo deseleciona (toggle)
+      await page.locator('.pmodal [data-size]').first().click();
+      await page.waitForTimeout(200);
+      (await page.locator('.pmodal [data-size]').first().getAttribute('aria-pressed')) === 'false'
+        ? ok(`variant toggles off @${tag}`) : bad(`variant did not toggle off @${tag}`);
+
+      await page.screenshot({ path: `${OUT}/pm-01-variants-${tag}.png` });
+    }
+    if (errors.length) bad(`console errors (variants @${tag}): ${errors.join(' | ')}`);
     await page.close();
   }
 

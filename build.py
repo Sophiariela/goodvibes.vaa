@@ -1230,10 +1230,12 @@ def render(code):
   <div class="wrap wrap--wide closing-inner">
     {eyebrow(c['kicker_closing'])}
     <h2 class="h2" id="closing-title">{e(c['final_title'])}</h2>
-    <p class="lead">{e(c['final_lead'])}</p>
-    <div class="btn-row">
-      <a class="btn btn--gold" href="#experimentar">{e(c['dock_book'])}</a>
-      <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+    <div class="closing-aside">
+      <p class="lead">{e(c['final_lead'])}</p>
+      <div class="btn-row">
+        <a class="btn btn--gold" href="#experimentar">{e(c['dock_book'])}</a>
+        <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+      </div>
     </div>
   </div>
 </section>"""
