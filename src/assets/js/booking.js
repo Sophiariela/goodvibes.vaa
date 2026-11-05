@@ -2,12 +2,16 @@
    Sistema único de agendamento — calendário + cartões + modal.
 
    Uma instância por painel (data-modality="experimentar|treinar|particular"
-   em build.py), todas com a mesma "casca" visual, comportamento por `flow`
-   (ver booking_content.py, MODALITIES):
-   - "calendar+pix"     Experimentar: calendário real, cartão por saída,
-                         reserva abre modal (participantes → termo → Pix).
-   - "calendar+request" Treinar: mesmo calendário/cartão, sem cobrança —
-                         modal confirma a vaga direto (sem Pix).
+   em build.py), comportamento por `flow` (ver booking_content.py,
+   MODALITIES) — cada fluxo tem sua própria "casca" visual, propositalmente:
+   - "calendar+pix"     Experimentar: quadro de saídas (lista editorial, não
+                         cartões — ver renderBoard/boardRowHtml), ordenado
+                         por horário. Clicar abre um painel lateral (drawer
+                         no desktop, bottom sheet no celular) que começa
+                         escolhendo dia/horário (dayTimeStep) e segue
+                         participantes → termo → Pix → confirmação.
+   - "calendar+request" Treinar: calendário + cartões (grade), sem cobrança
+                         — o modal centralizado confirma a vaga direto.
    - "quote"             Particular: sem calendário, um cartão fixo que abre
                          o modal de orçamento (sem vaga, sem pagamento).
 
@@ -21,6 +25,7 @@ const pad = (n) => String(n).padStart(2, '0');
 const dateKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmt = (str, vars) => str.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
+const ICON_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
 /* ---------------- Adaptadores de dados ---------------- */
 
@@ -165,17 +170,25 @@ function initModality(host, modality, config, i18n) {
   const api = config.bookingMode === 'live' ? liveApi(config.apiBase, modality) : demoApi(modality, config.seats);
   const locale = i18n.locale === 'en' ? 'en-US' : 'pt-BR';
   const money = (v) => v.toLocaleString(locale, { style: 'currency', currency: 'BRL' });
+  /* Preço sem centavos ("R$ 120", não "R$ 120,00") — só o quadro de saídas
+     e o painel da Experimentar usam este formato; o resto do site
+     continua mostrando centavos normalmente. */
+  const moneyNoCents = (v) => v.toLocaleString(locale, { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const lowSeatsLabel = (n) => (n === 1 ? T.low_seats_one : fmt(T.low_seats_many, { n }));
+  const seatsAfterLabel = (n) => (n <= 0 ? T.seats_after_none : n === 1 ? T.seats_after_one : fmt(T.seats_after_many, { n }));
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const DAYS = 14;
 
   const S = {
     days: Array.from({ length: DAYS }, (_, i) => { const d = new Date(today); d.setDate(d.getDate() + i); return d; }),
     dayIdx: 0, cards: [], cardsLoading: flow !== 'quote',
+    boardCards: [], boardLoading: flow === 'calendar+pix',
+    dayCardLoading: false,
     modalOpen: false, activity: null, step: 0,
     people: 1, name: '', phone: '', notes: '', terms: false,
     alreadyTrain: null, qType: '', qDate: '', qPeople: '1', qDetails: '',
     errors: {}, busy: false, failed: false, booking: null, payStatus: 'pending',
-    timer: null, poll: null, lastFocus: null,
+    timer: null, poll: null, triggerId: null,
   };
 
   const dayLabel = (key) => { const [y, m, d] = key.split('-').map(Number); const dt = new Date(y, m - 1, d); return `${T.weekdays[dt.getDay()]}, ${dt.getDate()} ${T.months[dt.getMonth()]}`; };
@@ -213,6 +226,47 @@ function initModality(host, modality, config, i18n) {
       <p class="bk-label" id="${uid}-day-l">${esc(T.day)}</p>
       <div class="bk-days" role="group" aria-labelledby="${uid}-day-l">${chips}</div>
     </div>`;
+  }
+
+  /* ----- quadro de saídas (Experimentar) — lista editorial, não cartões ---
+     Uma linha por experiência de hoje, ordenada por horário. Clicar abre o
+     painel lateral já com a experiência selecionada; dia/horário são
+     escolhidos DENTRO do painel (ver dayTimeStep), não aqui fora. */
+  function boardRowHtml(a) {
+    const full = a.available <= 0;
+    const low = !full && a.available <= 3;
+    const price = a.price != null
+      ? `${moneyNoCents(a.price)}<small>${esc(T.per_person)}</small>`
+      : `<small>${esc(T.price_on_request)}</small>`;
+    const badge = full
+      ? `<span class="board-badge board-badge--out">${esc(T.full)}</span>`
+      : low ? `<span class="board-badge">${esc(lowSeatsLabel(a.available))}</span>` : '';
+    return `<li class="board-row${full ? ' board-row--full' : ''}">
+      <button type="button" class="board-row-btn" data-reserve="${esc(a.id)}" ${full ? 'disabled aria-disabled="true"' : ''}>
+        <span class="board-time">${esc(timeLabel(a.time))}</span>
+        <span class="board-main">
+          <span class="board-name">${esc(a.name)}${badge}</span>
+          <span class="board-desc">${esc(a.desc)}</span>
+        </span>
+        <span class="board-dur">${esc(a.dur)}</span>
+        <span class="board-price">${price}</span>
+        <span class="board-arrow" aria-hidden="true">${ICON_ARROW}</span>
+      </button>
+    </li>`;
+  }
+
+  function renderBoard() {
+    if (S.boardLoading) return `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
+    if (!S.boardCards.length) return `<p class="bk-note">${esc(T.no_dates)}</p>`;
+    const sorted = [...S.boardCards].sort((x, y) => x.time.localeCompare(y.time));
+    return `<ul class="board">${sorted.map(boardRowHtml).join('')}</ul>`;
+  }
+
+  async function loadBoard() {
+    S.boardLoading = true; render();
+    const d = S.days[0];
+    S.boardCards = await api.cardsForDay(dateKey(d), d.getDay());
+    S.boardLoading = false; render();
   }
 
   function cardHtml(a) {
@@ -258,6 +312,46 @@ function initModality(host, modality, config, i18n) {
     </article></div>`;
   }
 
+  /* ----- modal: dia e horário (Experimentar, 1º passo do painel) -----
+     A experiência já vem escolhida do quadro de saídas; aqui só se
+     confirma (ou troca) o dia. S.activity é atualizado a cada dia
+     navegado, então o cabeçalho do painel (nome + hora) já reflete a
+     escolha em tempo real, sem esperar o "Continuar". */
+  function dayTimeStep() {
+    const chips = S.days.map((d, i) => {
+      const top = i === 0 ? T.today : T.weekdays[d.getDay()];
+      return `<button type="button" class="bk-day" data-modal-day="${i}" aria-pressed="${S.dayIdx === i}"><small>${esc(top)}</small><b>${d.getDate()}</b><small>${esc(T.months[d.getMonth()])}</small></button>`;
+    }).join('');
+
+    let detail;
+    if (S.dayCardLoading) {
+      detail = `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
+    } else {
+      const full = S.activity.available <= 0;
+      const low = !full && S.activity.available <= 3;
+      detail = `<div class="bk-slot-detail">
+        <span class="bk-slot-time">${esc(timeLabel(S.activity.time))}</span>
+        <span class="bk-slot-dur">${esc(S.activity.dur)}</span>
+        ${full ? `<span class="bk-badge bk-badge--out">${esc(T.full)}</span>` : low ? `<span class="bk-badge bk-badge--low">${esc(lowSeatsLabel(S.activity.available))}</span>` : ''}
+      </div>`;
+    }
+    const disabled = S.dayCardLoading || S.activity.available <= 0;
+    return `<div class="bk-body">
+      <p class="bk-label" id="${uid}-day-l">${esc(T.day)}</p>
+      <div class="bk-days" role="group" aria-labelledby="${uid}-day-l">${chips}</div>
+      ${detail}
+    </div>${footer(T.next, disabled)}`;
+  }
+
+  async function selectModalDay(i) {
+    S.dayIdx = i; S.dayCardLoading = true; render();
+    const d = S.days[i];
+    const cards = await api.cardsForDay(dateKey(d), d.getDay());
+    const found = cards.find((c) => c.id === S.activity.id);
+    S.activity = found ? { ...S.activity, ...found } : { ...S.activity, dateKey: dateKey(d), available: 0 };
+    S.dayCardLoading = false; render();
+  }
+
   /* ----- modal: participantes/termo/pagamento (Experimentar) ----- */
   function peopleStep() {
     const left = S.activity.available - S.people;
@@ -266,13 +360,13 @@ function initModality(host, modality, config, i18n) {
         <div class="bk-stepper"><button type="button" data-bk="minus" aria-label="−1" ${S.people <= 1 ? 'disabled' : ''}>−</button>
           <output aria-live="polite">${S.people}</output>
           <button type="button" data-bk="plus" aria-label="+1" ${S.people >= S.activity.available ? 'disabled' : ''}>+</button></div></div>
-      <p class="bk-note">${esc(fmt(T.seats_after, { n: left }))}</p>
+      <p class="bk-note">${esc(seatsAfterLabel(left))}</p>
       <div class="bk-field"><label for="${uid}-name">${esc(T.name)}</label>
         <input id="${uid}-name" autocomplete="name" value="${esc(S.name)}" ${S.errors.name ? `aria-invalid="true" aria-describedby="${uid}-name-err"` : ''}>${err('name')}</div>
       <div class="bk-field"><label for="${uid}-phone">${esc(T.phone)}</label>
         <input id="${uid}-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(71) 9 0000-0000" value="${esc(S.phone)}" ${S.errors.phone ? `aria-invalid="true" aria-describedby="${uid}-phone-err"` : ''}>
         <small>${esc(T.phone_hint)}</small>${err('phone')}</div>
-    </div>${footer(T.next)}`;
+    </div>${footer(T.next, false, true)}`;
   }
 
   function termsStep() {
@@ -393,34 +487,32 @@ function initModality(host, modality, config, i18n) {
     if (flow === 'calendar+request') return T.request_title;
     return T.quote_title;
   }
-  /* Olho do modal: dia e horário escolhidos (dado que a pessoa acabou de
-     selecionar), para o corpo não repetir essa linha. */
+  /* Olho do modal: dia e horário já confirmados (passo 0 é exatamente onde
+     isso ainda está sendo escolhido, então não repete ali). */
   function modalKicker() {
-    if (flow === 'quote' || !S.activity || !S.activity.dateKey) return '';
+    if (flow !== 'calendar+pix') return '';
+    if (S.step === 0 || !S.activity || !S.activity.dateKey) return '';
     return `${dayLabel(S.activity.dateKey)} · ${timeLabel(S.activity.time)}`;
   }
-  /* Trilha de etapas — só o fluxo com pagamento tem mais de um passo de
-     preenchimento. Os rótulos vêm de T.steps (booking_content.py): os três
-     últimos são Participantes / Termo / Pagamento. */
-  function modalSteps() {
+  /* Progresso como texto discreto ("2 de 4"), não barra colorida nem
+     números "01/02/03" — só a Experimentar tem mais de um passo de
+     preenchimento antes da confirmação. */
+  function modalProgress() {
     if (flow !== 'calendar+pix') return '';
-    const labels = (T.steps || []).slice(-3);
-    if (labels.length < 3) return '';
-    const items = labels.map((label, i) => {
-      const state = S.step > i ? 'done' : S.step === i ? 'on' : 'next';
-      return `<li data-state="${state}"${state === 'on' ? ' aria-current="step"' : ''}><b>${String(i + 1).padStart(2, '0')}</b>${esc(label)}</li>`;
-    }).join('');
-    return `<ol class="bk-steps">${items}</ol>`;
+    const total = (T.steps || []).length || 4;
+    if (S.step >= total) return '';
+    return `<p class="bk-progress">${esc(fmt(T.step, { n: S.step + 1, t: total }))}</p>`;
   }
   function modalBody() {
-    if (flow === 'calendar+pix') return [peopleStep, termsStep, paymentStep, doneStepPix][S.step]();
+    if (flow === 'calendar+pix') return [dayTimeStep, peopleStep, termsStep, paymentStep, doneStepPix][S.step]();
     if (flow === 'calendar+request') return [requestStep, doneStepRequest][S.step]();
     return [quoteStep, doneStepQuote][S.step]();
   }
   function renderModal() {
     const kicker = modalKicker();
-    return `<div class="bk-overlay" data-bk-overlay>
-      <div class="bk-modal" role="dialog" aria-modal="true" aria-labelledby="${uid}-modal-title">
+    const drawer = flow === 'calendar+pix';
+    return `<div class="bk-overlay${drawer ? ' bk-overlay--drawer' : ''}" data-bk-overlay>
+      <div class="bk-modal${drawer ? ' bk-modal--drawer' : ''}" role="dialog" aria-modal="true" aria-labelledby="${uid}-modal-title">
         <div class="bk-modal-head">
           <div>
             ${kicker ? `<p class="eyebrow">${esc(kicker)}</p>` : ''}
@@ -430,14 +522,14 @@ function initModality(host, modality, config, i18n) {
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"/></svg>
           </button>
         </div>
-        ${modalSteps()}
+        ${modalProgress()}
         ${modalBody()}
       </div>
     </div>`;
   }
 
   function render(focus = false) {
-    const body = flow === 'quote' ? renderQuoteCard() : `${renderCalendar()}${renderCards()}`;
+    const body = flow === 'quote' ? renderQuoteCard() : flow === 'calendar+pix' ? renderBoard() : `${renderCalendar()}${renderCards()}`;
     root.innerHTML = body + (S.modalOpen ? renderModal() : '');
     if (S.modalOpen && focus) root.querySelector('.bk-modal-head .bk-title, .bk-done .bk-title')?.focus({ preventScroll: true });
   }
@@ -463,8 +555,8 @@ function initModality(host, modality, config, i18n) {
       modalOpen: true, step: 0, people: 1, name: '', phone: '', notes: '', terms: false,
       alreadyTrain: null, qType: '', qDate: '', qPeople: '1', qDetails: '',
       errors: {}, busy: false, failed: false, booking: null, payStatus: 'pending',
+      dayIdx: 0, dayCardLoading: false,
     });
-    S.lastFocus = document.activeElement;
     document.body.classList.add('bk-modal-open');
     render(true);
   }
@@ -474,7 +566,10 @@ function initModality(host, modality, config, i18n) {
     S.modalOpen = false;
     document.body.classList.remove('bk-modal-open');
     render();
-    S.lastFocus?.focus?.();
+    /* render() reconstrói a raiz inteira (quadro/calendário incluído) a
+       cada chamada, então um nó de DOM guardado em "abriu o modal" já
+       está obsoleto aqui — refaz a busca pelo id depois do render. */
+    if (S.triggerId) root.querySelector(`[data-reserve="${CSS.escape(S.triggerId)}"]`)?.focus();
   }
 
   function validateContact() {
@@ -510,7 +605,7 @@ function initModality(host, modality, config, i18n) {
     S.poll = setInterval(async () => {
       try {
         const st = await api.status(S.booking.bookingId);
-        if (st === 'paid') { stopTimers(); S.step = 3; render(true); }
+        if (st === 'paid') { stopTimers(); S.step = 4; render(true); }
         if (st === 'expired') { S.payStatus = 'expired'; stopTimers(); render(); }
       } catch (e) { /* tenta de novo no próximo ciclo */ }
     }, api.demo ? 1000 : 4000);
@@ -589,10 +684,15 @@ function initModality(host, modality, config, i18n) {
     const day = e.target.closest('[data-day]');
     if (day) { await selectDay(+day.dataset.day); root.querySelector(`[data-day="${day.dataset.day}"]`)?.focus(); return; }
 
+    const modalDay = e.target.closest('[data-modal-day]');
+    if (modalDay) { await selectModalDay(+modalDay.dataset.modalDay); root.querySelector(`[data-modal-day="${modalDay.dataset.modalDay}"]`)?.focus(); return; }
+
     const reserve = e.target.closest('[data-reserve]');
     if (reserve && !reserve.disabled) {
       const id = reserve.dataset.reserve;
-      openModal(id === 'quote' ? {} : S.cards.find((c) => c.id === id));
+      const source = flow === 'calendar+pix' ? S.boardCards : S.cards;
+      S.triggerId = id;
+      openModal(id === 'quote' ? {} : source.find((c) => c.id === id));
       return;
     }
 
@@ -604,8 +704,9 @@ function initModality(host, modality, config, i18n) {
     if (act === 'go') {
       if (b.getAttribute('aria-disabled') === 'true' || S.busy) return;
       if (flow === 'calendar+pix') {
-        if (S.step === 0) { if (!validateContact()) { render(); return; } S.step = 1; render(true); return; }
-        if (S.step === 1) { if (!S.terms) { S.errors = { terms: T.err_terms }; render(); return; } S.step = 2; render(true); await startPayment(); render(); return; }
+        if (S.step === 0) { if (S.dayCardLoading || S.activity.available <= 0) { render(); return; } S.step = 1; render(true); return; }
+        if (S.step === 1) { if (!validateContact()) { render(); return; } S.step = 2; render(true); return; }
+        if (S.step === 2) { if (!S.terms) { S.errors = { terms: T.err_terms }; render(); return; } S.step = 3; render(true); await startPayment(); render(); return; }
       }
       if (flow === 'calendar+request' && S.step === 0) { if (!validateContact()) { render(); return; } await submitRequest(); return; }
       if (flow === 'quote' && S.step === 0) { if (!validateQuoteFields()) { render(); return; } await submitQuote(); return; }
@@ -622,5 +723,6 @@ function initModality(host, modality, config, i18n) {
   });
 
   if (flow === 'quote') render();
+  else if (flow === 'calendar+pix') loadBoard();
   else selectDay(0);
 }

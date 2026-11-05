@@ -10,16 +10,16 @@ import random
 
 DEMO_EXPERIENCES = {
     "pt": [
-        {"id": "primeira", "name": "Primeira experiência", "desc": "Introdução ao esporte com o capitão. Ideal para quem nunca remou.", "time": "08:00", "dur": "cerca de 1h", "price": 100},
-        {"id": "nascer", "name": "Nascer do sol", "desc": "Saída cedo, mar calmo e a cidade acordando vista da baía.", "time": "05:30", "dur": "cerca de 1h30", "price": 120},
-        {"id": "por", "name": "Pôr do sol", "desc": "O fim de tarde de Salvador visto de dentro da Baía de Todos-os-Santos.", "time": "16:30", "dur": "cerca de 1h30", "price": 120},
-        {"id": "turismo", "name": "Turismo náutico", "desc": "A orla e a história da cidade a partir do mar.", "time": "09:30", "dur": "cerca de 2h", "price": 150},
+        {"id": "primeira", "name": "Primeira experiência", "desc": "Introdução ao esporte com o capitão. Ideal para quem nunca remou.", "time": "08:00", "dur": "1h", "price": 100},
+        {"id": "nascer", "name": "Nascer do sol", "desc": "Saída cedo, mar calmo e a cidade acordando vista da baía.", "time": "05:30", "dur": "1h30", "price": 120},
+        {"id": "por", "name": "Pôr do sol", "desc": "O fim de tarde de Salvador visto de dentro da Baía de Todos-os-Santos.", "time": "16:30", "dur": "1h30", "price": 120},
+        {"id": "turismo", "name": "Turismo náutico", "desc": "A orla e a história da cidade a partir do mar.", "time": "09:30", "dur": "2h", "price": 150},
     ],
     "en": [
-        {"id": "primeira", "name": "First-time session", "desc": "An introduction to the sport with a captain. Ideal if you've never paddled.", "time": "08:00", "dur": "about 1h", "price": 100},
-        {"id": "nascer", "name": "Sunrise paddle", "desc": "An early start, calm water and the city waking up, seen from the bay.", "time": "05:30", "dur": "about 1h30", "price": 120},
-        {"id": "por", "name": "Sunset paddle", "desc": "Salvador's late afternoon, seen from inside the Bay of All Saints.", "time": "16:30", "dur": "about 1h30", "price": 120},
-        {"id": "turismo", "name": "Sea tour", "desc": "The city's waterfront and history, seen from the water.", "time": "09:30", "dur": "about 2h", "price": 150},
+        {"id": "primeira", "name": "First-time session", "desc": "An introduction to the sport with a captain. Ideal if you've never paddled.", "time": "08:00", "dur": "1h", "price": 100},
+        {"id": "nascer", "name": "Sunrise paddle", "desc": "An early start, calm water and the city waking up, seen from the bay.", "time": "05:30", "dur": "1h30", "price": 120},
+        {"id": "por", "name": "Sunset paddle", "desc": "Salvador's late afternoon, seen from inside the Bay of All Saints.", "time": "16:30", "dur": "1h30", "price": 120},
+        {"id": "turismo", "name": "Sea tour", "desc": "The city's waterfront and history, seen from the water.", "time": "09:30", "dur": "2h", "price": 150},
     ],
 }
 
@@ -46,9 +46,9 @@ def _generate_training_schedule(locale):
         ]
     )
     durs = (
-        ["cerca de 1h", "cerca de 1h30", "cerca de 1h", "cerca de 1h30"]
+        ["1h", "1h30", "1h", "1h30"]
         if locale == "pt" else
-        ["about 1h", "about 1h30", "about 1h", "about 1h30"]
+        ["1h", "1h30", "1h", "1h30"]
     )
     # weekdays segue Date.getDay() do JS: 0=domingo ... 6=sábado.
     slots = [
@@ -102,8 +102,18 @@ BOOKING = {
     "pt": {
         "title": "Reserve sua remada",
         "demo": "Demonstração: experiências, valores e vagas são ilustrativos. Nada é cobrado.",
-        "step": "Etapa {n} de {t}",
-        "steps": ["Experiência", "Dia e horário", "Participantes", "Termo", "Pagamento"],
+        "step": "{n} de {t}",
+        "steps": ["Dia e horário", "Participantes", "Termo", "Pagamento"],
+        "board_title": "Escolha sua saída.",
+        "board_subtitle": "Reserve em menos de um minuto. Confirmação imediata no WhatsApp.",
+        "board_steps": [
+            "Escolha a saída e o dia",
+            "Assine o termo e pague o sinal por Pix",
+            "Receba a confirmação e o lembrete no WhatsApp",
+        ],
+        "board_wa_prefix": "Prefere falar com alguém?",
+        "low_seats_one": "Última vaga",
+        "low_seats_many": "Últimas {n} vagas",
         "back": "Voltar",
         "next": "Continuar",
         "to_pay": "Ir para o pagamento",
@@ -113,10 +123,12 @@ BOOKING = {
         "slots": "Saídas",
         "today": "hoje",
         "free": "{n} de {c} lugares livres",
-        "full": "Lotada",
+        "full": "Esgotado",
         "pick_slot": "Escolha uma saída para continuar.",
         "people": "Participantes",
-        "seats_after": "Depois da sua reserva, {n} lugar(es) continuam livres nesta canoa.",
+        "seats_after_one": "Depois da sua reserva, 1 lugar continua livre nesta canoa.",
+        "seats_after_many": "Depois da sua reserva, {n} lugares continuam livres nesta canoa.",
+        "seats_after_none": "Depois da sua reserva, a canoa fica completa.",
         "name": "Nome do responsável",
         "phone": "WhatsApp",
         "phone_hint": "Enviamos a confirmação e o lembrete por aqui.",
@@ -189,8 +201,18 @@ BOOKING = {
     "en": {
         "title": "Book your paddle",
         "demo": "Demo: experiences, prices and availability are illustrative. Nothing is charged.",
-        "step": "Step {n} of {t}",
-        "steps": ["Experience", "Date and time", "Participants", "Waiver", "Payment"],
+        "step": "{n} of {t}",
+        "steps": ["Date and time", "Participants", "Waiver", "Payment"],
+        "board_title": "Choose your departure.",
+        "board_subtitle": "Book in under a minute. Instant confirmation on WhatsApp.",
+        "board_steps": [
+            "Choose the departure and day",
+            "Sign the waiver and pay the deposit by Pix",
+            "Get your confirmation and reminder on WhatsApp",
+        ],
+        "board_wa_prefix": "Prefer to talk to someone?",
+        "low_seats_one": "Last seat",
+        "low_seats_many": "Last {n} seats",
         "back": "Back",
         "next": "Continue",
         "to_pay": "Go to payment",
@@ -200,10 +222,12 @@ BOOKING = {
         "slots": "Departures",
         "today": "today",
         "free": "{n} of {c} seats free",
-        "full": "Full",
+        "full": "Sold out",
         "pick_slot": "Choose a departure to continue.",
         "people": "Participants",
-        "seats_after": "After your booking, {n} seat(s) remain free in this canoe.",
+        "seats_after_one": "After your booking, 1 seat remains free in this canoe.",
+        "seats_after_many": "After your booking, {n} seats remain free in this canoe.",
+        "seats_after_none": "After your booking, the canoe is full.",
         "name": "Lead name",
         "phone": "WhatsApp",
         "phone_hint": "We send your confirmation and reminder here.",

@@ -242,8 +242,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Olho editorial: regra dourada curta + versalete */
 .eyebrow {
   display: inline-flex; align-items: center; gap: 14px;
-  font-size: var(--t-2xs); font-weight: 600; letter-spacing: .22em;
-  text-transform: uppercase; color: var(--accent-ink); line-height: 1;
+  font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em;
+  color: var(--accent-ink); line-height: 1;
 }
 .eyebrow::before {
   content: ""; width: 30px; height: 1px; flex: none;
@@ -319,8 +319,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 52px; padding: 15px 28px;
   border: 1px solid transparent; border-radius: var(--radius);
-  font-size: var(--t-sm); font-weight: 650; letter-spacing: .055em;
-  text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font-size: var(--t-sm); font-weight: 650; letter-spacing: .005em;
+  text-decoration: none; cursor: pointer;
   text-align: center; line-height: 1.2;
   transition: background-color .22s ease, color .22s ease, border-color .22s ease, transform .22s ease, box-shadow .22s ease;
 }
@@ -422,8 +422,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .brand-word small {
   display: block; margin-top: 6px; font-family: var(--font);
-  font-weight: 600; font-size: .625rem; letter-spacing: .18em;
-  text-transform: uppercase; opacity: .62; line-height: 1;
+  font-weight: 600; font-size: .75rem; letter-spacing: .01em;
+  opacity: .68; line-height: 1;
 }
 /* No celular a assinatura quebraria em duas linhas e empurraria o header:
    a marca sozinha já identifica o clube nesse tamanho. */
@@ -438,8 +438,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .nav li { flex: none; }
 .nav a {
   position: relative; display: block; text-decoration: none; white-space: nowrap;
-  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .16em;
-  text-transform: uppercase; padding-block: 10px;
+  font-size: var(--t-sm); font-weight: 650; letter-spacing: 0;
+  padding-block: 10px;
 }
 .nav a::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px;
@@ -671,26 +671,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .offers > div { padding: 14px 0; border-bottom: 1px solid var(--rule-c); display: grid; gap: 4px; }
 .offers dt { font-weight: 650; font-size: var(--t-sm); letter-spacing: .01em; }
 .offers dd { color: var(--ink-2); font-size: var(--t-sm); }
-.offers .price { display: block; margin-top: 4px; color: var(--accent-ink); font-weight: 650; font-size: var(--t-xs); letter-spacing: .04em; text-transform: uppercase; }
+.offers .price { display: block; margin-top: 4px; color: var(--accent-ink); font-weight: 650; font-size: var(--t-xs); letter-spacing: .01em; }
 
 .note {
   margin-top: 20px; padding: 14px 18px; font-size: var(--t-sm); line-height: 1.5;
   background: var(--surface-2); border-left: 2px solid var(--c-gold); color: var(--ink-2);
 }
 .note strong { color: var(--ink); font-weight: 650; }
-
-/* "Como funciona a primeira remada" — passos numerados */
-.first-paddle { margin-top: clamp(28px, 3vw, 40px); padding-top: clamp(22px, 2.4vw, 32px); border-top: 1px solid var(--rule-c); }
-.steps { margin-top: 20px; display: grid; gap: 18px; counter-reset: step; }
-.step { counter-increment: step; display: grid; grid-template-columns: 38px 1fr; gap: 0 14px; align-items: start; font-size: var(--t-sm); }
-.step::before {
-  content: counter(step, decimal-leading-zero);
-  grid-row: span 2; font-family: var(--font-display); font-size: 1.125rem;
-  color: var(--accent-ink); line-height: 1.3;
-}
-.step strong { font-weight: 650; line-height: 1.3; }
-.step span { color: var(--ink-2); line-height: 1.45; }
-@media (min-width: 680px) and (max-width: 1099px) { .steps { grid-template-columns: 1fr 1fr; gap: 18px 32px; } }
 
 /* ==========================================================================
    10. Reserva — calendário, cartões e modal
@@ -706,8 +693,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .bk-title { font-family: var(--font-display); font-size: var(--t-lg); line-height: 1.1; letter-spacing: -.015em; }
 .bk-label {
-  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .2em;
-  text-transform: uppercase; color: var(--ink-3);
+  font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em;
+  color: var(--ink-3);
 }
 .bk-note { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.5; }
 .bk-err { font-size: var(--t-xs); color: var(--c-bad); font-weight: 650; }
@@ -740,7 +727,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 @media (min-width: 1100px) { .bk-day { min-height: 96px; padding-block: 16px 18px; } .bk-day b { font-size: 1.625rem; } }
 .bk-day:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
-.bk-day small { font-size: .625rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.bk-day small { font-size: .75rem; font-weight: 600; letter-spacing: 0; color: var(--ink-3); }
 .bk-day b { font-family: var(--font-display); font-weight: 400; font-size: 1.375rem; line-height: 1.05; }
 .bk-day[aria-pressed="true"] {
   background: var(--c-forest); border-color: var(--c-forest); color: var(--c-shell); transform: none;
@@ -787,7 +774,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-family: var(--font-display); font-size: 1.625rem; line-height: 1;
   letter-spacing: -.01em; color: var(--card-accent);
 }
-.bk-card-dur { font-size: var(--t-2xs); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.bk-card-dur { font-size: var(--t-xs); font-weight: 500; letter-spacing: 0; color: var(--ink-3); }
 .bk-card h4 { font-family: var(--font-display); font-weight: 400; font-size: var(--t-md); line-height: 1.15; letter-spacing: -.01em; }
 .bk-card-desc { font-size: var(--t-sm); line-height: 1.5; color: var(--ink-2); }
 .bk-card-instr { display: flex; align-items: center; gap: 9px; font-size: var(--t-xs); color: var(--ink-2); }
@@ -806,7 +793,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   text-align: right; font-size: var(--t-md); font-weight: 700; letter-spacing: -.01em;
   color: var(--ink); line-height: 1.1; white-space: nowrap;
 }
-.bk-card-price small { display: block; margin-top: 3px; font-size: var(--t-2xs); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.bk-card-price small { display: block; margin-top: 3px; font-size: var(--t-xs); font-weight: 500; letter-spacing: 0; color: var(--ink-3); }
 .bk-card-price--request { font-family: var(--font); font-size: var(--t-sm); font-weight: 650; }
 .bk-card-cta { width: 100%; margin-top: 4px; }
 
@@ -814,6 +801,64 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-card--quote { gap: 14px; padding: clamp(24px, 2.6vw, 38px); }
 .bk-card--quote h4 { font-size: var(--t-lg); }
 .bk-card--quote .bk-card-desc { font-size: var(--t-base); max-width: 44ch; }
+
+/* --- Quadro de saídas (Experimentar): lista editorial, não cartões ---
+   Uma linha por experiência, separadas por filetes finos — sem caixas,
+   sem sombra, sem fundo branco. A linha inteira é um botão; clicar abre
+   o painel lateral (ver .bk-overlay--drawer acima). */
+.board { list-style: none; margin: 0; padding: 0; }
+.board-row { border-bottom: 1px solid var(--rule-c); }
+.board-row:first-child { border-top: 1px solid var(--rule-c); }
+.board-row-btn {
+  display: grid; grid-template-columns: 76px 1fr auto auto 22px;
+  align-items: center; gap: clamp(16px, 2vw, 28px);
+  width: 100%; min-height: 96px; padding: clamp(16px, 1.8vw, 20px) 4px;
+  background: none; border: 0; text-align: left; cursor: pointer;
+  color: var(--ink); font: inherit; transition: background-color .2s;
+}
+.board-row-btn:hover, .board-row-btn:focus-visible { background: var(--surface-2); }
+.board-row--full .board-row-btn { cursor: not-allowed; opacity: .5; }
+.board-time {
+  font-family: var(--font-display); font-size: clamp(1.5rem, 1.2rem + .8vw, 1.875rem);
+  font-variant-numeric: tabular-nums; line-height: 1; color: var(--ink);
+}
+.board-main { display: grid; gap: 5px; min-width: 0; }
+.board-name {
+  font-family: var(--font-display); font-size: var(--t-md); line-height: 1.2;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.board-desc { font-size: var(--t-sm); color: var(--ink-3); line-height: 1.4; }
+.board-badge { font-family: var(--font); font-size: var(--t-xs); font-weight: 650; color: var(--c-gold-2); }
+.board-badge--out { color: var(--ink-3); }
+.board-dur { font-size: var(--t-sm); color: var(--ink-3); white-space: nowrap; }
+.board-price {
+  text-align: right; font-family: var(--font-display); font-size: var(--t-md);
+  line-height: 1.1; white-space: nowrap; color: var(--ink);
+}
+.board-price small { display: block; margin-top: 2px; font-family: var(--font); font-size: var(--t-xs); font-weight: 500; color: var(--ink-3); }
+.board-arrow { color: var(--ink-3); transition: transform .2s, color .2s; }
+.board-arrow svg { width: 18px; height: 18px; display: block; }
+.board-row-btn:hover .board-arrow, .board-row-btn:focus-visible .board-arrow { transform: translateX(4px); color: var(--ink); }
+.board-row-btn:hover .board-name, .board-row-btn:focus-visible .board-name { text-decoration: underline; text-decoration-color: var(--c-gold); text-underline-offset: 4px; }
+@media (max-width: 767px) {
+  .board-row-btn {
+    grid-template-columns: 1fr auto 22px;
+    grid-template-areas: "time price arrow" "main main main";
+    row-gap: 10px; min-height: auto;
+  }
+  .board-time { grid-area: time; }
+  .board-price { grid-area: price; }
+  .board-arrow { grid-area: arrow; align-self: start; margin-top: 6px; }
+  .board-main { grid-area: main; }
+  .board-dur { display: none; }
+}
+
+/* Coluna estreita: "como funciona" em 3 frases (sem numeração) + link pro
+   pop-up do WhatsApp, pra quem prefere falar com alguém. */
+.board-steps { margin-top: clamp(20px, 2.4vw, 32px); display: grid; gap: 0; border-top: 1px solid var(--rule-c); }
+.board-steps li { padding: 14px 0; border-bottom: 1px solid var(--rule-c); font-size: var(--t-sm); line-height: 1.45; color: var(--ink-2); }
+.board-wa { margin-top: 20px; font-size: var(--t-sm); color: var(--ink-3); }
+.board-wa a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 /* --- Modal --- */
 .bk-overlay {
@@ -850,24 +895,47 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-modal-close svg { width: 19px; height: 19px; }
 body.bk-modal-open { overflow: hidden; }
 
-/* Trilha de etapas */
-.bk-steps { flex: none; display: flex; gap: 0; padding: 0 clamp(20px, 2.6vw, 32px); background: var(--c-shell); border-bottom: 1px solid var(--rule-c); }
-.bk-steps li {
-  flex: 1; padding: 13px 0 11px; border-bottom: 2px solid transparent;
-  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .12em; text-transform: uppercase;
-  color: #9AA5A0; display: flex; align-items: center; gap: 7px;
+/* Painel lateral (drawer) — só a jornada Experimentar: a reserva abre num
+   painel que desliza da direita no desktop e sobe do rodapé no celular
+   (bottom sheet), em vez do diálogo centralizado das outras duas jornadas. */
+.bk-overlay--drawer {
+  background: rgba(6, 26, 20, .5); -webkit-backdrop-filter: none; backdrop-filter: none;
+  align-items: flex-end; justify-content: center; padding: 0;
 }
-.bk-steps li b { font-weight: 650; flex: none; }
-.bk-steps li[data-state="done"] { color: var(--ink-2); }
-.bk-steps li[data-state="on"] { color: var(--c-ink); border-bottom-color: var(--c-gold); }
-/* Em telas estreitas os três rótulos não cabem lado a lado: só o da etapa
-   atual fica escrito, as outras viram o número. */
-@media (max-width: 519px) {
-  .bk-steps li { font-size: .625rem; letter-spacing: .08em; gap: 0; justify-content: center; }
-  .bk-steps li:not([data-state="on"]) { font-size: 0; }
-  .bk-steps li:not([data-state="on"]) b { font-size: .6875rem; }
-  .bk-steps li[data-state="on"] b { margin-right: 6px; }
+.bk-modal--drawer {
+  max-width: 100%; width: 100%; max-height: 90svh; height: 90svh;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  animation: sheet-up .3s cubic-bezier(.2, .8, .3, 1);
 }
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes drawer-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@media (min-width: 768px) {
+  .bk-overlay--drawer { justify-content: flex-end; }
+  .bk-modal--drawer {
+    width: 440px; max-width: 92vw; height: 100svh; max-height: 100svh;
+    border-radius: 0; animation: drawer-in .3s cubic-bezier(.2, .8, .3, 1);
+  }
+}
+
+/* Progresso: texto discreto ("2 de 4"), não barra colorida nem números
+   "01/02/03" — a trilha de etapas antiga pesava mais do que ajudava. */
+.bk-progress {
+  flex: none; padding: 9px clamp(20px, 2.6vw, 32px);
+  background: var(--c-shell); border-bottom: 1px solid var(--rule-c);
+  font-size: var(--t-xs); color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+
+/* Dia e horário (dentro do painel): mesma faixa de 14 dias do .bk-cal,
+   com o detalhe da saída do dia escolhido logo abaixo. */
+.bk-slot-detail { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding-top: 6px; }
+.bk-slot-time {
+  font-family: var(--font-display); font-size: 2rem; line-height: 1;
+  font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.bk-slot-dur { font-size: var(--t-sm); color: var(--ink-2); }
+.bk-badge { font-size: var(--t-xs); font-weight: 650; padding: 4px 11px; border-radius: 999px; }
+.bk-badge--low { background: rgba(190, 149, 69, .16); color: var(--accent-ink); }
+.bk-badge--out { background: rgba(166, 64, 43, .12); color: var(--c-bad); }
 
 .bk-body {
   flex: 1 1 auto; display: flex; flex-direction: column; gap: 16px;
@@ -900,8 +968,8 @@ body.bk-modal-open { overflow: hidden; }
 /* Campos do modal */
 .bk-field { display: grid; gap: 7px; }
 .bk-field > label, .bk-field > legend, .bk-field .bk-label {
-  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--ink-2); padding: 0;
+  font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em;
+  color: var(--ink-2); padding: 0;
 }
 .bk-field input, .bk-field select, .bk-field textarea {
   width: 100%; min-height: 50px; padding: 12px 14px;
@@ -975,7 +1043,7 @@ body.bk-modal-open { overflow: hidden; }
 .fields { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .field--full { grid-column: 1 / -1; }
 .field { display: grid; gap: 7px; align-content: start; }
-.field > label { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.field > label { font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-2); }
 .field .hint { font-size: var(--t-xs); color: var(--ink-3); }
 .field input, .field select, .field textarea {
   width: 100%; min-height: 50px; padding: 12px 14px;
@@ -1009,13 +1077,13 @@ body.bk-modal-open { overflow: hidden; }
 }
 .club-pillars { margin-top: clamp(28px, 3vw, 44px); display: grid; gap: 0; border-top: 1px solid var(--rule-c); }
 .club-pillars > div { padding: 18px 0; border-bottom: 1px solid var(--rule-c); display: grid; gap: 5px; }
-.club-pillars dt { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-ink); }
+.club-pillars dt { font-size: var(--t-sm); font-weight: 650; letter-spacing: .01em; color: var(--accent-ink); }
 .club-pillars dd { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.5; max-width: 52ch; }
 
 .captains { margin-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 24px); }
 .captain-media { aspect-ratio: 4 / 5; }
 .captain figcaption { padding-top: 14px; display: grid; gap: 3px; }
-.captain .meta { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
+.captain .meta { font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-3); }
 .captain strong { font-family: var(--font-display); font-weight: 400; font-size: var(--t-md); letter-spacing: -.01em; line-height: 1.2; }
 .captain .link { display: inline-block; font-size: var(--t-xs); color: var(--ink-2); padding-block: 6px; }
 
@@ -1110,7 +1178,7 @@ body.bk-modal-open { overflow: hidden; }
 .map iframe { width: 100%; height: 100%; border: 0; display: block; filter: grayscale(.4) contrast(1.04); }
 .place-list { margin: clamp(20px, 2.2vw, 28px) 0 26px; border-top: 1px solid var(--rule-c); }
 .place-list > div { padding: 14px 0; border-bottom: 1px solid var(--rule-c); display: grid; gap: 4px; font-size: var(--t-sm); }
-.place-list dt { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
+.place-list dt { font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-3); }
 .place-list dd { color: var(--ink); }
 @media (min-width: 560px) { .place-list > div { grid-template-columns: 160px 1fr; gap: 16px; align-items: baseline; } }
 
@@ -1184,11 +1252,11 @@ body.bk-modal-open { overflow: hidden; }
 }
 .pcard-media { aspect-ratio: 4 / 5; }
 .pcard-body { display: block; padding-top: 16px; border-top: 1px solid var(--rule-c); margin-top: 14px; }
-.pcard-cat { display: block; font-size: var(--t-2xs); font-weight: 650; text-transform: uppercase; letter-spacing: .18em; color: var(--ink-3); }
+.pcard-cat { display: block; font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-3); }
 .pcard-name { display: block; margin-top: 7px; font-family: var(--font-display); font-weight: 400; font-size: var(--t-lg); letter-spacing: -.012em; line-height: 1.12; }
 .pcard-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
 .pcard-price { font-size: var(--t-sm); font-weight: 700; letter-spacing: .01em; }
-.pcard-stock { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.pcard-stock { font-size: var(--t-xs); font-weight: 650; letter-spacing: 0; color: var(--ink-3); }
 .pcard-stock--available { color: var(--c-good); }
 .pcard-stock--low { color: var(--accent-ink); }
 .pcard-stock--out { color: var(--c-bad); }
@@ -1230,17 +1298,17 @@ body.bk-modal-open { overflow: hidden; }
   display: grid; gap: 12px; align-content: start; overflow-y: auto;
 }
 @media (min-width: 860px) { .pmodal-info { align-content: center; padding-top: clamp(40px, 4vw, 64px); } }
-.pmodal-cat { font-size: var(--t-2xs); font-weight: 650; text-transform: uppercase; letter-spacing: .2em; color: var(--accent-ink); }
+.pmodal-cat { font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--accent-ink); }
 .pmodal-title { font-family: var(--font-display); font-weight: 400; font-size: var(--t-xl); line-height: 1.06; letter-spacing: -.018em; }
 .pmodal-desc { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; max-width: 46ch; }
 .pmodal-meta { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--rule-c); }
 .pmodal-price { font-size: var(--t-lg); font-weight: 700; letter-spacing: -.01em; }
-.pmodal-stock { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+.pmodal-stock { font-size: var(--t-xs); font-weight: 650; letter-spacing: 0; }
 .pmodal-stock--available { color: var(--c-good); }
 .pmodal-stock--low { color: var(--accent-ink); }
 .pmodal-stock--out { color: var(--c-bad); }
 .pmodal-field { margin-top: 8px; }
-.pmodal-label { display: block; font-size: var(--t-2xs); font-weight: 650; text-transform: uppercase; letter-spacing: .16em; color: var(--ink-2); margin-bottom: 10px; }
+.pmodal-label { display: block; font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-2); margin-bottom: 10px; }
 .pmodal-opts { display: flex; flex-wrap: wrap; gap: 8px; }
 .pmodal-opt {
   min-width: 48px; min-height: 44px; padding: 10px 16px;
@@ -1293,7 +1361,7 @@ body.pmodal-open { overflow: hidden; }
 .nl-title { font-family: var(--font-display); font-weight: 400; font-size: var(--t-xl); line-height: 1.06; letter-spacing: -.018em; }
 .nl-text { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; max-width: 42ch; }
 .nl-field { display: grid; gap: 7px; margin-top: 10px; }
-.nl-field label { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.nl-field label { font-size: var(--t-xs); font-weight: 650; letter-spacing: .01em; color: var(--ink-2); }
 .nl-field input {
   min-height: 52px; padding: 12px 16px; background: var(--c-white);
   border: 1px solid var(--rule-c); border-radius: var(--radius); font-size: var(--t-sm);
@@ -1372,7 +1440,7 @@ body.nl-open { overflow: hidden; }
 .footer-brand .brand-word { color: var(--c-shell); font-size: clamp(2rem, 1.3rem + 2.8vw, 3.5rem); }
 .footer-brand p { margin-top: 18px; max-width: 34ch; line-height: 1.65; font-size: var(--t-base); }
 .footer-brand .btn { margin-top: 28px; }
-.footer h2 { font-size: var(--t-xs); font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: var(--c-gold-2); margin-bottom: 14px; }
+.footer h2 { font-size: var(--t-sm); font-weight: 650; letter-spacing: .01em; color: var(--c-gold-2); margin-bottom: 14px; }
 .footer-col li a, .footer-col li:not(:has(a)) { font-size: var(--t-base); }
 /* O espaçamento entre as linhas vem do padding do próprio link, não de
    uma margem: o ritmo visual é o mesmo e cada item vira um alvo de toque
@@ -1457,7 +1525,7 @@ body.nl-open { overflow: hidden; }
   border-bottom: 2px solid var(--c-gold);
 }
 .wa-head strong { display: block; font-family: var(--font-display); font-weight: 400; font-size: var(--t-md); letter-spacing: -.01em; }
-.wa-head span { display: block; font-size: var(--t-2xs); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(247, 244, 237, .6); margin-top: 5px; }
+.wa-head span { display: block; font-size: var(--t-xs); font-weight: 500; letter-spacing: 0; color: rgba(247, 244, 237, .6); margin-top: 5px; }
 .wa-head button { flex: none; width: 30px; height: 30px; margin: -4px -6px 0 0; display: grid; place-items: center; background: none; border: 0; border-radius: 50%; color: inherit; cursor: pointer; }
 .wa-head button:hover { background: rgba(247, 244, 237, .16); }
 .wa-head button svg { width: 17px; height: 17px; }

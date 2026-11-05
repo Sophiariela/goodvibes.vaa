@@ -213,14 +213,6 @@ CONTENT = {
         "f_privacy": "Seus dados são usados só para responder a esta solicitação, pela conversa de WhatsApp que você mesmo envia.",
         "f_privacy_site": "Seus dados são usados só para responder a esta solicitação, pelo WhatsApp informado.",
 
-        "steps_title": "Como funciona a primeira remada.",
-        "steps_lead": "Do primeiro contato até a canoa na água.",
-        "steps": [
-            ("Envie sua solicitação", "Escolha a experiência e a data e mande sua solicitação pelo WhatsApp."),
-            ("Receba a confirmação", "A equipe confirma horário, valores e as condições do mar."),
-            ("Chegue à Praia da Preguiça", "Encontro na areia com os capitães, no ponto combinado."),
-            ("Orientação e saída", "Instruções de remada e segurança e, então, mar."),
-        ],
         "bring_title": "O que levar",
         "bring": ["Roupa de banho", "Protetor solar", "Água", "Boné ou viseira", "Bolsa estanque para o celular"],
 
@@ -437,14 +429,6 @@ CONTENT = {
         "f_privacy": "Your details are only used to answer this request, through the WhatsApp message you send yourself.",
         "f_privacy_site": "Your details are only used to answer this request, on the WhatsApp number you provided.",
 
-        "steps_title": "How your first paddle works.",
-        "steps_lead": "From first message to canoe on the water.",
-        "steps": [
-            ("Send your request", "Pick the experience and date and send your request on WhatsApp."),
-            ("Get your confirmation", "The team confirms the time, price and sea conditions."),
-            ("Meet at Praia da Preguiça", "Meet the captains on the sand at the agreed spot."),
-            ("Briefing and launch", "Paddling and safety instructions, then out to sea."),
-        ],
         "bring_title": "What to bring",
         "bring": ["Swimwear", "Sunscreen", "Water", "Cap or visor", "Dry bag for your phone"],
 
@@ -1009,12 +993,6 @@ def render(code):
                 + "</details>")
 
     # A — experimentar
-    steps = "".join(f'<li class="step"><strong>{e(t)}</strong><span>{e(d)}</span></li>' for t, d in c["steps"])
-    steps_block = f"""<div class="first-paddle" id="primeira-remada">
-            <h3 class="h3">{e(c['steps_title'])}</h3>
-            <ol class="steps">{steps}</ol>
-          </div>"""
-
     if SITE["booking_mode"] == "off":
         # Sem sistema de reservas: formulário de WhatsApp de sempre.
         a_fields = (
@@ -1023,17 +1001,25 @@ def render(code):
             + field("a-people", c["f_people"], text_input("a-people", "people", c["f_people"], kind="number", extra='min="1" max="60" inputmode="numeric" value="1"'))
             + more_field("a-notes", "notes", c["f_notes"], c["f_notes_hint"])
         )
+        panel_a_head = f'<h3 class="h3">{e(c["a_title"])}</h3><p class="lead">{e(c["a_lead"])}</p>'
         panel_a_main = form_shell("experimentar", c["a_form_title"], c["a_form_intro"], c["a_wa_intro"], a_fields, c["f_submit"], c)
         panel_a_aside = offer_list(c["a_offers"]) + f'<p class="note">{c["a_note"]}</p>'
     else:
+        # Reserva no site: a coluna estreita descreve o quadro de saídas ao
+        # lado (ver booking.js, flow "calendar+pix"), não mais o formulário
+        # de WhatsApp — a reserva não depende mais de pedir pelo WhatsApp.
         demo_note = (
             f'<p class="bk-demo-note">{e(c["bk"]["demo"])}</p>' if SITE["booking_mode"] == "demo" else ""
         )
+        panel_a_head = f'<h3 class="h3">{e(c["bk"]["board_title"])}</h3><p class="lead">{e(c["bk"]["board_subtitle"])}</p>'
         panel_a_main = f"""<div class="bk" data-booking data-modality="experimentar">
             {demo_note}
             <div class="bk-root"></div>
           </div>"""
-        panel_a_aside = steps_block
+        board_steps_html = "".join(f"<li>{e(s)}</li>" for s in c["bk"]["board_steps"])
+        panel_a_aside = f"""
+          <ul class="board-steps">{board_steps_html}</ul>
+          <p class="board-wa">{e(c["bk"]["board_wa_prefix"])} <a href="{wa_link()}" data-wa-open>{e(c["cta_team"])}</a></p>"""
 
     # Coluna estreita (narrativa) + coluna larga (reserva): no desktop a
     # reserva ocupa 8 das 12 colunas, em vez do cartão fixo de 420px.
@@ -1041,8 +1027,7 @@ def render(code):
     <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
       <div class="panel-grid">
         <div class="panel-intro">
-          <h3 class="h3">{e(c['a_title'])}</h3>
-          <p class="lead">{e(c['a_lead'])}</p>
+          {panel_a_head}
           {panel_a_aside}
         </div>
         <div class="panel-main">
