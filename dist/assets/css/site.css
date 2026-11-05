@@ -151,7 +151,7 @@
    .band-dark. Redeclarar os tokens no próprio elemento vence a herança do
    contexto escuro, então um mesmo componente serve nos dois fundos sem
    nenhuma regra duplicada. */
-.bk-card, .bk-overlay, .pmodal-overlay, .nl-overlay, .wa-card, .form, .dock {
+.bk-overlay, .pmodal-overlay, .nl-overlay, .wa-card, .form, .dock {
   --surface: var(--c-white);
   --surface-2: var(--c-shell-2);
   --ink: var(--c-ink);
@@ -741,71 +741,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .band-dark .bk-day[aria-pressed="true"] { background: var(--c-shell); border-color: var(--c-shell); color: var(--c-forest); }
 .band-dark .bk-day[aria-pressed="true"] small { color: rgba(13, 53, 39, .62); }
 
-/* --- Cartões de atividade --- */
-.bk-cards { display: grid; gap: clamp(12px, 1.2vw, 20px); }
-@media (min-width: 640px) { .bk-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-/* A partir de 1360px o painel de reserva (8/12 da grade) já tem largura de
-   sobra pra três cartões lado a lado — manter só duas colunas até aí era o
-   principal motivo de a reserva parecer uma tela de celular esticada. */
-@media (min-width: 1360px) { .bk-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-/* Dia com uma saída só: o cartão ocupa a largura toda em vez de deixar
-   a maior parte da coluna vazia (acontece bastante na grade de Treinar). */
-.bk-cards:has(> :last-child:nth-child(1)) { grid-template-columns: minmax(0, 1fr); }
-.bk-cards--quote { display: block; }
-
-.bk-card {
-  --card-accent: var(--c-forest);
-  position: relative; display: grid; gap: 10px; align-content: start;
-  padding: clamp(18px, 1.8vw, 24px);
-  background: var(--surface); color: var(--ink);
-  border: 1px solid var(--rule-c); border-radius: var(--radius);
-  transition: border-color .25s, box-shadow .25s, transform .25s;
-}
-.bk-card::before {
-  content: ""; position: absolute; inset: -1px -1px auto; height: 2px; background: var(--card-accent);
-}
-.bk-card:hover { border-color: var(--rule-strong); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-/* Sobre o verde profundo o cartão usa o off-white (não o branco puro) —
-   fica menos "recortado" e mais editorial. */
-.band-dark .bk-card { background: var(--c-shell); border-color: transparent; }
-
-.bk-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.bk-card-time {
-  font-family: var(--font-display); font-size: 1.625rem; line-height: 1;
-  letter-spacing: -.01em; color: var(--card-accent);
-}
-.bk-card-dur { font-size: var(--t-xs); font-weight: 500; letter-spacing: 0; color: var(--ink-3); }
-.bk-card h4 { font-family: var(--font-display); font-weight: 400; font-size: var(--t-md); line-height: 1.15; letter-spacing: -.01em; }
-.bk-card-desc { font-size: var(--t-sm); line-height: 1.5; color: var(--ink-2); }
-.bk-card-instr { display: flex; align-items: center; gap: 9px; font-size: var(--t-xs); color: var(--ink-2); }
-.bk-card-instr img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; }
-
-.bk-card-foot {
-  margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--rule-c);
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap;
-}
-.bk-seats { display: grid; gap: 7px; min-width: 96px; }
-.bk-card-seats { font-size: var(--t-xs); color: var(--ink-2); }
-.bk-meter { height: 2px; background: var(--rule-c); overflow: hidden; }
-.bk-meter i { display: block; height: 100%; width: var(--pct, 0%); background: var(--card-accent); }
-.bk-card--full .bk-meter i { background: var(--c-bad); }
-.bk-card-price {
-  text-align: right; font-size: var(--t-md); font-weight: 700; letter-spacing: -.01em;
-  color: var(--ink); line-height: 1.1; white-space: nowrap;
-}
-.bk-card-price small { display: block; margin-top: 3px; font-size: var(--t-xs); font-weight: 500; letter-spacing: 0; color: var(--ink-3); }
-.bk-card-price--request { font-family: var(--font); font-size: var(--t-sm); font-weight: 650; }
-.bk-card-cta { width: 100%; margin-top: 4px; }
-
-/* Cartão de orçamento (Particular) */
-.bk-card--quote { gap: 14px; padding: clamp(24px, 2.6vw, 38px); }
-.bk-card--quote h4 { font-size: var(--t-lg); }
-.bk-card--quote .bk-card-desc { font-size: var(--t-base); max-width: 44ch; }
-
-/* --- Quadro de saídas (Experimentar): lista editorial, não cartões ---
-   Uma linha por experiência, separadas por filetes finos — sem caixas,
-   sem sombra, sem fundo branco. A linha inteira é um botão; clicar abre
-   o painel lateral (ver .bk-overlay--drawer acima). */
+/* --- Quadro de saídas (as três jornadas): lista editorial, não cartões ---
+   Uma linha por experiência/turma/orçamento, separadas por filetes finos —
+   sem caixas, sem sombra, sem fundo branco. A linha inteira é um botão;
+   clicar abre o painel lateral (ver .bk-overlay--drawer acima). */
 .board { list-style: none; margin: 0; padding: 0; }
 .board-row { border-bottom: 1px solid var(--rule-c); }
 .board-row:first-child { border-top: 1px solid var(--rule-c); }
@@ -851,6 +790,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .board-arrow { grid-area: arrow; align-self: start; margin-top: 6px; }
   .board-main { grid-area: main; }
   .board-dur { display: none; }
+  .board-row--single .board-row-btn {
+    grid-template-columns: 1fr 22px; grid-template-areas: "main arrow"; min-height: auto;
+  }
 }
 
 /* Coluna estreita: "como funciona" em 3 frases (sem numeração) + link pro
@@ -859,6 +801,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .board-steps li { padding: 14px 0; border-bottom: 1px solid var(--rule-c); font-size: var(--t-sm); line-height: 1.45; color: var(--ink-2); }
 .board-wa { margin-top: 20px; font-size: var(--t-sm); color: var(--ink-3); }
 .board-wa a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* Linha de instrutor (Treinar) — foto pequena + nome, discreta, sob a
+   descrição da turma. */
+.board-instr { display: flex; align-items: center; gap: 8px; font-size: var(--t-xs); color: var(--ink-3); margin-top: 2px; }
+.board-instr img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; flex: none; }
+
+/* Linha única de orçamento (Particular) — mesma casca do quadro, sem
+   horário/duração/preço: só nome, descrição e a seta. Um pouco mais alta
+   e com o nome maior, já que é a única linha da jornada. */
+.board-row--single .board-row-btn {
+  grid-template-columns: 1fr 22px; min-height: 116px; gap: 20px;
+}
+.board-row--single .board-name { font-size: var(--t-lg); }
+.board-row--single .board-desc { font-size: var(--t-base); max-width: 56ch; }
 
 /* --- Modal --- */
 .bk-overlay {

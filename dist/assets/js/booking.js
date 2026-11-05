@@ -212,11 +212,7 @@ function initModality(host, modality, config, i18n) {
       ${nextLabel ? `<button type="button" class="btn btn--gold" data-bk="go" ${disabled ? 'aria-disabled="true"' : ''} ${S.busy ? 'disabled' : ''}>${S.busy ? esc(T.sending) : esc(nextLabel)}</button>` : ''}
     </div>`);
 
-  /* O acento de cada jornada vem de MODALITIES (booking_content.py) como
-     "ocean" | "forest" | "sand" e resolve para os tokens --accent-* do CSS. */
-  const accentVar = `--card-accent: var(--accent-${modality.accent})`;
-
-  /* ----- calendário + cartões ----- */
+  /* ----- calendário ----- */
   function renderCalendar() {
     const chips = S.days.map((d, i) => {
       const top = i === 0 ? T.today : T.weekdays[d.getDay()];
@@ -228,25 +224,30 @@ function initModality(host, modality, config, i18n) {
     </div>`;
   }
 
-  /* ----- quadro de saídas (Experimentar) — lista editorial, não cartões ---
-     Uma linha por experiência de hoje, ordenada por horário. Clicar abre o
-     painel lateral já com a experiência selecionada; dia/horário são
-     escolhidos DENTRO do painel (ver dayTimeStep), não aqui fora. */
+  /* ----- quadro de saídas (as três jornadas) — lista editorial, não
+     cartões. Uma linha por experiência/turma, ordenada por horário.
+     Reaproveitada por Experimentar (dia escolhido DENTRO do painel, ver
+     dayTimeStep) e Treinar (dia escolhido no calendário ao lado, como
+     antes — só a aparência da linha muda, não a navegação por dia). */
   function boardRowHtml(a) {
     const full = a.available <= 0;
     const low = !full && a.available <= 3;
     const price = a.price != null
-      ? `${moneyNoCents(a.price)}<small>${esc(T.per_person)}</small>`
+      ? `${moneyNoCents(a.price)}${flow === 'calendar+pix' ? `<small>${esc(T.per_person)}</small>` : ''}`
       : `<small>${esc(T.price_on_request)}</small>`;
     const badge = full
       ? `<span class="board-badge board-badge--out">${esc(T.full)}</span>`
       : low ? `<span class="board-badge">${esc(lowSeatsLabel(a.available))}</span>` : '';
+    const instr = a.instructor
+      ? `<span class="board-instr">${a.instructorPhoto ? `<img src="${esc(a.instructorPhoto)}" alt="" width="22" height="22">` : ''}${esc(fmt(T.with_instructor, { name: a.instructor }))}</span>`
+      : '';
     return `<li class="board-row${full ? ' board-row--full' : ''}">
       <button type="button" class="board-row-btn" data-reserve="${esc(a.id)}" ${full ? 'disabled aria-disabled="true"' : ''}>
         <span class="board-time">${esc(timeLabel(a.time))}</span>
         <span class="board-main">
           <span class="board-name">${esc(a.name)}${badge}</span>
           <span class="board-desc">${esc(a.desc)}</span>
+          ${instr}
         </span>
         <span class="board-dur">${esc(a.dur)}</span>
         <span class="board-price">${price}</span>
@@ -255,10 +256,10 @@ function initModality(host, modality, config, i18n) {
     </li>`;
   }
 
-  function renderBoard() {
-    if (S.boardLoading) return `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
-    if (!S.boardCards.length) return `<p class="bk-note">${esc(T.no_dates)}</p>`;
-    const sorted = [...S.boardCards].sort((x, y) => x.time.localeCompare(y.time));
+  function boardListHtml(cards, loading) {
+    if (loading) return `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
+    if (!cards.length) return `<p class="bk-note">${esc(T.no_dates)}</p>`;
+    const sorted = [...cards].sort((x, y) => x.time.localeCompare(y.time));
     return `<ul class="board">${sorted.map(boardRowHtml).join('')}</ul>`;
   }
 
@@ -269,47 +270,20 @@ function initModality(host, modality, config, i18n) {
     S.boardLoading = false; render();
   }
 
-  function cardHtml(a) {
-    const full = a.available <= 0;
-    const capacity = a.capacity || a.available || 1;
-    const pct = Math.max(0, Math.min(100, Math.round((a.available / capacity) * 100)));
-    const price = a.price != null
-      ? `<span class="bk-card-price">${money(a.price)}${flow === 'calendar+pix' ? `<small>${esc(T.per_person)}</small>` : ''}</span>`
-      : `<span class="bk-card-price bk-card-price--request">${esc(T.price_on_request)}</span>`;
-    const instr = a.instructor
-      ? `<p class="bk-card-instr">${a.instructorPhoto ? `<img src="${esc(a.instructorPhoto)}" alt="" width="30" height="30">` : ''}<span>${esc(fmt(T.with_instructor, { name: a.instructor }))}</span></p>`
-      : '';
-    return `<article class="bk-card${full ? ' bk-card--full' : ''}" style="${accentVar}">
-      <div class="bk-card-top">
-        <span class="bk-card-time">${esc(timeLabel(a.time))}</span>
-        <span class="bk-card-dur">${esc(a.dur)}</span>
-      </div>
-      <h4>${esc(a.name)}</h4>
-      <p class="bk-card-desc">${esc(a.desc)}</p>
-      ${instr}
-      <div class="bk-card-foot">
-        <span class="bk-seats">
-          <span class="bk-card-seats">${full ? esc(T.full) : esc(fmt(T.seats_n, { n: a.available }))}</span>
-          <span class="bk-meter" aria-hidden="true"><i style="--pct:${pct}%"></i></span>
-        </span>
-        ${price}
-      </div>
-      <button type="button" class="btn btn--solid bk-card-cta" data-reserve="${esc(a.id)}" ${full ? 'disabled' : ''}>${esc(T.reserve)}</button>
-    </article>`;
-  }
-
-  function renderCards() {
-    if (S.cardsLoading) return `<p class="bk-wait"><span class="bk-dot" aria-hidden="true"></span>${esc(T.loading)}</p>`;
-    if (!S.cards.length) return `<p class="bk-note">${esc(T.no_dates)}</p>`;
-    return `<div class="bk-cards">${S.cards.map(cardHtml).join('')}</div>`;
-  }
-
-  function renderQuoteCard() {
-    return `<div class="bk-cards bk-cards--quote"><article class="bk-card bk-card--quote" style="${accentVar}">
-      <h4>${esc(T.quote_title)}</h4>
-      <p class="bk-card-desc">${esc(T.quote_lead)}</p>
-      <button type="button" class="btn btn--solid bk-card-cta" data-reserve="quote">${esc(T.send_quote)}</button>
-    </article></div>`;
+  /* Particular não tem horário: uma linha única, mesma casca do quadro
+     (filete, seta, hover), só sem as colunas de hora/duração/preço. */
+  function renderQuoteBlock() {
+    return `<ul class="board">
+      <li class="board-row board-row--single">
+        <button type="button" class="board-row-btn" data-reserve="quote">
+          <span class="board-main">
+            <span class="board-name">${esc(T.quote_title)}</span>
+            <span class="board-desc">${esc(T.quote_lead)}</span>
+          </span>
+          <span class="board-arrow" aria-hidden="true">${ICON_ARROW}</span>
+        </button>
+      </li>
+    </ul>`;
   }
 
   /* ----- modal: dia e horário (Experimentar, 1º passo do painel) -----
@@ -487,11 +461,12 @@ function initModality(host, modality, config, i18n) {
     if (flow === 'calendar+request') return T.request_title;
     return T.quote_title;
   }
-  /* Olho do modal: dia e horário já confirmados (passo 0 é exatamente onde
-     isso ainda está sendo escolhido, então não repete ali). */
+  /* Olho do modal: dia e horário já confirmados. Na Experimentar o passo 0
+     é exatamente onde isso ainda está sendo escolhido (não repete ali); no
+     Treinar o dia já vem do calendário ao lado, antes do painel abrir. */
   function modalKicker() {
-    if (flow !== 'calendar+pix') return '';
-    if (S.step === 0 || !S.activity || !S.activity.dateKey) return '';
+    if (flow === 'quote' || !S.activity || !S.activity.dateKey) return '';
+    if (flow === 'calendar+pix' && S.step === 0) return '';
     return `${dayLabel(S.activity.dateKey)} · ${timeLabel(S.activity.time)}`;
   }
   /* Progresso como texto discreto ("2 de 4"), não barra colorida nem
@@ -510,9 +485,10 @@ function initModality(host, modality, config, i18n) {
   }
   function renderModal() {
     const kicker = modalKicker();
-    const drawer = flow === 'calendar+pix';
-    return `<div class="bk-overlay${drawer ? ' bk-overlay--drawer' : ''}" data-bk-overlay>
-      <div class="bk-modal${drawer ? ' bk-modal--drawer' : ''}" role="dialog" aria-modal="true" aria-labelledby="${uid}-modal-title">
+    /* As três jornadas abrem o mesmo painel lateral (drawer no desktop,
+       folha de baixo no celular) — nunca mais o diálogo centralizado. */
+    return `<div class="bk-overlay bk-overlay--drawer" data-bk-overlay>
+      <div class="bk-modal bk-modal--drawer" role="dialog" aria-modal="true" aria-labelledby="${uid}-modal-title">
         <div class="bk-modal-head">
           <div>
             ${kicker ? `<p class="eyebrow">${esc(kicker)}</p>` : ''}
@@ -529,7 +505,9 @@ function initModality(host, modality, config, i18n) {
   }
 
   function render(focus = false) {
-    const body = flow === 'quote' ? renderQuoteCard() : flow === 'calendar+pix' ? renderBoard() : `${renderCalendar()}${renderCards()}`;
+    const body = flow === 'quote' ? renderQuoteBlock()
+      : flow === 'calendar+pix' ? boardListHtml(S.boardCards, S.boardLoading)
+      : `${renderCalendar()}${boardListHtml(S.cards, S.cardsLoading)}`;
     root.innerHTML = body + (S.modalOpen ? renderModal() : '');
     if (S.modalOpen && focus) root.querySelector('.bk-modal-head .bk-title, .bk-done .bk-title')?.focus({ preventScroll: true });
   }
