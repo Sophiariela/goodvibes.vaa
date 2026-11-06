@@ -768,29 +768,18 @@ def page_footer(code, prefix, page):
     return f"""
 <footer class="footer">
   <div class="wrap wrap--wide">
-    <div class="footer-top">
+    <div class="footer-grid">
       <div class="footer-brand">
         <p class="brand-word">Good Vibes Va'a</p>
         <p>{e(c['footer_about'])}</p>
         <a class="btn btn--line btn--sm" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
       </div>
-      <dl class="footer-index">
-        <div>
-          <dt>{e(c['footer_nav'])}</dt>
-          <dd><nav class="footer-nav-inline" aria-label="{e(c['footer_nav'])}"><ul>{fnav}</ul></nav></dd>
-        </div>
-        <div>
-          <dt>{e(c['footer_contact'])}</dt>
-          <dd>
-            <a href="{wa_link()}" target="_blank" rel="noopener">WhatsApp {e(SITE['whatsapp_display'])}</a>
-            <span>Praia da Preguiça, Salvador, BA</span>
-          </dd>
-        </div>
-        <div>
-          <dt>{e(c['footer_follow'])}</dt>
-          <dd><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {e(SITE['instagram_handle'])}</a></dd>
-        </div>
-      </dl>
+      <div class="footer-col"><h2>{e(c['footer_nav'])}</h2><ul>{fnav}</ul></div>
+      <div class="footer-col"><h2>{e(c['footer_contact'])}</h2><ul>
+        <li><a href="{wa_link()}" target="_blank" rel="noopener">WhatsApp {e(SITE['whatsapp_display'])}</a></li>
+        <li>Praia da Preguiça, Salvador, BA</li></ul></div>
+      <div class="footer-col"><h2>{e(c['footer_follow'])}</h2><ul>
+        <li><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {e(SITE['instagram_handle'])}</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span>© <span data-year></span> Good Vibes Va'a. {e(c['footer_rights'])}</span>
@@ -1171,9 +1160,6 @@ def render(code):
         <div class="captains">{caps}
         </div>
       </div>
-    </div>
-    <div class="community-head">
-      <h3 class="h3">{e(c['community_title'])}</h3>
     </div>
     <div class="strip" aria-label="{e(c['community_title'])}">{tiles}</div>
     <!-- Depoimentos escritos: publicar aqui apenas depoimentos reais, com autorização. -->

@@ -1050,15 +1050,9 @@ body.bk-modal-open { overflow: hidden; }
   .captains { margin-top: 24px; }
 }
 
-.community-head { margin-top: clamp(56px, 6vw, 96px); }
-.community-head h3 { max-width: 30ch; }
-
-/* Faixa da comunidade — sangra até a borda da tela no desktop. No celular
-   é um carrossel de 4 fotos iguais (scroll-snap); a partir de 900px vira
-   uma composição editorial de 1 foto em destaque + 3 pequenas na mesma
-   linha, alinhadas pela base — não uma grade de 4 quadrados idênticos. */
+/* Faixa da comunidade — sangra até a borda da tela no desktop */
 .strip {
-  margin-top: clamp(20px, 2.4vw, 32px);
+  margin-top: clamp(40px, 5vw, 80px);
   display: grid; grid-auto-flow: column; grid-auto-columns: 68%;
   gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory;
   margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter);
@@ -1066,15 +1060,13 @@ body.bk-modal-open { overflow: hidden; }
 .strip > * { scroll-snap-align: start; aspect-ratio: 4 / 5; }
 @media (min-width: 900px) {
   .strip {
-    grid-auto-flow: row; grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: end; gap: clamp(8px, 1vw, 16px); overflow: visible;
+    grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(8px, 1vw, 16px); overflow: visible;
     margin-inline: calc(50% - 50vw); padding-inline: clamp(12px, 2vw, 32px);
     width: 100vw; max-width: 100vw;
   }
-  .strip > :nth-child(1) { grid-column: span 6; aspect-ratio: 16 / 10; }
-  .strip > :nth-child(2), .strip > :nth-child(3), .strip > :nth-child(4) {
-    grid-column: span 2; aspect-ratio: 4 / 5;
-  }
+  .strip > * { aspect-ratio: 4 / 5; }
+  .strip > :nth-child(odd) { margin-top: clamp(0px, 3vw, 48px); }
 }
 .community-foot {
   margin-top: clamp(28px, 3vw, 44px); padding-top: 22px; border-top: 1px solid var(--rule-c);
@@ -1400,24 +1392,21 @@ body.nl-open { overflow: hidden; }
   padding-block: clamp(56px, 6vw, 96px) 28px; font-size: var(--t-sm);
   --rule-c: rgba(247, 244, 237, .14);
 }
-.footer-top { display: grid; gap: clamp(32px, 4vw, 56px); }
+.footer-grid { display: grid; gap: clamp(32px, 4vw, 56px); }
 .footer-brand .brand-word { color: var(--c-shell); font-size: clamp(2rem, 1.3rem + 2.8vw, 3.5rem); }
 .footer-brand p { margin-top: 18px; max-width: 34ch; line-height: 1.65; font-size: var(--t-base); }
 .footer-brand .btn { margin-top: 28px; }
-/* Um único índice editorial (rótulo | conteúdo, filetes horizontais) no
-   lugar de três colunas idênticas com cabeçalho — o mesmo vocabulário de
-   .club-pillars/.place-list, não a grade de 3 colunas genérica de rodapé
-   de SaaS. */
-.footer-index { margin-top: 0; display: grid; gap: 0; border-top: 1px solid var(--rule-c); }
-.footer-index > div {
-  padding: 16px 0; border-bottom: 1px solid var(--rule-c);
-  display: grid; gap: 6px;
-}
-.footer-index dt { font-size: var(--t-sm); font-weight: 650; letter-spacing: .01em; color: var(--c-gold-2); }
-.footer-index dd { font-size: var(--t-base); line-height: 1.6; display: flex; flex-direction: column; gap: 4px; }
-.footer-index dd a { color: inherit; }
-.footer-nav-inline ul { display: flex; flex-wrap: wrap; gap: 4px 22px; list-style: none; padding: 0; margin: 0; }
-.footer-nav-inline li a { display: inline-block; padding-block: 4px; min-width: 44px; }
+.footer h2 { font-size: var(--t-sm); font-weight: 650; letter-spacing: .01em; color: var(--c-gold-2); margin-bottom: 14px; }
+.footer-col li a, .footer-col li:not(:has(a)) { font-size: var(--t-base); }
+/* O espaçamento entre as linhas vem do padding do próprio link, não de
+   uma margem: o ritmo visual é o mesmo e cada item vira um alvo de toque
+   de ~36px em vez de 21px. O min-width é invisível (o link não desenha
+   caixa) e serve para rótulos curtos como "FAQ"/"Local" também chegarem
+   à largura mínima de um toque. */
+.footer-col li a { display: inline-block; padding-block: 7px; min-width: 44px; }
+/* linhas do rodapé que não são link (o endereço) precisam do mesmo
+   respiro para o ritmo da coluna não quebrar */
+.footer-col li:not(:has(a)) { padding-block: 7px; }
 .footer a { text-decoration: none; transition: color .2s; }
 .footer a:hover { color: var(--c-shell); }
 .footer-bottom {
@@ -1426,16 +1415,23 @@ body.nl-open { overflow: hidden; }
   font-size: var(--t-2xs); color: rgba(247, 244, 237, .55); letter-spacing: .04em;
 }
 .footer-bottom nav { display: flex; gap: 20px; flex-wrap: wrap; }
-/* 11px de texto é um alvo pequeno demais sem um respiro vertical próprio */
+/* mesmo motivo dos links das colunas: 11px de texto é um alvo pequeno
+   demais sem um respiro vertical próprio */
 .footer-bottom nav a { display: inline-block; padding-block: 6px; }
 .footer-bottom .lang-switch { color: rgba(247, 244, 237, .8); }
-@media (min-width: 680px) {
-  .footer-index > div { grid-template-columns: 150px minmax(0, 1fr); align-items: baseline; gap: 20px; }
-}
+@media (min-width: 680px) { .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .footer-brand { grid-column: 1 / -1; } }
 @media (min-width: 1100px) {
-  .footer-top { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: start; }
+  .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: start; }
   .footer-brand { grid-column: 1 / span 5; }
-  .footer-index { grid-column: 7 / -1; margin-top: 0; }
+  /* Encadeado pelo irmão seguinte, não por nth-of-type (todo filho direto
+     de .footer-grid é uma <div>, então nth-of-type contaria a marca
+     também) — assim a regra descreve exatamente "1º/2º/3º .footer-col
+     depois da marca", sem depender de coincidência de contagem. */
+  .footer-brand + .footer-col {
+    grid-column: 7 / span 2; border-left: 1px solid var(--rule-c); padding-left: clamp(20px, 2vw, 32px);
+  }
+  .footer-brand + .footer-col + .footer-col { grid-column: 9 / span 2; }
+  .footer-brand + .footer-col + .footer-col + .footer-col { grid-column: 11 / span 2; }
 }
 
 /* ==========================================================================
