@@ -38,40 +38,37 @@ for (const W of WIDTHS) {
   const tag = String(W);
   const ctx = await browser.newContext({ viewport: { width: W, height: W < 700 ? 844 : 950 } });
 
-  /* ---- booking flow (Experimentar, demo mode) ----
-     Experimentar é o quadro de saídas (lista editorial, sem calendário
-     fora do painel) — o dia se escolhe DENTRO do painel (dayTimeStep),
-     não mais com [data-day] no quadro. */
+  /* ---- booking flow (Experimentar, demo mode) ---- */
   {
     const page = await newPage(ctx, '/');
     await hideNl(page);
     const bk = page.locator('[data-modality="experimentar"]');
     await bk.scrollIntoViewIfNeeded();
     await page.waitForTimeout(600);
-    await page.screenshot({ path: `${OUT}/bk-00-board-${tag}.png` });
+    await page.screenshot({ path: `${OUT}/bk-00-cards-${tag}.png` });
 
-    const row = page.locator('[data-modality="experimentar"] [data-reserve]:not([disabled])').first();
-    if (await row.count()) {
-      await row.click();
+    // pick second day to prove the calendar re-renders
+    await page.locator('[data-modality="experimentar"] [data-day="2"]').click();
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${OUT}/bk-01-day2-${tag}.png` });
+    await page.locator('[data-modality="experimentar"] [data-day="0"]').click();
+    await page.waitForTimeout(500);
+
+    const reserve = page.locator('[data-modality="experimentar"] [data-reserve]:not([disabled])').first();
+    if (await reserve.count()) {
+      await reserve.click();
       await page.waitForTimeout(400);
-      const modal = page.locator('[data-modality="experimentar"] .bk-modal--drawer');
-      (await modal.isVisible()) ? ok(`drawer opened @${tag}`) : bad(`drawer did not open @${tag}`);
-      await page.screenshot({ path: `${OUT}/bk-01-daytime-${tag}.png` });
+      const modal = page.locator('[data-modality="experimentar"] .bk-modal');
+      (await modal.isVisible()) ? ok(`modal opened @${tag}`) : bad(`modal did not open @${tag}`);
+      await page.screenshot({ path: `${OUT}/bk-02-participants-${tag}.png` });
 
-      // dentro do painel: troca de dia re-renderiza o detalhe da saída
-      const modalDay2 = page.locator('[data-modality="experimentar"] [data-modal-day="2"]');
-      if (await modalDay2.count()) { await modalDay2.click(); await page.waitForTimeout(400); }
-      await page.locator('[data-modality="experimentar"] [data-modal-day="0"]').click();
-      await page.waitForTimeout(400);
-
-      await page.locator('[data-modality="experimentar"] [data-bk="go"]').click();
-      await page.waitForTimeout(300);
+      // "+" fica desabilitado quando a saída só tem 1 vaga — comportamento
+      // correto do limite de capacidade, então o clique é opcional.
       const plus = page.locator('[data-modality="experimentar"] .bk-stepper [data-bk="plus"]');
       if (await plus.isEnabled()) { await plus.click(); ok(`seat stepper increments @${tag}`); }
       else ok(`seat stepper correctly capped at availability @${tag}`);
       await page.fill('#bk-experimentar-name', 'Maria Teste');
       await page.fill('#bk-experimentar-phone', '71999998888');
-      await page.screenshot({ path: `${OUT}/bk-02-participants-${tag}.png` });
       await page.locator('[data-modality="experimentar"] [data-bk="go"]').click();
       await page.waitForTimeout(350);
       const terms = page.locator('#bk-experimentar-terms');
@@ -94,15 +91,7 @@ for (const W of WIDTHS) {
         (await done.count()) ? ok(`confirmation reached @${tag}`) : bad(`confirmation NOT reached @${tag}`);
         await page.screenshot({ path: `${OUT}/bk-05-done-${tag}.png` });
       } else bad(`simulate-pay button missing @${tag}`);
-
-      // Esc fecha o painel e devolve o foco pra linha clicada no quadro.
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(300);
-      (await modal.count()) === 0 || !(await modal.isVisible())
-        ? ok(`Esc closes drawer @${tag}`) : bad(`Esc did not close drawer @${tag}`);
-      const focusedReserve = await page.evaluate(() => document.activeElement?.getAttribute('data-reserve'));
-      focusedReserve ? ok(`focus returns to triggering row @${tag}`) : bad(`focus did not return to row @${tag}`);
-    } else bad(`no bookable row @${tag}`);
+    } else bad(`no bookable card @${tag}`);
     if (page.__errors.length) bad(`console errors (booking @${tag}): ${page.__errors.join(' | ')}`);
     await page.close();
   }

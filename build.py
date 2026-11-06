@@ -274,7 +274,7 @@ CONTENT = {
 
         "shop_teaser_title": "Leve a Good Vibes com você.",
         "shop_teaser_text": "Conheça nossa coleção e leve um pouco da energia do mar para o seu dia a dia.",
-        "shop_teaser_cta": "Explorar produtos",
+        "shop_teaser_cta": "EXPLORAR PRODUTOS",
 
         "produtos_path": "/produtos/",
         "produtos_title": "Produtos — Loja Good Vibes Va'a",
@@ -490,7 +490,7 @@ CONTENT = {
 
         "shop_teaser_title": "Take Good Vibes with you.",
         "shop_teaser_text": "Discover our collection and carry a bit of the sea's energy into your day.",
-        "shop_teaser_cta": "Explore products",
+        "shop_teaser_cta": "EXPLORE PRODUCTS",
 
         "produtos_path": "/en/produtos/",
         "produtos_title": "Products — Good Vibes Va'a Shop",
