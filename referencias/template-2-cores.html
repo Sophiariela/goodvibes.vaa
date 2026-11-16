@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Vibes Va'a · Template 2 (cores da marca)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+<style>
+/* Template 2 · clube de esporte radical: foto dominante, título gigante, azul-céu, botões em pílula */
+:root{
+  /* Paleta oficial Good Vibes Va'a */
+  --forest:#123D2B; --forest-d:#0C2A1E; --ivory:#F4F0E6; --ivory-2:#EAE4D4;
+  --ocean:#147B91; --ocean-d:#0F5F70; --sand:#D5A83C; --sand-d:#C2952B; --charcoal:#202B28;
+  /* Papéis no layout */
+  --ink:var(--charcoal); --text:#5E6863; --gray:var(--ivory-2); --line:rgba(32,43,40,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--text);background:var(--ivory);font-size:15px;line-height:1.7;font-weight:400}
+h1,h2,h3,h4{color:var(--ink);font-weight:500;line-height:1.15}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+ul{list-style:none}
+:focus-visible{outline:3px solid var(--sand);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.sec{padding:100px 0}
+.head{text-align:center;max-width:600px;margin:0 auto 56px}
+.head h2{font-size:clamp(28px,4vw,36px)}
+.head p{margin-top:14px;font-size:14px}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.pill-sand{background:var(--sand);color:var(--charcoal)}.pill-sand:hover{background:var(--sand-d)}
+.pill-line{border-color:rgba(244,240,230,.75);color:var(--ivory)}.pill-line:hover{background:var(--ivory);color:var(--forest)}
+.pill-dark{border-color:var(--forest);color:var(--forest)}.pill-dark:hover{background:var(--forest);color:var(--ivory)}
+.ph{background:linear-gradient(160deg,var(--ocean),var(--forest))}
+.ph img{width:100%;height:100%;object-fit:cover}
+
+/* NAV sobre a foto */
+.nav{position:absolute;top:0;left:0;right:0;z-index:20;color:var(--ivory)}
+.nav.solid{position:fixed;background:rgba(18,61,43,.94);backdrop-filter:blur(8px)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:78px;gap:20px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.brand b{font-weight:600;font-style:italic;font-size:19px;letter-spacing:-.01em}
+.brand small{display:block;font-size:9px;letter-spacing:.3em;text-transform:uppercase;opacity:.8;margin-top:-4px}
+.menu{display:none;gap:30px;font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.menu a{padding:6px 0;border-bottom:2px solid transparent}
+.menu a:hover,.menu a[aria-current]{border-color:var(--sand)}
+.nav .pill{padding:9px 20px;font-size:11px}
+.navr{display:flex;align-items:center;gap:12px}
+.burger{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(244,240,230,.6);background:none;color:var(--ivory);cursor:pointer;display:grid;place-items:center}
+.burger svg{width:18px;height:18px}
+.mnav{display:none;background:var(--forest);padding:8px 20px 22px}
+.mnav.open{display:block}
+.mnav a{display:block;padding:14px 0;border-bottom:1px solid rgba(244,240,230,.14);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+@media(min-width:960px){.menu{display:flex}.burger{display:none}.mnav{display:none!important}}
+@media(max-width:559px){.nav .pill{display:none}}
+
+/* HERO */
+.hero{position:relative;min-height:min(760px,100vh);display:flex;align-items:center;color:var(--ivory);overflow:hidden;background:var(--forest)}
+.hero .ph{position:absolute;inset:0}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,42,30,.78),rgba(12,42,30,.2) 65%)}
+.hero-in{position:relative;z-index:2;width:100%;display:flex;align-items:center;justify-content:space-between;gap:30px;padding-top:80px;padding-bottom:110px}
+.hero small{display:block;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;line-height:1.5;max-width:22ch}
+.hero h1{color:var(--ivory);font-weight:800;font-size:clamp(72px,14vw,150px);line-height:.9;letter-spacing:-.03em;margin:14px 0 18px}
+.hero p{max-width:34ch;font-size:15px;opacity:.92}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.play{flex:none;width:86px;height:86px;border-radius:50%;background:var(--sand);display:none;place-items:center;box-shadow:0 0 0 14px rgba(213,168,60,.28);transition:transform .2s}
+.play:hover{transform:scale(1.06)}
+.play svg{width:26px;height:26px;margin-left:4px}
+.play-l{display:none;font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-top:24px}
+@media(min-width:860px){.play{display:grid}.play-l{display:block}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:80px;z-index:3}
+
+/* PARCEIROS */
+.partners{padding:28px 0 10px}
+.partners ul{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 48px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(32,43,40,.45)}
+.partners li{display:flex;align-items:center;gap:10px}
+.partners li:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sand)}
+
+/* POR QUE NÓS (ícones em gota) */
+.icons{display:grid;gap:44px 30px;grid-template-columns:1fr 1fr}
+@media(min-width:900px){.icons{grid-template-columns:repeat(4,1fr)}}
+.ico-item{text-align:center}
+.drop{width:62px;height:62px;margin:0 auto 18px;background:var(--ocean);color:var(--ivory);border-radius:50% 50% 50% 12%;display:grid;place-items:center;transform:rotate(-45deg);box-shadow:0 10px 24px rgba(20,123,145,.32)}
+.drop svg{width:26px;height:26px;transform:rotate(45deg)}
+.ico-item h3{font-size:16px;margin-bottom:10px}
+.ico-item p{font-size:13px;max-width:26ch;margin:0 auto}
+
+/* EXPERIÊNCIAS: faixa com foto e cards por cima */
+.offer{position:relative;color:var(--ivory);padding:96px 0 110px;margin-top:40px;overflow:hidden;background:var(--forest)}
+.offer>.ph{position:absolute;inset:0}
+.offer:after{content:"";position:absolute;inset:0;background:rgba(18,61,43,.78)}
+.offer .wrap{position:relative;z-index:2}
+.offer .head h2,.offer .head p{color:var(--ivory)}
+.offer .head p{opacity:.85}
+.cards{display:grid;gap:0;grid-template-columns:1fr;background:var(--ivory);box-shadow:0 30px 60px rgba(12,42,30,.35)}
+@media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.cards{grid-template-columns:repeat(4,1fr)}}
+.oc{display:flex;flex-direction:column;color:var(--ink);text-align:center;transition:background .2s}
+.oc:hover{background:var(--ivory-2)}
+.oc .ph{aspect-ratio:16/9}
+@media(min-width:640px){.oc .ph{aspect-ratio:4/3}}
+.oc h3{font-size:16px;margin:20px 16px 4px}
+.oc span{font-size:12px;font-weight:500;color:var(--ocean);letter-spacing:.04em;padding:0 16px}
+.oc p{font-size:13px;color:var(--text);padding:10px 20px 24px}
+.offer .center{text-align:center;margin-top:44px}
+
+/* COMUNIDADE (prova social) */
+.gray{background:var(--gray)}
+.duo{display:grid;gap:50px;align-items:center}
+@media(min-width:900px){.duo{grid-template-columns:1fr 1fr;gap:70px}}
+.duo h2{font-size:clamp(28px,3.8vw,36px)}
+.duo .lead{margin-top:16px;max-width:44ch}
+.caps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.capt{background:var(--ivory);text-align:center;padding-bottom:20px;box-shadow:0 14px 34px rgba(0,0,0,.06)}
+.capt .ph{aspect-ratio:1}
+.capt .ph img{object-position:center 22%}
+.capt b{display:block;color:var(--ink);font-weight:500;margin-top:14px}
+.capt small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ocean)}
+.quote{margin-top:28px;padding-left:20px;border-left:3px solid var(--sand);font-style:italic;color:var(--ink);max-width:42ch}
+.carousel{margin-top:70px;position:relative}
+.track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,80%);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:6px;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+@media(min-width:760px){.track{grid-auto-columns:calc((100% - 40px)/3)}}
+.mom{scroll-snap-align:start;background:var(--ivory);box-shadow:0 14px 34px rgba(0,0,0,.06)}
+.mom .ph{aspect-ratio:16/11}
+.mom div.t{padding:18px 20px 22px}
+.mom h4{font-size:15px}
+.mom p{font-size:13px;margin-top:4px}
+.c-nav{display:flex;justify-content:center;gap:10px;margin-top:28px}
+.c-nav button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--ivory);cursor:pointer;display:grid;place-items:center;color:var(--forest)}
+.c-nav button:hover{border-color:var(--forest);background:var(--forest);color:var(--ivory)}
+.c-nav svg{width:18px;height:18px}
+
+/* FAQ */
+.faq{display:grid;gap:40px}
+@media(min-width:900px){.faq{grid-template-columns:1fr 1.5fr;gap:70px}}
+.faq h2{font-size:clamp(28px,3.8vw,36px)}
+.faq .lead{margin:14px 0 26px;max-width:34ch}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:20px 44px 20px 0;color:var(--ink);font-weight:500;position:relative}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"";position:absolute;right:6px;top:50%;width:9px;height:9px;margin-top:-7px;border-right:2px solid var(--ocean);border-bottom:2px solid var(--ocean);transform:rotate(45deg);transition:transform .2s}
+details[open] summary:after{transform:rotate(-135deg);margin-top:-2px}
+details p{padding:0 40px 20px 0;font-size:14px}
+
+/* CTA */
+.cta{display:grid;background:var(--forest);color:var(--ivory);overflow:hidden}
+@media(min-width:900px){.cta{grid-template-columns:1fr 1fr}}
+.cta-t{padding:60px 44px}
+.cta small{color:var(--sand);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+.cta h2{color:var(--ivory);font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em;margin:10px 0 14px;max-width:14ch}
+.cta p{opacity:.9;max-width:38ch}
+.cta .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cta .pill-w{background:var(--sand);color:var(--charcoal)}
+.cta .pill-w:hover{background:var(--sand-d)}
+.cta .ph{min-height:300px}
+
+/* FOOTER */
+footer{background:var(--forest-d);color:rgba(244,240,230,.72);padding:76px 0 26px;margin-top:100px;font-size:13.5px}
+.fg{display:grid;gap:36px}
+@media(min-width:860px){.fg{grid-template-columns:1.4fr 1fr 1fr 1fr}}
+footer h4{color:var(--sand);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+footer li+li{margin-top:9px}
+footer a:hover{color:var(--ivory)}
+footer .brand{color:var(--ivory)}
+.fb{border-top:1px solid rgba(244,240,230,.14);margin-top:50px;padding-top:22px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12px}
+.proto{position:fixed;left:12px;bottom:12px;z-index:40;pointer-events:none;background:var(--sand);color:var(--charcoal);font-size:11px;font-weight:600;padding:6px 14px;border-radius:999px;max-width:calc(100% - 24px);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:reduce){.track{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="proto">Simulação · Template 2 · cores Good Vibes Va'a</div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#topo" aria-label="Good Vibes Va'a, início">
+      <img src="https://goodvibesvaa.vercel.app/assets/img/logo.png" alt="" onerror="this.style.display='none'">
+      <span><b>Good Vibes</b><small>Clube de Va'a</small></span>
+    </a>
+    <nav class="menu" aria-label="Principal">
+      <a href="#topo" aria-current="page">Início</a><a href="#experiencias">Experiências</a><a href="#clube">O clube</a><a href="#comunidade">Comunidade</a><a href="#duvidas">Dúvidas</a><a href="#contato">Contato</a>
+    </nav>
+    <div class="navr">
+      <a class="pill pill-line" href="https://goodvibesvaa.vercel.app/#experimentar">Reservar</a>
+      <button class="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu">
+    <a href="#experiencias">Experiências</a><a href="#clube">O clube</a><a href="#comunidade">Comunidade</a><a href="#duvidas">Dúvidas</a><a href="#contato">Contato</a>
+    <a href="https://goodvibesvaa.vercel.app/#experimentar" style="color:var(--sand)">Reservar remada</a>
+  </nav>
+</header>
+
+<main id="topo">
+<!-- 1. HERO -->
+<section class="hero">
+  <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/hero.jpg" alt="Equipe Good Vibes Va'a remando ao amanhecer na Baía de Todos-os-Santos" onerror="this.remove()"></div>
+  <div class="wrap hero-in">
+    <div>
+      <small>Bem-vindo à Good Vibes Va'a</small>
+      <h1>REME!</h1>
+      <p>Clube de canoa havaiana na Praia da Preguiça. Passeios no nascer e no pôr do sol, aulas e treinos na Baía de Todos-os-Santos.</p>
+      <div class="ctas">
+        <a class="pill pill-sand" href="https://goodvibesvaa.vercel.app/#experimentar">Reservar passeio</a>
+        <a class="pill pill-line" href="https://wa.me/5571999789710" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      </div>
+    </div>
+    <div>
+      <a class="play" href="https://www.instagram.com/goodvibes.vaa/" target="_blank" rel="noopener" aria-label="Ver vídeos do clube no Instagram"><svg viewBox="0 0 24 24" fill="#202B28"><path d="M7 4.5v15l13-7.5z"/></svg></a>
+      <p class="play-l">Veja no Instagram</p>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="#F4F0E6" d="M0 34 C 300 80 520 4 820 30 C 1080 52 1260 60 1440 26 L1440 80 L0 80Z"/></svg>
+</section>
+
+<!-- 2. PARCEIROS -->
+<section class="partners wrap" aria-label="Formas de participar">
+  <ul><li>Gympass</li><li>TotalPass</li><li>Praia da Preguiça</li><li>Salvador · Bahia</li></ul>
+</section>
+
+<!-- 3. EXPERIÊNCIAS (features) -->
+<section class="offer" id="experiencias">
+  <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-canoa.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+  <div class="wrap">
+    <div class="head"><h2>O que oferecemos</h2><p>Da primeira remada aos treinos com a equipe. Valores e horários confirmados pela equipe no momento da reserva.</p></div>
+    <div class="cards">
+      <a class="oc" href="https://goodvibesvaa.vercel.app/#experimentar">
+        <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/hero.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+        <h3>Nascer e pôr do sol</h3><span>Passeio · sob consulta</span>
+        <p>A cidade vista de dentro da baía, no começo ou no fim do dia.</p></a>
+      <a class="oc" href="https://goodvibesvaa.vercel.app/#experimentar">
+        <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-canoa.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+        <h3>Primeira remada</h3><span>Iniciantes · com capitão</span>
+        <p>Técnica e segurança na areia, depois mar. Não precisa experiência.</p></a>
+      <a class="oc" href="https://goodvibesvaa.vercel.app/#treinar">
+        <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-1.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+        <h3>Treinos e planos</h3><span>Avulsa · mensal · Gympass e TotalPass</span>
+        <p>Rotina de treino com a equipe e acompanhamento dos capitães.</p></a>
+      <a class="oc" href="https://goodvibesvaa.vercel.app/#particular">
+        <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-3.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
+        <h3>Particular</h3><span>Grupos · aniversários · empresas</span>
+        <p>A canoa só para o seu grupo, com roteiro combinado com a equipe.</p></a>
+    </div>
+    <div class="center"><a class="pill pill-sand" href="https://goodvibesvaa.vercel.app/#experimentar">Ver datas e reservar</a></div>
+  </div>
+</section>
+
+<!-- 4. POR QUE NÓS -->
+<section class="sec" id="clube">
+  <div class="wrap">
+    <div class="head"><h2>Por que remar com a gente</h2><p>Um clube de canoa havaiana com capitães, equipe e um dos cenários mais bonitos de Salvador.</p></div>
+    <div class="icons">
+      <div class="ico-item"><div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="3.5"/><path d="M5 20c.6-4 3.4-6 7-6s6.4 2 7 6"/></svg></div>
+        <h3>Capitães no comando</h3><p>Jesse e Nala conduzem cada saída, da areia até o retorno.</p></div>
+      <div class="ico-item"><div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Segurança primeiro</h3><p>Instruções de remada e segurança antes de entrar no mar.</p></div>
+      <div class="ico-item"><div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <h3>Melhor localização</h3><p>Praia da Preguiça, de frente para a Baía de Todos-os-Santos.</p></div>
+      <div class="ico-item"><div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c.5-3 2.8-5 6-5s5.5 2 6 5M10 20c.5-3 2.8-5 6-5s5.5 2 6 5"/></svg></div>
+        <h3>Comunidade</h3><p>Treinos, eventos e um ano de histórias no mar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. COMUNIDADE (prova social) -->
+<section class="sec gray" id="comunidade">
+  <div class="wrap">
+    <div class="duo">
+      <div>
+        <h2>Quem rema com você</h2>
+        <p class="lead">Na canoa, ninguém rema sozinho. Cada remada depende do ritmo de quem está ao lado, e é isso que transforma uma aula em comunidade.</p>
+        <p class="quote">Espaço para um depoimento real de aluno, publicado com autorização.</p>
+        <a class="pill pill-dark" style="margin-top:28px" href="https://www.instagram.com/goodvibes.vaa/" target="_blank" rel="noopener">Depoimentos no Instagram</a>
+      </div>
+      <div class="caps">
+        <a class="capt" href="https://www.instagram.com/jesse_coutinho/" target="_blank" rel="noopener"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/captain-jesse.jpg" alt="Retrato de Jesse Coutinho" loading="lazy" onerror="this.remove()"></div><b>Jesse Coutinho</b><small>Capitão</small></a>
+        <a class="capt" href="https://www.instagram.com/nalarodrigues/" target="_blank" rel="noopener"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/captain-nala.jpg" alt="Retrato de Nala Rodrigues" loading="lazy" onerror="this.remove()"></div><b>Nala Rodrigues</b><small>Capitã</small></a>
+      </div>
+    </div>
+    <div class="carousel" aria-label="Momentos do clube">
+      <div class="track" id="track" tabindex="0">
+        <article class="mom"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-1.jpg" alt="Equipe celebrando após o treino" loading="lazy" onerror="this.remove()"></div><div class="t"><h4>Depois do treino</h4><p>A equipe reunida na areia da Preguiça.</p></div></article>
+        <article class="mom"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-2.jpg" alt="Abraço da equipe no Outubro Rosa" loading="lazy" onerror="this.remove()"></div><div class="t"><h4>Outubro Rosa</h4><p>Remada pela conscientização.</p></div></article>
+        <article class="mom"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-3.jpg" alt="Celebração de 1 ano do clube" loading="lazy" onerror="this.remove()"></div><div class="t"><h4>1 ano de Good Vibes</h4><p>Um ano de histórias no mar.</p></div></article>
+        <article class="mom"><div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/produto-2.jpg" alt="Ecobag Good Vibes na praia" loading="lazy" onerror="this.remove()"></div><div class="t"><h4>Moda Good Vibes</h4><p>A identidade do clube fora da água.</p></div></article>
+      </div>
+      <div class="c-nav">
+        <button data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FAQ -->
+<section class="sec" id="duvidas">
+  <div class="wrap faq">
+    <div>
+      <h2>Dúvidas frequentes</h2>
+      <p class="lead">Não encontrou sua resposta? A equipe responde pelo WhatsApp.</p>
+      <a class="pill pill-sand" href="https://wa.me/5571999789710" target="_blank" rel="noopener">Falar com a equipe</a>
+    </div>
+    <div>
+      <details><summary>Preciso ter experiência para remar?</summary><p>Não. A primeira experiência é pensada para quem nunca remou, e os capitães orientam técnica e segurança antes da saída.</p></details>
+      <details><summary>Como faço uma reserva?</summary><p>Pelo site, escolhendo a experiência e a data, ou direto no WhatsApp. A equipe confirma horário, valores e ponto de encontro.</p></details>
+      <details><summary>Vocês aceitam Gympass e TotalPass?</summary><p>Sim. Confirme com a equipe quais planos e modalidades são elegíveis para check-in.</p></details>
+      <details><summary>E se o mar não estiver bom?</summary><p>A equipe acompanha as condições do mar antes de cada saída e combina uma nova data quando necessário.</p></details>
+      <details><summary>Fazem eventos para empresas?</summary><p>Sim. Peça um orçamento de experiência particular para grupos e empresas.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CTA -->
+<section class="wrap" id="contato">
+  <div class="cta">
+    <div class="cta-t">
+      <small>Praia da Preguiça · Salvador</small>
+      <h2>O mar está esperando.</h2>
+      <p>Escolha sua saída ou fale com a equipe. A confirmação chega no seu WhatsApp.</p>
+      <div class="ctas">
+        <a class="pill pill-w" href="https://goodvibesvaa.vercel.app/#experimentar">Reservar remada</a>
+        <a class="pill pill-line" href="https://wa.me/5571999789710" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <div class="ph"><img src="https://goodvibesvaa.vercel.app/assets/img/comunidade-2.jpg" alt="Equipe Good Vibes Va'a" loading="lazy" onerror="this.remove()"></div>
+  </div>
+</section>
+</main>
+
+<!-- 8. FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="fg">
+      <div>
+        <a class="brand" href="#topo"><img src="https://goodvibesvaa.vercel.app/assets/img/logo.png" alt="" onerror="this.style.display='none'"><span><b>Good Vibes</b><small>Clube de Va'a</small></span></a>
+        <p style="margin-top:16px;max-width:32ch">Clube de canoa havaiana na Praia da Preguiça, Salvador, Bahia.</p>
+      </div>
+      <div><h4>Experiências</h4><ul><li><a href="#experiencias">Nascer e pôr do sol</a></li><li><a href="#experiencias">Primeira remada</a></li><li><a href="#experiencias">Treinos e planos</a></li><li><a href="#experiencias">Particular</a></li></ul></div>
+      <div><h4>Contato</h4><ul><li><a href="https://wa.me/5571999789710" target="_blank" rel="noopener">WhatsApp (71) 99978-9710</a></li><li><a href="https://goodvibesvaa.vercel.app/#local">Como chegar</a></li></ul></div>
+      <div><h4>Redes</h4><ul><li><a href="https://www.instagram.com/goodvibes.vaa/" target="_blank" rel="noopener">@goodvibes.vaa</a></li><li><a href="https://www.instagram.com/jesse_coutinho/" target="_blank" rel="noopener">@jesse_coutinho</a></li><li><a href="https://www.instagram.com/nalarodrigues/" target="_blank" rel="noopener">@nalarodrigues</a></li></ul></div>
+    </div>
+    <div class="fb"><span>© 2026 Good Vibes Va'a</span><span>Salvador · Bahia</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.querySelector('.burger'),m=document.getElementById('mnav');
+  b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',o);b.setAttribute('aria-label',o?'Fechar menu':'Abrir menu');});
+  m.addEventListener('click',function(e){if(e.target.closest('a')){m.classList.remove('open');b.setAttribute('aria-expanded','false');}});
+  var nav=document.getElementById('nav'),hero=document.querySelector('.hero');
+  function solid(){nav.classList.toggle('solid',window.scrollY>hero.offsetHeight-90);}
+  window.addEventListener('scroll',solid,{passive:true});solid();
+  var tr=document.getElementById('track');
+  document.querySelectorAll('.c-nav button').forEach(function(btn){btn.addEventListener('click',function(){tr.scrollBy({left:tr.clientWidth*.9*btn.dataset.dir,behavior:'smooth'});});});
+})();
+</script>
+</body>
+</html>

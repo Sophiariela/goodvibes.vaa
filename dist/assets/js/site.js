@@ -256,6 +256,33 @@ function initTabs() {
   });
 }
 
+/* ---------- Carrossel de momentos ----------
+   Sem JS a faixa continua rolável com o dedo e com o teclado (o trilho tem
+   tabindex), e as setas só acrescentam o controle de clique. Elas
+   desabilitam nas pontas pra nao ficar um botao que nao faz nada. */
+function initCarousel() {
+  document.querySelectorAll('.carousel-track').forEach((track) => {
+    const btns = [...document.querySelectorAll(`.carousel-btn[data-carousel="${track.id}"]`)];
+    if (!btns.length) return;
+
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      btns.forEach((btn) => {
+        btn.disabled = Number(btn.dataset.dir) < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max;
+      });
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        track.scrollBy({ left: track.clientWidth * 0.9 * Number(btn.dataset.dir), behavior: 'smooth' });
+      });
+    });
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync, { passive: true });
+    sync();
+  });
+}
+
 /* ---------- Ano no rodapé ---------- */
 function initYear() {
   document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
@@ -264,6 +291,7 @@ function initYear() {
 initHeader();
 initDock();
 initTabs();
+initCarousel();
 initForms();
 initPreselect();
 initYear();

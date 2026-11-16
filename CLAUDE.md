@@ -38,6 +38,47 @@ PHOTOS = {
   meta tag) ficam fora de `PHOTOS` de propósito — não passam pelo
   componente `media()`.
 
+## Paleta (site inteiro)
+
+O site usa **somente** as dez cores oficiais do clube, declaradas como
+paleta crua no topo do `site.css`: Forest `#123D2B`, Forest escuro
+`#0C2A1E`, Ivory `#F4F0E6`, Ivory 2 `#EAE4D4`, Ocean `#147B91`, Ocean
+escuro `#0F5F70`, Sand `#D5A83C`, Sand escuro `#C2952B`, Charcoal
+`#202B28`, Stone `#5E6863`. **Nenhum branco puro e nenhum azul-céu** —
+cartões e superfícies claras são Ivory, e todo tom intermediário sai de
+transparência sobre essas cores, nunca de um hex novo.
+
+Três exceções são funcionais, não decorativas, e não devem ser
+"corrigidas": `--c-bad` (erro de formulário precisa ler como erro), o
+verde `#25D366` do WhatsApp (marca de terceiro) e o fundo branco real do
+QR do Pix (leitor de QR exige branco).
+
+Regras de contraste que já custaram medição (ver `tools/audit.mjs`, que
+reprova abaixo de 4.5:1):
+
+- Texto sobre Sand é sempre Charcoal.
+- Ocean puro como texto de 11–13px sobre Ivory dá 4.32:1 e **reprova**.
+  O acento de texto em contexto claro é Ocean escuro (`--c-gold-ink`,
+  6.5:1); sobre fundo escuro o acento volta a ser Sand (5.2:1).
+- O anel de foco é o token `--focus-ring`: Ocean escuro no claro, Sand no
+  escuro. Sand sobre Ivory daria 2.3:1, abaixo dos 3:1 que o WCAG pede
+  para indicador de foco. Todo bloco escuro que não usa `.band-dark`
+  (`.hero`, `.header`, `.mobile-nav`, `.footer`, `.shop-teaser-panel`,
+  `.bk-modal-head`) redeclara `--focus-ring` para Sand.
+
+## Home — ordem das seções
+
+```
+menu → hero → faixa de credibilidade → "O que oferecemos" → quadro de
+reservas → "Por que remar com a gente" → comunidade e capitães →
+chamada da loja → local e mapa → dúvidas → chamada final → rodapé
+```
+
+A ordem é definida pelo `body` da `render()` — ver README § "Home". Os
+quatro cartões de "O que oferecemos" apontam para as âncoras das jornadas
+e o `initTabs` abre a aba certa; o pop-up de newsletter **não** aparece na
+home (`page_footer()` só emite o `div.nl-widget` fora dela).
+
 ## Build
 
 `python3 build.py` gera `dist/` a partir de `CONTENT['pt']`/`CONTENT['en']`

@@ -10,7 +10,7 @@ Site estático gerado por um script Python sem dependências. Uma landing page d
 build.py                 conteúdo PT/EN + templates + geração do site
 src/assets/css/site.css  design system (tokens, componentes, seções)
 src/assets/js/site.js    navegação, formulários, ponto de integração
-src/assets/fonts/        Archivo (texto/nav) + Fraunces (marca/títulos), auto-hospedadas (licença OFL)
+src/assets/fonts/        Manrope (texto/UI, variável 200–800) + DM Serif Display (títulos), auto-hospedadas (licença OFL)
 src/assets/img/          fotos oficiais (ver lista abaixo)
 dist/                    site pronto para publicar (gerado)
 ```
@@ -24,7 +24,31 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
 - Rotas: `/` e `/en/` (institucional), `/produtos/` e `/en/produtos/` (loja), `/privacidade/` e `/en/privacidade/` (LGPD). O slug da rota (`produtos`, `privacidade`) é o mesmo nas duas línguas — só o texto visível muda, mesmo padrão das âncoras internas (`#particular` etc.).
-- `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — nav, rodapé, pop-up de WhatsApp e de newsletter aparecem em qualquer rota. `nav_items_html()` decide se um link de âncora é hash puro (na própria home, pro JS de abas) ou link absoluto de volta pra home (`/#experimentar`) nas outras páginas.
+- `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — nav, rodapé e pop-up de WhatsApp aparecem em qualquer rota (o pop-up de newsletter, não: ver abaixo). `nav_items_html()` decide se um link de âncora é hash puro (na própria home, pro JS de abas) ou link absoluto de volta pra home (`/#experimentar`) nas outras páginas.
+
+### Home — layout "Template 2"
+
+Fotografia dominante, manchete gigante, botões em pílula e faixa de onda. A
+ordem das seções é fixa e o `body` da `render()` é a fonte dela:
+
+```
+menu → hero → faixa de credibilidade → "O que oferecemos" → quadro de
+reservas → "Por que remar com a gente" → comunidade e capitães →
+chamada da loja → local e mapa → dúvidas → chamada final → rodapé
+```
+
+- Os quatro cartões de "O que oferecemos" (`offer_cards` no `CONTENT`)
+  apontam para `#experimentar`/`#treinar`/`#particular`: o `initTabs` do
+  `site.js` intercepta o clique e abre a aba certa do quadro de reservas,
+  logo abaixo. Mudar o destino de um cartão é mudar o primeiro item da
+  tupla, nada mais.
+- A manchete do hero tem duas linhas dentro do mesmo `<h1>`: a palavra
+  gigante (`hero_word`, único uso de Manrope 800 no site) e a frase da
+  marca (`hero_title`). A frase fica no `h1` de propósito — sem ela o
+  buscador e o leitor de tela veriam só um verbo.
+- O carrossel da comunidade (`.carousel-track` + `initCarousel`) é um
+  trilho de rolagem com encaixe; as setas só acrescentam clique e
+  desabilitam nas pontas. Sem JS ele continua rolável.
 
 ### Loja — `/produtos`
 
@@ -34,7 +58,7 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 
 ### Pop-up de newsletter
 
-- `src/assets/js/newsletter.js` — aparece em qualquer página (sitewide), depois de ~25s **ou** ao detectar intenção de saída (mouse saindo por cima da janela), o que vier primeiro. Nunca na primeira tela.
+- `src/assets/js/newsletter.js` — aparece em `/produtos/` e `/privacidade/`, **não na home** (`page_footer()` só emite o `div.nl-widget` fora da home: a home abre direto no quadro de reservas e um overlay por cima competiria com a reserva). Dispara depois de ~25s **ou** ao detectar intenção de saída (mouse saindo por cima da janela), o que vier primeiro. Nunca na primeira tela.
 - Não repete: quem já se cadastrou não vê mais (localStorage permanente); quem fechou sem cadastrar fica sem ver por 7 dias (localStorage com validade) — ver `SNOOZE_DAYS` no arquivo.
 - Consentimento de marketing é um checkbox **separado**, nunca marcado por padrão, com link pra `/privacidade/` — sem ele marcado, o cadastro não é enviado.
 - Proteção contra spam sem coletar IP (minimização de dados — ver `/privacidade/`): campo honeypot escondido + tempo mínimo de preenchimento, os dois validados de novo no servidor (`api/subscribers.ts`).

@@ -150,29 +150,35 @@ CONTENT = {
         "description": "Clube de canoa havaiana na Praia da Preguiça, em Salvador. Passeios no nascer e no pôr do sol, aulas, planos de treino e experiências particulares na Baía de Todos-os-Santos.",
         "skip": "Pular para o conteúdo",
         "brand_sub": "Clube de canoa havaiana",
-        "nav": [("#experimentar", "Passeios"), ("#treinar", "Treinar"), ("#particular", "Particular"), ("#clube", "O clube"), ("#local", "Local"), ("#faq", "Dúvidas")],
+        "nav": [("#experiencias", "Experiências"), ("#reservar", "Reservar"), ("#clube", "O clube"), ("#comunidade", "Comunidade"), ("#local", "Local"), ("#faq", "Dúvidas")],
         "nav_produtos": "Produtos",
         "lang_label": "Idioma",
         "cta_team": "Fale com a equipe",
         "menu_open": "Abrir menu",
         "menu_close": "Fechar menu",
         "hero_place": "Praia da Preguiça, Salvador",
+        # A manchete do hero tem duas linhas dentro do mesmo <h1>: a palavra
+        # gigante (hero_word) e a frase da marca (hero_title) logo abaixo.
+        "hero_word": "Reme!",
         "hero_title": "Encontre seu ritmo no mar.",
         "hero_sub": "Experiências, aulas e uma comunidade conectada pela canoa havaiana na Baía de Todos-os-Santos.",
-        "hero_cta1": "Conheça nossas experiências",
+        "hero_cta1": "Reservar passeio",
+        "hero_play": "Veja no Instagram",
+        "hero_play_aria": "Ver os vídeos do clube no Instagram",
         "hero_slot": "Foto oficial: equipe remando ao amanhecer na Baía de Todos-os-Santos · 2400×1600 · hero.jpg",
         "hero_alt": "Equipe Good Vibes Va'a remando uma canoa havaiana ao amanhecer na Baía de Todos-os-Santos",
-        "hero_facts": ["Passeios, aulas e treinos", "Para quem nunca remou e para atletas", "Aceitamos Gympass e TotalPass"],
 
-        "about_title": "Um clube de canoa havaiana no coração de Salvador.",
+        # Faixa de credibilidade logo abaixo do hero.
+        "credibility_label": "Onde estamos e como participar",
+        "credibility": ["Gympass", "TotalPass", "Praia da Preguiça", "Salvador · Bahia"],
+        # Prefixo dos slots de foto gerados a partir do próprio título do
+        # cartão (ver media() — o slot só aparece se o arquivo faltar).
+        "photo_slot_prefix": "Foto oficial:",
+
         "about_statement": "Na canoa, ninguém rema sozinho. Cada remada depende do ritmo de quem está ao lado, e é isso que transforma uma aula em comunidade.",
-        "about_pillars": [
-            ("Experiências", "Passeios no nascer e no pôr do sol, primeira remada e saídas privadas para quem quer ver Salvador a partir do mar."),
-            ("Clube", "Aulas, treinos e planos recorrentes para quem quer evoluir no esporte e fazer parte da equipe."),
-            ("Good Vibes lifestyle", "Produtos, eventos e parcerias que levam a identidade do clube para fora da água."),
-        ],
         "kicker_journeys": "Experiências",
         "kicker_club": "O clube",
+        "kicker_community": "Comunidade",
         "kicker_shop": "Moda Good Vibes",
         "kicker_info": "Onde e como",
         "kicker_closing": "Reserve sua remada",
@@ -184,6 +190,41 @@ CONTENT = {
             ("#treinar", "Quero treinar", "Aulas avulsas, planos mensais e check-in com Gympass e TotalPass.", "Ver planos"),
             ("#particular", "Quero uma experiência particular", "Grupos, aniversários, empresas e saídas privadas.", "Pedir orçamento"),
         ],
+
+        # Faixa "O que oferecemos": quatro cartões sobre a fotografia. Cada
+        # cartão aponta para a jornada de reserva correspondente — a aba
+        # certa abre sozinha (ver initTabs em site.js).
+        "offers_title": "O que oferecemos",
+        "offers_lead": "Da primeira remada aos treinos com a equipe. Horários e valores são confirmados pela equipe no momento da reserva.",
+        "offers_cta": "Ver datas e reservar",
+        "offer_cards": [
+            ("#experimentar", "hero", "Nascer e pôr do sol", "Passeio · valores sob consulta", "A cidade vista de dentro da baía, no começo ou no fim do dia."),
+            ("#experimentar", "community_4", "Primeira remada", "Iniciantes · com capitão", "Técnica e segurança na areia, depois o mar. Não precisa ter experiência."),
+            ("#treinar", "community_1", "Treinos e planos", "Avulsa · mensal · Gympass e TotalPass", "Rotina de treino com a equipe e acompanhamento dos capitães."),
+            ("#particular", "community_3", "Particular", "Grupos · aniversários · empresas", "A canoa só para o seu grupo, com roteiro combinado com a equipe."),
+        ],
+
+        # "Por que remar com a gente" — o primeiro item de cada tupla é a
+        # chave do ícone em gota (ver ICONS_REASON em build.py).
+        "reasons_title": "Por que remar com a gente",
+        "reasons_lead": "Um clube de canoa havaiana com capitães, equipe e um dos cenários mais bonitos de Salvador.",
+        "reasons": [
+            ("captain", "Capitães no comando", "Jesse e Nala conduzem cada saída, da areia até o retorno."),
+            ("shield", "Segurança primeiro", "Instruções de remada e de segurança antes de entrar no mar."),
+            ("pin", "Melhor localização", "Praia da Preguiça, de frente para a Baía de Todos-os-Santos."),
+            ("crew", "Comunidade", "Treinos, eventos e um ano de histórias no mar."),
+        ],
+
+        # Carrossel de momentos (as mesmas quatro fotos da antiga faixa).
+        "moments_label": "Momentos do clube",
+        "moments": [
+            ("community_1", "Depois do treino", "A equipe reunida na areia da Preguiça."),
+            ("community_2", "Outubro Rosa", "Remada pela conscientização."),
+            ("community_3", "1 ano de Good Vibes", "Um ano de histórias no mar."),
+            ("product_2", "Moda Good Vibes", "A identidade do clube fora da água."),
+        ],
+        "carousel_prev": "Ver momentos anteriores",
+        "carousel_next": "Ver próximos momentos",
 
         "a_kicker": "Quero experimentar",
         "a_title": "Sua primeira vez na canoa havaiana.",
@@ -224,7 +265,6 @@ CONTENT = {
 
         "community_title": "Uma comunidade que se encontra no mar.",
         "community_lead": "Treinos ao amanhecer, ações como o Outubro Rosa e um ano de histórias contadas por quem rema com a gente.",
-        "community_slots": ["Foto oficial: equipe celebrando após o treino · comunidade-1.jpg", "Foto oficial: Outubro Rosa · comunidade-2.jpg", "Foto oficial: aniversário de 1 ano do clube · comunidade-3.jpg", "Foto oficial: remadores na canoa · comunidade-canoa.jpg"],
         "community_cta": "Ver depoimentos no Instagram",
         "community_note": "Depoimentos em vídeo de quem já remou com o clube estão no nosso Instagram.",
 
@@ -366,29 +406,30 @@ CONTENT = {
         "description": "Outrigger canoe (va'a) club at Praia da Preguiça in Salvador, Brazil. Sunrise and sunset paddles, classes, training plans and private experiences on the Bay of All Saints.",
         "skip": "Skip to content",
         "brand_sub": "Outrigger canoe club",
-        "nav": [("#experimentar", "Paddles"), ("#treinar", "Train"), ("#particular", "Private"), ("#clube", "The club"), ("#local", "Location"), ("#faq", "FAQ")],
+        "nav": [("#experiencias", "Experiences"), ("#reservar", "Book"), ("#clube", "The club"), ("#comunidade", "Community"), ("#local", "Location"), ("#faq", "FAQ")],
         "nav_produtos": "Products",
         "lang_label": "Language",
         "cta_team": "Talk to the team",
         "menu_open": "Open menu",
         "menu_close": "Close menu",
         "hero_place": "Praia da Preguiça, Salvador, Brazil",
+        "hero_word": "Paddle!",
         "hero_title": "Find your rhythm at sea.",
         "hero_sub": "Paddling experiences, classes and a community brought together by the outrigger canoe on the Bay of All Saints.",
-        "hero_cta1": "Explore our experiences",
+        "hero_cta1": "Book a paddle",
+        "hero_play": "Watch on Instagram",
+        "hero_play_aria": "Watch the club's videos on Instagram",
         "hero_slot": "Official photo: crew paddling at sunrise on the Bay of All Saints · 2400×1600 · hero.jpg",
         "hero_alt": "Good Vibes Va'a crew paddling an outrigger canoe at sunrise on the Bay of All Saints",
-        "hero_facts": ["Paddles, classes and training", "For first-timers and athletes", "Gympass and TotalPass accepted"],
 
-        "about_title": "An outrigger canoe club in the heart of Salvador.",
+        "credibility_label": "Where we are and how to join",
+        "credibility": ["Gympass", "TotalPass", "Praia da Preguiça", "Salvador · Bahia"],
+        "photo_slot_prefix": "Official photo:",
+
         "about_statement": "In a canoe, nobody paddles alone. Every stroke depends on the rhythm of the person beside you, and that is what turns a class into a community.",
-        "about_pillars": [
-            ("Experiences", "Sunrise and sunset paddles, a first-time session and private outings for anyone who wants to see Salvador from the water."),
-            ("Club", "Classes, training sessions and recurring plans for those who want to progress in the sport and join the crew."),
-            ("Good Vibes lifestyle", "Gear, events and partnerships that carry the club's identity beyond the water."),
-        ],
         "kicker_journeys": "Experiences",
         "kicker_club": "The club",
+        "kicker_community": "Community",
         "kicker_shop": "Moda Good Vibes",
         "kicker_info": "Where and how",
         "kicker_closing": "Book your paddle",
@@ -400,6 +441,35 @@ CONTENT = {
             ("#treinar", "I want to train", "Drop-in classes, monthly plans and Gympass or TotalPass check-in.", "See plans"),
             ("#particular", "I want a private experience", "Groups, birthdays, companies and private outings.", "Request a quote"),
         ],
+
+        "offers_title": "What we offer",
+        "offers_lead": "From your first stroke to training with the crew. Times and prices are confirmed by the team when you book.",
+        "offers_cta": "See dates and book",
+        "offer_cards": [
+            ("#experimentar", "hero", "Sunrise and sunset", "Paddle · prices on request", "The city seen from inside the bay, at the start or the end of the day."),
+            ("#experimentar", "community_4", "First paddle", "Beginners · with a captain", "Technique and safety on the sand, then the sea. No experience needed."),
+            ("#treinar", "community_1", "Training and plans", "Drop-in · monthly · Gympass and TotalPass", "A training routine with the crew and guidance from the captains."),
+            ("#particular", "community_3", "Private", "Groups · birthdays · companies", "The canoe just for your group, with a route agreed with the team."),
+        ],
+
+        "reasons_title": "Why paddle with us",
+        "reasons_lead": "An outrigger canoe club with captains, a crew and one of the most beautiful settings in Salvador.",
+        "reasons": [
+            ("captain", "Captains in charge", "Jesse and Nala lead every outing, from the sand to the return."),
+            ("shield", "Safety first", "Paddling and safety instructions before you head out."),
+            ("pin", "Best location", "Praia da Preguiça, facing the Bay of All Saints."),
+            ("crew", "Community", "Training sessions, events and a year of stories at sea."),
+        ],
+
+        "moments_label": "Club moments",
+        "moments": [
+            ("community_1", "After training", "The crew together on the sand at Preguiça."),
+            ("community_2", "Pink October", "A paddle for awareness."),
+            ("community_3", "One year of Good Vibes", "A year of stories at sea."),
+            ("product_2", "Moda Good Vibes", "The club's identity beyond the water."),
+        ],
+        "carousel_prev": "See previous moments",
+        "carousel_next": "See next moments",
 
         "a_kicker": "I want to try it",
         "a_title": "Your first time in an outrigger canoe.",
@@ -440,7 +510,6 @@ CONTENT = {
 
         "community_title": "A community that meets at sea.",
         "community_lead": "Sunrise training, campaigns like Pink October and a year of stories told by the people who paddle with us.",
-        "community_slots": ["Official photo: crew celebrating after training · comunidade-1.jpg", "Official photo: Pink October · comunidade-2.jpg", "Official photo: club's first anniversary · comunidade-3.jpg", "Official photo: paddlers in the canoe · comunidade-canoa.jpg"],
         "community_cta": "Watch testimonials on Instagram",
         "community_note": "Video testimonials from people who have paddled with the club are on our Instagram.",
 
@@ -579,6 +648,19 @@ CONTENT = {
 ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.1 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1 .2-.5.2-1 .1-1.1l-.5-.2Z"/></svg>'
 ICON_ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg>'
 ICON_IG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor"/></svg>'
+
+ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>'
+ICON_PREV = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>'
+ICON_NEXT = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>'
+
+# Ícones em gota de "Por que remar com a gente". A chave é a primeira
+# posição de cada tupla de CONTENT[...]["reasons"].
+ICONS_REASON = {
+    "captain": '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="7" r="3.5"/><path d="M5 20c.6-4 3.4-6 7-6s6.4 2 7 6"/></svg>',
+    "shield": '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+    "pin": '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    "crew": '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c.5-3 2.8-5 6-5s5.5 2 6 5M10 20c.5-3 2.8-5 6-5s5.5 2 6 5"/></svg>',
+}
 
 
 def e(s):
@@ -748,7 +830,7 @@ def page_header(code, prefix, page):
     <nav class="nav" aria-label="{e(c['footer_nav'])}"><ul>{nav_items}</ul></nav>
     <div class="header-actions">
       {lang_switch}
-      <a class="btn btn--sm btn--gold header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
+      <a class="btn btn--sm btn--line header-cta" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{e(c['cta_team'])}</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="{e(c['menu_open'])}"><span></span></button>
     </div>
   </div>
@@ -761,6 +843,11 @@ def page_header(code, prefix, page):
 
 def page_footer(code, prefix, page):
     c = CONTENT[code]
+    # O pop-up de newsletter sai da home: a home do Template 2 abre direto
+    # no quadro de reservas e um overlay por cima dela competiria com a
+    # reserva. Continua ativo em /produtos e /privacidade (mesmo código,
+    # mesmo api/subscribers.ts).
+    nl_widget = "" if page == "home" else '<div class="nl-widget" data-nl-widget></div>' 
     root = "/" if code == "pt" else "/en/"
     fnav = nav_items_html(code, page)
     lang_switch_footer = lang_switch_html(code, page)
@@ -805,7 +892,7 @@ def page_footer(code, prefix, page):
   </div>
   <button type="button" class="wa-fab" data-wa-toggle aria-expanded="false" aria-label="{e(c['wa']['open'])}">{ICON_WA}</button>
 </div>
-<div class="nl-widget" data-nl-widget></div>"""
+{nl_widget}"""
 
 
 def page_scripts(code, prefix):
@@ -953,26 +1040,55 @@ def render(code):
     # "fatos" — usa a largura inteira da tela no desktop em vez de empilhar
     # tudo numa coluna estreita à direita (a leitura de "celular ampliado"
     # que este redesenho veio corrigir).
-    stats = "".join(
-        f'<div class="hero-stat"><span class="hero-stat-num">{i + 1:02d}</span><span class="hero-stat-text">{e(f)}</span></div>'
-        for i, f in enumerate(c["hero_facts"])
-    )
     hero = f"""
 <section class="hero" aria-labelledby="hero-title">
   {media('hero', code, c['hero_slot'], prefix, cls='hero-media', w=2400, h=1600, eager=True)}
   <div class="wrap wrap--wide hero-inner">
     <div class="hero-lead">
       <p class="eyebrow hero-place">{e(c['hero_place'])}</p>
-      <h1 class="display" id="hero-title">{e(c['hero_title'])}</h1>
+      <h1 id="hero-title"><span class="hero-word">{e(c['hero_word'])}</span><span class="hero-h1-line">{e(c['hero_title'])}</span></h1>
       <p class="hero-sub">{e(c['hero_sub'])}</p>
       <div class="btn-row">
-        <a class="btn btn--light" href="#experiencias">{e(c['hero_cta1'])}</a>
+        <a class="btn btn--gold" href="#reservar">{e(c['hero_cta1'])}</a>
         <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
       </div>
     </div>
+    <div class="hero-play-col">
+      <a class="hero-play" href="{SITE['instagram']}" target="_blank" rel="noopener" aria-label="{e(c['hero_play_aria'])}">{ICON_PLAY}</a>
+      <p class="hero-play-label">{e(c['hero_play'])}</p>
+    </div>
   </div>
-  <div class="hero-manifest">
-    <div class="wrap wrap--wide hero-manifest-row">{stats}</div>
+  <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 34 C 300 80 520 4 820 30 C 1080 52 1260 60 1440 26 L1440 80 L0 80Z"/></svg>
+</section>"""
+
+    # ---- Faixa de credibilidade ----
+    cred_items = "".join(f"<li>{e(t)}</li>" for t in c["credibility"])
+    credibility = f"""
+<section class="credibility" aria-label="{e(c['credibility_label'])}">
+  <div class="wrap wrap--wide"><ul>{cred_items}</ul></div>
+</section>"""
+
+    # ---- O que oferecemos: quatro cartões sobre a fotografia ----
+    # Cada cartão é um link para a jornada de reserva correspondente; o JS
+    # de abas (initTabs) intercepta o clique e abre a aba certa.
+    offer_cards = "".join(
+        f'<a class="offer-card" href="{href}">'
+        + media(photo, code, f"{c['photo_slot_prefix']} {title}", prefix, cls="media--zoom", w=900, h=700)
+        + f'<div class="offer-card-body"><h3 class="offer-card-title">{e(title)}</h3>'
+        f'<span class="offer-card-meta">{e(meta)}</span><p>{e(text)}</p></div></a>'
+        for href, photo, title, meta, text in c["offer_cards"]
+    )
+    offer = f"""
+<section class="offer band-dark" id="experiencias" aria-labelledby="offers-title">
+  {media('community_4', code, f"{c['photo_slot_prefix']} {c['offers_title']}", prefix, cls='offer-media', w=1600, h=1000)}
+  <div class="wrap wrap--wide">
+    <div class="section-head section-head--center">
+      {eyebrow(c['kicker_journeys'])}
+      <h2 class="h2" id="offers-title">{e(c['offers_title'])}</h2>
+      <p class="lead">{e(c['offers_lead'])}</p>
+    </div>
+    <div class="offer-cards">{offer_cards}</div>
+    <div class="offer-foot"><a class="btn btn--gold" href="#reservar">{e(c['offers_cta'])}</a></div>
   </div>
 </section>"""
 
@@ -1116,10 +1232,10 @@ def render(code):
     </div>"""
 
     journeys = f"""
-<section class="section journeys band-dark" id="experiencias" aria-labelledby="journeys-title">
+<section class="section journeys" id="reservar" aria-labelledby="journeys-title">
   <div class="wrap wrap--wide">
     <div class="section-head section-head--split">
-      {eyebrow(c['kicker_journeys'])}
+      {eyebrow(c['kicker_closing'])}
       <h2 class="h2" id="journeys-title">{e(c['journeys_title'])}</h2>
       <p class="lead">{e(c['journeys_lead'])}</p>
     </div>
@@ -1128,7 +1244,25 @@ def render(code):
   </div>
 </section>"""
 
-    # ---- O clube: apresentação + capitães + comunidade ----
+    # ---- Por que remar com a gente (quatro razões em gota) ----
+    reasons_html = "".join(
+        f'<div class="reason"><div class="reason-drop" aria-hidden="true">{ICONS_REASON[key]}</div>'
+        f"<h3>{e(t)}</h3><p>{e(d)}</p></div>"
+        for key, t, d in c["reasons"]
+    )
+    reasons = f"""
+<section class="section" id="clube" aria-labelledby="reasons-title">
+  <div class="wrap wrap--wide">
+    <div class="section-head section-head--center">
+      {eyebrow(c['kicker_club'])}
+      <h2 class="h2" id="reasons-title">{e(c['reasons_title'])}</h2>
+      <p class="lead">{e(c['reasons_lead'])}</p>
+    </div>
+    <div class="reasons">{reasons_html}</div>
+  </div>
+</section>"""
+
+    # ---- Comunidade e capitães + carrossel de momentos ----
     caps = ""
     for i, cap in enumerate(SITE["captains"]):
         fem = i == 1
@@ -1139,34 +1273,37 @@ def render(code):
           <figcaption><span class="meta">{e(role)}</span><strong>{e(cap['name'])}</strong>
             <a class="link" href="https://www.instagram.com/{cap['handle']}/" target="_blank" rel="noopener">@{e(cap['handle'])}</a></figcaption>
         </figure>"""
-    tiles = "".join(
-        media(f"community_{i+1}", code, s, prefix, cls="media--zoom", w=900, h=1125)
-        for i, s in enumerate(c["community_slots"][:4])
+    moments = "".join(
+        '<figure class="moment">'
+        + media(photo, code, f"{c['photo_slot_prefix']} {title}", prefix, cls="media--zoom", w=900, h=620)
+        + f"<figcaption><strong>{e(title)}</strong><span>{e(text)}</span></figcaption></figure>"
+        for photo, title, text in c["moments"]
     )
-    pillars = "".join(f"<div><dt>{e(t)}</dt><dd>{e(d)}</dd></div>" for t, d in c["about_pillars"])
-    club = f"""
-<section class="section club" id="clube" aria-labelledby="club-title">
+    community = f"""
+<section class="section community" id="comunidade" aria-labelledby="community-title">
   <div class="wrap wrap--wide">
-    <div class="club-grid">
-      <div class="club-manifesto">
-        {eyebrow(c['kicker_club'])}
-        <h2 class="h2" id="club-title">{e(c['about_title'])}</h2>
-        <p class="club-statement">{e(c['about_statement'])}</p>
-        <dl class="club-pillars">{pillars}</dl>
+    <div class="community-grid">
+      <div class="community-col">
+        {eyebrow(c['kicker_community'])}
+        <h2 class="h2" id="community-title">{e(c['team_title'])}</h2>
+        <p class="lead">{e(c['team_lead'])}</p>
+        <p class="community-quote">{e(c['about_statement'])}</p>
+        <a class="btn btn--line-dark" href="{SITE['instagram']}" target="_blank" rel="noopener">{ICON_IG}{e(c['community_cta'])}</a>
       </div>
-      <div class="club-team" id="equipe">
-        <h3 class="h3">{e(c['team_title'])}</h3>
-        <p class="lead" style="font-size:var(--t-sm);margin-top:10px">{e(c['team_lead'])}</p>
-        <div class="captains">{caps}
-        </div>
+      <div class="captains">{caps}
       </div>
     </div>
-    <div class="strip" aria-label="{e(c['community_title'])}">{tiles}</div>
+    <div class="carousel">
+      <div class="carousel-track" id="momentos" tabindex="0" role="group" aria-label="{e(c['moments_label'])}">{moments}</div>
+      <div class="carousel-nav">
+        <button type="button" class="carousel-btn" data-carousel="momentos" data-dir="-1" aria-controls="momentos" aria-label="{e(c['carousel_prev'])}">{ICON_PREV}</button>
+        <button type="button" class="carousel-btn" data-carousel="momentos" data-dir="1" aria-controls="momentos" aria-label="{e(c['carousel_next'])}">{ICON_NEXT}</button>
+      </div>
+    </div>
     <!-- Depoimentos escritos: publicar aqui apenas depoimentos reais, com autorização. -->
     <div class="testimonials"></div>
     <div class="community-foot">
       <p>{e(c['community_note'])}</p>
-      <a class="btn btn--line-dark" href="{SITE['instagram']}" target="_blank" rel="noopener">{ICON_IG}{e(c['community_cta'])}</a>
     </div>
   </div>
 </section>"""
@@ -1187,8 +1324,22 @@ def render(code):
   </div>
 </section>"""
 
-    # ---- Local + FAQ lado a lado ----
+    # ---- Local: mapa e informações ----
     pitems = "".join(f"<div><dt>{e(t)}</dt><dd>{e(d)}</dd></div>" for t, d in c["place_items"])
+    place = f"""
+<section class="section info" id="local" aria-labelledby="place-title">
+  <div class="wrap wrap--wide">
+    {eyebrow(c['kicker_info'])}
+    <div class="info-place">
+      <h2 class="h2" id="place-title">{e(c['place_title'])}</h2>
+      <div class="map"><iframe src="{SITE['maps_embed']}" title="{e(c['map_title'])}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <dl class="place-list">{pitems}</dl>
+      <a class="btn btn--line-dark" href="{SITE['maps_link']}" target="_blank" rel="noopener">{e(c['place_maps'])}</a>
+    </div>
+  </div>
+</section>"""
+
+    # ---- Dúvidas: título e chamada numa coluna, acordeão na outra ----
     qa = "".join(f"<details><summary>{e(q)}</summary><p>{e(a)}</p></details>" for q, a in c["faq"])
     faq_ld = {
         "@context": "https://schema.org",
@@ -1197,38 +1348,34 @@ def render(code):
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in c["faq"]
         ],
     }
-    place = f"""
-<section class="section info" id="local" aria-labelledby="place-title">
-  <div class="wrap wrap--wide">
-    {eyebrow(c['kicker_info'])}
-    <div class="info-grid" style="margin-top:clamp(28px,3vw,48px)">
-      <div class="info-place">
-        <h2 class="h2" id="place-title">{e(c['place_title'])}</h2>
-        <div class="map"><iframe src="{SITE['maps_embed']}" title="{e(c['map_title'])}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-        <dl class="place-list">{pitems}</dl>
-        <a class="btn btn--line-dark" href="{SITE['maps_link']}" target="_blank" rel="noopener">{e(c['place_maps'])}</a>
-      </div>
-      <div class="info-faq" id="faq">
-        <h2 class="h2">{e(c['faq_title'])}</h2>
-        <div class="faq">{qa}</div>
-      </div>
+    faq_section = f"""
+<section class="section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap wrap--wide faq-split">
+    <div class="faq-intro">
+      <h2 class="h2" id="faq-title">{e(c['faq_title'])}</h2>
+      <p class="lead">{e(c['faq_lead'])}</p>
+      <a class="btn btn--gold" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
     </div>
+    <div class="faq">{qa}</div>
   </div>
   <script type="application/ld+json">{json.dumps(faq_ld, ensure_ascii=False)}</script>
 </section>"""
 
-    # ---- Chamada final ----
+    # ---- Chamada final: painel Forest + fotografia ----
     closing = f"""
-<section class="section closing band-dark" aria-labelledby="closing-title">
-  <div class="wrap wrap--wide closing-inner">
-    {eyebrow(c['kicker_closing'])}
-    <h2 class="h2" id="closing-title">{e(c['final_title'])}</h2>
-    <div class="closing-aside">
-      <p class="lead">{e(c['final_lead'])}</p>
-      <div class="btn-row">
-        <a class="btn btn--gold" href="#experimentar">{e(c['dock_book'])}</a>
-        <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+<section class="closing" id="contato" aria-labelledby="closing-title">
+  <div class="wrap wrap--wide">
+    <div class="closing-split band-dark">
+      <div class="closing-text">
+        <p class="eyebrow">{e(c['hero_place'])}</p>
+        <h2 class="closing-title" id="closing-title">{e(c['final_title'])}</h2>
+        <p class="lead">{e(c['final_lead'])}</p>
+        <div class="btn-row">
+          <a class="btn btn--gold" href="#reservar">{e(c['dock_book'])}</a>
+          <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
+        </div>
       </div>
+      {media('community_2', code, f"{c['photo_slot_prefix']} {c['final_title']}", prefix, cls='closing-media', w=1200, h=1200)}
     </div>
   </div>
 </section>"""
@@ -1237,8 +1384,14 @@ def render(code):
     footer = page_footer(code, prefix, "home")
     scripts = page_scripts(code, prefix)
 
+    # Ordem das seções: menu -> hero -> faixa de credibilidade -> o que
+    # oferecemos -> quadro de reservas -> por que remar com a gente ->
+    # comunidade e capitães -> loja -> local -> dúvidas -> chamada final ->
+    # rodapé.
     body = (
-        "<body>" + header + '<main id="conteudo">' + hero + journeys + club + shop + place + closing
+        "<body>" + header + '<main id="conteudo">'
+        + hero + credibility + offer + journeys + reasons + community
+        + shop + place + faq_section + closing
         + "</main>" + footer + scripts + "</body></html>"
     )
     return head + "\n" + body

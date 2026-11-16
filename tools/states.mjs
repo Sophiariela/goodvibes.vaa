@@ -210,9 +210,12 @@ for (const W of WIDTHS) {
     await page.close();
   }
 
-  /* ---- newsletter pop-up ---- */
+  /* ---- newsletter pop-up ----
+     A home nao tem mais o pop-up (ver page_footer em build.py: a home abre
+     direto no quadro de reservas e um overlay competiria com a reserva).
+     O teste roda em /produtos/, onde o pop-up continua ativo. */
   {
-    const page = await newPage(ctx, '/');
+    const page = await newPage(ctx, '/produtos/');
     await page.evaluate(() => { try { localStorage.clear(); } catch {} });
     await page.reload({ waitUntil: 'load' });
     await page.waitForTimeout(400);

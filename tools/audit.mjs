@@ -58,11 +58,12 @@ for (const [w, h] of SIZES) {
       if (de.scrollWidth > de.clientWidth + 1) out.push(['overflow', `scrollW=${de.scrollWidth} clientW=${de.clientWidth}`]);
 
       /* --- sangria lateral: elementos passando da borda ---
-         .strip sangra de propósito (faixa da comunidade) e .bk-days é um
-         trilho de rolagem horizontal — em ambos o conteúdo fora da borda
-         é o comportamento desejado, não um vazamento de layout. */
+         .carousel-track (momentos do clube) e .bk-days (dias do quadro de
+         saídas) são trilhos de rolagem horizontal — neles o conteúdo fora
+         da borda é o comportamento desejado, não um vazamento de layout.
+         A página em si continua sendo checada por 'overflow' acima. */
       for (const el of document.querySelectorAll('main *, footer *')) {
-        if (!vis(el) || el.closest('.strip, .bk-days')) continue;
+        if (!vis(el) || el.closest('.carousel-track, .bk-days')) continue;
         const r = el.getBoundingClientRect();
         if (r.width === 0) continue;
         if (r.right > vw + 1.5 || r.left < -1.5) out.push(['bleed', `${label(el)} left=${Math.round(r.left)} right=${Math.round(r.right)}`]);

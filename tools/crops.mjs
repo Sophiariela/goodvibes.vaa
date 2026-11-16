@@ -9,11 +9,15 @@ const BASE = process.argv[3] || 'http://localhost:8777';
 const SIZES = [[390, 844], [768, 1024], [1440, 900], [1920, 1080]];
 const TARGETS = [
   ['hero', '/', null],
-  ['journeys', '/', '#experiencias'],
-  ['club', '/', '#clube'],
-  ['community', '/', '.strip'],
+  ['credibility', '/', '.credibility'],
+  ['offer', '/', '#experiencias'],
+  ['booking', '/', '#reservar'],
+  ['reasons', '/', '#clube'],
+  ['community', '/', '#comunidade'],
+  ['carousel', '/', '.carousel'],
   ['shop', '/', '.shop-teaser'],
   ['info', '/', '#local'],
+  ['faq', '/', '#faq'],
   ['closing', '/', '.closing'],
   ['footer', '/', '.footer'],
   ['produtos', '/produtos/', null],
