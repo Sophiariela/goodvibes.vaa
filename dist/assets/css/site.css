@@ -1106,7 +1106,7 @@ body.bk-modal-open { overflow: hidden; }
 .field [aria-invalid="true"] { border-color: var(--c-bad); }
 .field-error { font-size: var(--t-xs); color: var(--c-bad); font-weight: 650; }
 .field-error:empty { display: none; }
-.more summary { cursor: pointer; font-size: var(--t-sm); font-weight: 650; color: var(--c-ocean); }
+.more summary { cursor: pointer; font-size: var(--t-sm); font-weight: 650; color: var(--c-ocean-2); }
 .more[open] summary { margin-bottom: 12px; }
 .form-actions { margin-top: 22px; display: grid; gap: 12px; }
 .form-actions .btn { width: 100%; }

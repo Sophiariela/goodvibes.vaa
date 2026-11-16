@@ -42,7 +42,7 @@ SITE = {
     #   "live" -> usa o backend em api_base (contrato no README/docs/SETUP.md).
     #   "off"  -> volta ao formulário de WhatsApp de cada jornada.
     # NUNCA publicar em "demo": é só para apresentação interna.
-    "booking_mode": "demo",
+    "booking_mode": "off",
     "api_base": "",
     "booking_seats": 6,
 }

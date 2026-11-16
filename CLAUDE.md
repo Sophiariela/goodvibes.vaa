@@ -92,7 +92,8 @@ ou nos arquivos de `src/`. Nunca editar `dist/` diretamente — é gerado.
 fictícios (`booking_content.py`), "Simular pagamento aprovado" confirma sem
 cobrar nada de verdade. Antes de divulgar o link publicamente, trocar para
 `"off"` (volta ao WhatsApp) ou `"live"` (backend real em `SITE["api_base"]`
-— ver seção de backend abaixo). Hoje o repositório está em `"demo"`.
+— ver seção de backend abaixo). Hoje o repositório está em `"off"`: as três
+jornadas voltam ao formulário que abre o WhatsApp com a solicitação pronta.
 
 - `src/assets/js/booking.js` — sistema único (calendário + cartões + modal)
   reaproveitado pelas três jornadas. `initBooking()` roda uma instância por
