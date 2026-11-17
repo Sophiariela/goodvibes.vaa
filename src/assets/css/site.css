@@ -167,7 +167,7 @@
    .band-dark. Redeclarar os tokens no próprio elemento vence a herança do
    contexto escuro, então um mesmo componente serve nos dois fundos sem
    nenhuma regra duplicada. */
-.bk-overlay, .pmodal-overlay, .nl-overlay, .wa-card, .form, .dock, .offer-card {
+.bk-overlay, .pmodal-overlay, .nl-overlay, .wa-card, .form, .dock, .offer-card, .pcol {
   --surface: var(--c-white);
   --surface-2: var(--c-shell-2);
   --ink: var(--c-ink);
@@ -409,7 +409,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .media--zoom:hover img, a:hover > .media--zoom img, button:hover .media--zoom img { transform: scale(1.04); }
 
 /* ==========================================================================
-   7. Header
+   7. Header e menu em painel
    ========================================================================== */
 .header {
   position: fixed; inset: 0 0 auto; z-index: 90; height: var(--header-h);
@@ -422,22 +422,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
   opacity: 1; transition: opacity .3s ease;
 }
 /* Ao rolar o menu vira Forest com texto Ivory (ver tabela da paleta:
-   "Forest — menu ao rolar"), nao uma barra clara: assim o mesmo menu
-   branco do hero continua valendo e nao ha troca de cor de texto. */
-.header.is-solid, .header.is-open {
+   "Forest — menu ao rolar"), não uma barra clara: assim o mesmo menu
+   claro do hero continua valendo e não há troca de cor de texto. */
+.header.is-solid {
   background: rgba(18, 61, 43, .94);
   color: var(--c-shell);
   box-shadow: inset 0 -1px 0 rgba(244, 240, 230, .16);
-}
-/* O desfoque fica fora do estado "aberto" de propósito: backdrop-filter
-   transforma o header em bloco de contenção para descendentes fixos, o que
-   quebraria o menu de celular. Com o menu aberto o header é opaco mesmo. */
-.header.is-solid:not(.is-open) {
   -webkit-backdrop-filter: saturate(1.6) blur(16px);
   backdrop-filter: saturate(1.6) blur(16px);
 }
-.header.is-open { background: var(--c-forest); }
-.header.is-solid::after, .header.is-open::after { opacity: 0; }
+.header.is-solid::after { opacity: 0; }
 .header .wrap { display: flex; align-items: center; height: 100%; gap: clamp(16px, 2.4vw, 44px); }
 
 .brand { display: inline-flex; align-items: center; gap: 13px; text-decoration: none; min-width: 0; margin-right: auto; }
@@ -459,21 +453,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .brand-word small { display: none; }
 }
 
-.nav { display: none; min-width: 0; }
-.nav ul { display: flex; gap: clamp(14px, 1.6vw, 30px); }
-.nav li { flex: none; }
-.nav a {
-  position: relative; display: block; text-decoration: none; white-space: nowrap;
-  font-size: var(--t-sm); font-weight: 650; letter-spacing: 0;
-  padding-block: 10px;
-}
-.nav a::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px;
-  background: var(--c-gold); transform: scaleX(0); transform-origin: left;
-  transition: transform .28s ease;
-}
-.nav a:hover::after, .nav a[aria-current="page"]::after { transform: scaleX(1); }
-
 .header-actions { display: flex; align-items: center; gap: clamp(10px, 1.2vw, 20px); flex: none; }
 .lang-switch { display: flex; align-items: center; gap: 1px; font-size: var(--t-2xs); font-weight: 700; letter-spacing: .1em; flex: none; }
 .lang-switch a, .lang-switch span { position: relative; padding: 7px 9px; text-decoration: none; border-radius: var(--radius); line-height: 1; }
@@ -488,59 +467,93 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lang-switch [aria-current="true"]::after {
   content: ""; position: absolute; left: 9px; right: 9px; bottom: 2px; height: 1px; background: var(--c-gold);
 }
-.header-cta { display: none; white-space: nowrap; }
 
+/* Botão do menu: três traços + a palavra. A palavra existe porque, sem
+   barra de navegação nenhuma no desktop, só o ícone deixaria a navegação
+   inteira do site dependendo de reconhecer um símbolo. */
 .menu-btn {
-  width: 46px; height: 46px; display: grid; place-items: center; flex: none;
-  background: none; border: 1.5px solid currentColor; border-radius: 50%; cursor: pointer;
-  color: inherit; opacity: .82;
+  display: inline-flex; align-items: center; gap: 10px; flex: none;
+  min-height: 44px; padding: 9px 16px 9px 14px;
+  background: none; border: 1.5px solid currentColor; border-radius: 999px;
+  color: inherit; cursor: pointer; transition: background-color .2s ease, color .2s ease;
 }
-.menu-btn span, .menu-btn span::before, .menu-btn span::after {
-  display: block; width: 18px; height: 1.5px; background: currentColor; content: ""; position: relative;
-  transition: transform .24s ease, background-color .24s ease;
-}
-.menu-btn span::before { position: absolute; top: -6px; }
-.menu-btn span::after { position: absolute; top: 6px; }
-.header.is-open .menu-btn span { background: transparent; }
-.header.is-open .menu-btn span::before { transform: translateY(6px) rotate(45deg); }
-.header.is-open .menu-btn span::after { transform: translateY(-6px) rotate(-45deg); }
+.menu-btn:hover { background: rgba(244, 240, 230, .14); }
+.menu-btn-bars { position: relative; display: block; width: 18px; height: 1.5px; background: currentColor; }
+.menu-btn-bars::before, .menu-btn-bars::after { content: ""; position: absolute; left: 0; width: 18px; height: 1.5px; background: currentColor; }
+.menu-btn-bars::before { top: -6px; }
+.menu-btn-bars::after { top: 6px; }
+.menu-btn-word { font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em; text-transform: uppercase; }
+@media (max-width: 419px) { .menu-btn-word { display: none; } .menu-btn { padding: 9px 13px; } }
 
-/* Ancorado no próprio header (absolute, não fixed) — assim não depende de
-   o header ser ou não bloco de contenção, e acompanha --header-h sozinho. */
-.mobile-nav {
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 1;
-  height: calc(100svh - var(--header-h));
-  /* Menu de celular em Forest, como a barra ao rolar. Os tokens de filete
-     e texto secundario precisam do contrato escuro aqui dentro. */
+/* --- Painel lateral do menu --- */
+html.menu-open { overflow: hidden; }
+.menu-overlay {
+  position: fixed; inset: 0; z-index: 95;
+  background: rgba(12, 42, 30, .62);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s;
+}
+html.menu-open .menu-overlay { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
+.menu-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 96;
+  width: min(420px, 100vw); max-width: 100vw;
   background: var(--c-forest); color: var(--c-shell);
-  --focus-ring: var(--c-gold);
   --ink: var(--c-shell); --ink-2: rgba(244, 240, 230, .72);
   --rule-c: rgba(244, 240, 230, .16); --rule-strong: rgba(244, 240, 230, .38);
-  --btn-solid-bg: var(--c-shell); --btn-solid-fg: var(--c-forest);
-  padding: clamp(20px, 5vw, 40px) var(--gutter) 48px;
-  overflow-y: auto; display: none; flex-direction: column; gap: 28px;
+  --accent-ink: var(--c-gold); --focus-ring: var(--c-gold);
+  box-shadow: -30px 0 80px rgba(12, 42, 30, .5);
+  transform: translateX(101%); visibility: hidden;
+  transition: transform .34s cubic-bezier(.2, .8, .3, 1), visibility 0s linear .34s;
+  overflow-y: auto; overscroll-behavior: contain;
 }
-.header.is-open .mobile-nav { display: flex; }
-.mobile-nav ul { display: grid; }
-.mobile-nav li a {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding: 15px 0; border-bottom: 1px solid var(--rule-c); text-decoration: none;
-  font-family: var(--font-display); font-size: clamp(1.5rem, 1.1rem + 2vw, 2.125rem);
-  letter-spacing: -.015em; line-height: 1.1;
+html.menu-open .menu-drawer { transform: none; visibility: visible; transition: transform .34s cubic-bezier(.2, .8, .3, 1), visibility 0s; }
+@media (prefers-reduced-motion: reduce) { .menu-drawer, .menu-overlay { transition-duration: .01ms; } }
+.menu-drawer-in {
+  min-height: 100%; display: flex; flex-direction: column;
+  padding: clamp(14px, 2vw, 22px) clamp(22px, 3vw, 34px) clamp(26px, 3vw, 36px);
 }
-.mobile-nav li a::after {
-  content: ""; width: 7px; height: 7px; flex: none; align-self: center;
-  border-right: 1px solid var(--c-gold); border-bottom: 1px solid var(--c-gold);
-  transform: rotate(-45deg);
+.menu-drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; }
+.menu-close {
+  width: 44px; height: 44px; flex: none; display: grid; place-items: center;
+  background: none; border: 1.5px solid var(--rule-strong); border-radius: 50%;
+  color: inherit; cursor: pointer; transition: background-color .2s ease, border-color .2s ease;
 }
-.mobile-nav .btn { margin-top: auto; }
-
-@media (min-width: 1100px) {
-  .nav { display: block; margin-inline: auto; }
-  .header-cta { display: inline-flex; }
-  .menu-btn, .mobile-nav { display: none !important; }
-  .brand-word, .brand-word small { white-space: nowrap; }
+.menu-close:hover { background: rgba(244, 240, 230, .12); border-color: var(--c-shell); }
+.menu-close svg { width: 18px; height: 18px; }
+.menu-list { margin: clamp(12px, 1.8vw, 22px) 0 0; border-top: 1px solid var(--rule-c); }
+.menu-list li { border-bottom: 1px solid var(--rule-c); }
+.menu-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: clamp(12px, 1.5vw, 16px) 0; text-decoration: none;
+  font-family: var(--font-display); font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);
+  line-height: 1.12; letter-spacing: -.015em; color: var(--c-shell);
+  transition: color .2s ease, padding-left .25s ease;
 }
+.menu-list a::after {
+  content: ""; width: 7px; height: 7px; flex: none;
+  border-right: 1.5px solid var(--c-gold); border-bottom: 1.5px solid var(--c-gold);
+  transform: rotate(-45deg); transition: transform .25s ease;
+}
+.menu-list a:hover { padding-left: 6px; color: var(--c-gold); }
+.menu-list a:hover::after { transform: rotate(-45deg) translate(3px, 3px); }
+.menu-list a[aria-current="page"] { color: var(--c-gold); }
+.menu-book { margin-top: clamp(20px, 2.4vw, 28px); width: 100%; }
+.menu-drawer-foot {
+  margin-top: auto; padding-top: clamp(20px, 2.4vw, 28px);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.menu-drawer-foot-end { display: flex; align-items: center; gap: 14px; }
+.menu-contact {
+  font-size: var(--t-sm); font-weight: 650; letter-spacing: .04em; text-decoration: none;
+  padding-block: 8px; border-bottom: 1px solid var(--c-gold);
+}
+.menu-ig {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--rule-c); border-radius: 50%; color: inherit;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.menu-ig:hover { background: rgba(244, 240, 230, .12); border-color: var(--c-shell); }
+.menu-ig svg { width: 19px; height: 19px; }
 
 /* ==========================================================================
    8. Hero — fotografia dominante, palavra gigante e onda
@@ -1417,6 +1430,58 @@ body.bk-modal-open { overflow: hidden; }
 .pmodal-buy { margin-top: 18px; width: 100%; }
 body.pmodal-open { overflow: hidden; }
 
+/* --- Loja: apresentação, filtros, espaços futuros e coleções --- */
+.produtos-intro { padding-block: 0 clamp(32px, 4vw, 56px); }
+.produtos-intro-grid { display: grid; gap: 18px; }
+.produtos-intro-grid .h2 { font-size: var(--t-lg); }
+.produtos-intro-grid .lead { max-width: 60ch; }
+@media (min-width: 920px) {
+  .produtos-intro-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); column-gap: clamp(40px, 5vw, 88px); align-items: start; }
+  .produtos-intro-grid .h2 { max-width: 16ch; }
+}
+
+.pfilters { display: grid; gap: 14px; margin-bottom: clamp(24px, 3vw, 36px); }
+.pfilters-label { font-size: var(--t-xs); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
+.pchips { display: flex; flex-wrap: wrap; gap: 10px; }
+.pchip {
+  min-height: 44px; padding: 10px 20px; cursor: pointer;
+  border: 1px solid var(--rule-c); border-radius: 999px; background: var(--surface);
+  font-family: var(--font); font-size: var(--t-xs); font-weight: 650; letter-spacing: .06em;
+  color: var(--ink-2); transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+}
+.pchip:hover { border-color: var(--c-forest); color: var(--ink); }
+.pchip[aria-pressed="true"] { background: var(--c-forest); border-color: var(--c-forest); color: var(--c-shell); }
+
+/* Espaço de peça futura: mesma caixa dos produtos, sem nome inventado,
+   sem preço e sem disponibilidade — só o lugar reservado na grade. */
+.pcard--soon { display: flex; flex-direction: column; border: 1px dashed var(--rule-strong); background: transparent; }
+.pcard-soon-media {
+  aspect-ratio: 4 / 5; display: grid; place-items: center;
+  background: var(--c-shell-2);
+  background-image: radial-gradient(rgba(32, 43, 40, .07) 1px, transparent 1px);
+  background-size: 7px 7px;
+}
+.pcard-soon-badge {
+  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-ink); background: var(--c-gold); border-radius: 999px; padding: 6px 14px;
+}
+.pcard--soon .pcard-body { padding: 18px 20px 24px; display: grid; gap: 8px; }
+.pcard-soon-text { margin: 0; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.55; }
+
+.pcols { display: grid; gap: clamp(16px, 2vw, 24px); }
+@media (min-width: 720px) { .pcols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.pcol { background: var(--c-shell); color: var(--c-ink); display: flex; flex-direction: column; }
+.pcol-media { aspect-ratio: 4 / 3; }
+.pcol-body { padding: clamp(18px, 2vw, 24px); display: grid; gap: 8px; align-content: start; }
+.pcol-body strong { font-family: var(--font-display); font-weight: 400; font-size: var(--t-md); letter-spacing: -.01em; }
+.pcol-body p { margin: 0; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.55; }
+.pcol-badge {
+  justify-self: start; font-size: var(--t-2xs); font-weight: 650; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-ocean-2); border: 1px solid currentColor; border-radius: 999px; padding: 3px 10px;
+}
+.produtos-howto { padding-block: clamp(40px, 5vw, 72px); }
+.produtos-howto-in { display: grid; gap: 16px; justify-items: start; max-width: 62ch; }
+
 /* ==========================================================================
    17. Pop-up de newsletter
    ========================================================================== */
@@ -1471,7 +1536,7 @@ body.pmodal-open { overflow: hidden; }
 body.nl-open { overflow: hidden; }
 
 /* ==========================================================================
-   18. Página de política de privacidade
+   18. Páginas institucionais (privacidade, termos, diretrizes, reservas)
    ========================================================================== */
 .legal { padding-top: calc(var(--header-h) + clamp(40px, 5vw, 80px)); }
 .legal-head { display: grid; gap: 18px; max-width: 24ch; }
@@ -1483,13 +1548,48 @@ body.nl-open { overflow: hidden; }
 .legal-body section { display: grid; gap: 10px; scroll-margin-top: calc(var(--header-h) + 32px); }
 .legal-body h2 { font-family: var(--font-display); font-weight: 400; font-size: var(--t-lg); line-height: 1.14; letter-spacing: -.014em; }
 .legal-body p { color: var(--ink-2); line-height: 1.68; max-width: 64ch; }
-.legal-foot { margin-top: clamp(32px, 3.5vw, 52px); display: grid; gap: 22px; justify-items: start; }
+.legal-foot { margin-top: clamp(32px, 3.5vw, 52px); display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* Aviso de rascunho: o documento existe e é navegável, mas diz na cara
+   que ainda não vale como política. Faixa Sand (não vermelha: não é erro,
+   é estado) com texto Charcoal, o par de contraste da paleta. */
+.legal-draft {
+  margin-top: 6px; padding: 16px 20px; border-left: 3px solid var(--c-gold);
+  background: var(--c-shell-2); color: var(--c-ink);
+  font-size: var(--t-sm); line-height: 1.6; max-width: 62ch;
+}
+.legal-draft strong { font-weight: 650; }
+
+/* Etiqueta "a definir" ao lado do título da seção ainda em aberto. */
+.legal-section h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.legal-pending {
+  font-family: var(--font); font-size: var(--t-2xs); font-weight: 650;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--c-ocean-2); border: 1px solid currentColor; border-radius: 999px;
+  padding: 3px 10px; white-space: nowrap;
+}
+.legal-section.is-pending p { color: var(--ink-2); }
+
+.legal-others { margin-top: clamp(40px, 4.5vw, 64px); padding-top: 26px; border-top: 1px solid var(--rule-c); }
+.legal-others-title { font-size: var(--t-xs); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
+.legal-others-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.legal-other {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px;
+  border: 1px solid var(--rule-c); border-radius: 999px;
+  font-size: var(--t-xs); font-weight: 650; letter-spacing: .02em;
+  color: var(--ink); text-decoration: none;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+.legal-other:hover { border-color: var(--c-forest); background: var(--c-shell-2); }
 @media (min-width: 1100px) {
   .legal-head { max-width: none; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: end; }
   .legal-head > .eyebrow { grid-column: 1 / -1; }
   .legal-head > .display { grid-column: 1 / span 6; }
   .legal-head > .lead { grid-column: 8 / span 5; }
   .legal-head > .meta { grid-column: 8 / span 5; }
+  /* O aviso de rascunho precisa de coluna própria: sem isso ele cai numa
+     única coluna de 12 e quebra uma palavra por linha. */
+  .legal-head > .legal-draft { grid-column: 1 / span 7; margin-top: 14px; }
   .legal-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(40px, 4vw, 88px); align-items: start; }
   .legal-toc {
     display: grid; gap: 10px; grid-column: 1 / span 3;
@@ -1518,53 +1618,89 @@ body.nl-open { overflow: hidden; }
 }
 
 /* ==========================================================================
-   19. Rodapé
+   19. Rodapé — marca · navegação · atendimento · redes
    ========================================================================== */
 .footer {
   background: var(--c-abyss); color: rgba(244, 240, 230, .74); --focus-ring: var(--c-gold);
-  padding-block: clamp(56px, 6vw, 96px) 28px; font-size: var(--t-sm);
+  padding-block: clamp(56px, 6vw, 96px) 24px; font-size: var(--t-sm);
   --rule-c: rgba(244, 240, 230, .14);
 }
-.footer-grid { display: grid; gap: clamp(32px, 4vw, 56px); }
-.footer-brand .brand-word { color: var(--c-shell); font-size: clamp(2rem, 1.3rem + 2.8vw, 3.5rem); }
-.footer-brand p { margin-top: 18px; max-width: 34ch; line-height: 1.65; font-size: var(--t-base); }
-.footer-brand .btn { margin-top: 28px; }
-.footer h2 { font-size: var(--t-sm); font-weight: 650; letter-spacing: .01em; color: var(--c-gold); margin-bottom: 14px; }
-.footer-col li a, .footer-col li:not(:has(a)) { font-size: var(--t-base); }
-/* O espaçamento entre as linhas vem do padding do próprio link, não de
-   uma margem: o ritmo visual é o mesmo e cada item vira um alvo de toque
-   de ~36px em vez de 21px. O min-width é invisível (o link não desenha
-   caixa) e serve para rótulos curtos como "FAQ"/"Local" também chegarem
-   à largura mínima de um toque. */
-.footer-col li a { display: inline-block; padding-block: 7px; min-width: 44px; }
-/* linhas do rodapé que não são link (o endereço) precisam do mesmo
-   respiro para o ritmo da coluna não quebrar */
-.footer-col li:not(:has(a)) { padding-block: 7px; }
 .footer a { text-decoration: none; transition: color .2s; }
 .footer a:hover { color: var(--c-shell); }
+.footer h2 { font-size: var(--t-xs); font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 18px; }
+
+.footer-grid { display: grid; gap: clamp(34px, 4vw, 56px); }
+.footer-brand .brand { margin-right: 0; color: var(--c-shell); }
+.footer-brand .brand-word { font-size: 1.375rem; }
+.footer-about { margin: 20px 0 0; max-width: 38ch; line-height: 1.7; }
+.footer-brand .btn { margin-top: 26px; }
+.footer-col-text { margin: 0 0 16px; max-width: 32ch; line-height: 1.65; }
+.footer-service-cta { color: var(--c-shell); font-size: var(--t-sm); }
+.footer-service-cta svg { width: 16px; height: 16px; }
+/* O espaçamento entre as linhas vem do padding do próprio link, não de
+   uma margem: o ritmo visual é o mesmo e cada item vira um alvo de toque
+   de ~36px em vez de 21px. */
+.footer-col li a { display: inline-block; padding-block: 7px; min-width: 44px; }
+
+/* Instagram: o ícone inteiro é o alvo clicável, sem o endereço escrito
+   por extenso ao lado. O rótulo acessível vai no aria-label. */
+.footer-ig {
+  width: 52px; height: 52px; display: grid; place-items: center;
+  border: 1px solid var(--rule-c); border-radius: 50%; color: var(--c-shell);
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-ig:hover { background: rgba(244, 240, 230, .1); border-color: var(--c-gold); transform: translateY(-2px); }
+.footer-ig svg { width: 22px; height: 22px; }
+
+/* Faixa institucional da localização: discreta de propósito — o endereço
+   não concorre com atendimento e navegação, mas continua acessível. */
+.footer-place {
+  margin-top: clamp(36px, 4vw, 64px); padding-top: 22px; border-top: 1px solid var(--rule-c);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px;
+  font-size: var(--t-xs); color: rgba(244, 240, 230, .6);
+}
+.footer-place-label { font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: rgba(244, 240, 230, .58); }
+.footer-place-value { letter-spacing: .04em; }
+.footer-place-link { color: var(--c-gold); border-bottom: 1px solid transparent; padding-block: 4px; }
+.footer-place-link:hover { border-bottom-color: currentColor; color: var(--c-gold); }
+
 .footer-bottom {
-  margin-top: clamp(40px, 4.5vw, 72px); padding-top: 24px; border-top: 1px solid var(--rule-c);
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--rule-c);
+  display: grid; gap: 16px;
   font-size: var(--t-2xs); color: rgba(244, 240, 230, .55); letter-spacing: .04em;
 }
-.footer-bottom nav { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-legal { display: flex; flex-wrap: wrap; gap: 6px 22px; }
 /* mesmo motivo dos links das colunas: 11px de texto é um alvo pequeno
    demais sem um respiro vertical próprio */
-.footer-bottom nav a { display: inline-block; padding-block: 6px; }
-.footer-bottom .lang-switch { color: rgba(244, 240, 230, .8); }
-@media (min-width: 680px) { .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .footer-brand { grid-column: 1 / -1; } }
+.footer-legal a { display: inline-block; padding-block: 6px; }
+.footer-legal a[aria-current="page"] { color: var(--c-shell); }
+.footer-bottom-end { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
+.footer-credit a { color: rgba(244, 240, 230, .72); border-bottom: 1px solid rgba(244, 240, 230, .3); padding-bottom: 1px; }
+.footer-credit a:hover { color: var(--c-shell); border-bottom-color: var(--c-gold); }
+
+@media (min-width: 680px) {
+  .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-bottom { grid-template-columns: 1fr auto; align-items: center; gap: 16px 32px; }
+  .footer-bottom-end { justify-content: flex-end; }
+}
+/* No desktop a barra fixa some, mas o botão do WhatsApp continua no canto
+   inferior direito (56px + gutter): sem esta folga ele cobre o crédito e o
+   copyright quando a página está rolada até o fim. */
+@media (min-width: 1100px) {
+  .footer { padding-bottom: 36px; }
+  .footer-bottom-end { padding-right: calc(56px + var(--gutter)); }
+}
 @media (min-width: 1100px) {
   .footer-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: start; }
-  .footer-brand { grid-column: 1 / span 5; }
+  .footer-brand { grid-column: 1 / span 4; }
   /* Encadeado pelo irmão seguinte, não por nth-of-type (todo filho direto
      de .footer-grid é uma <div>, então nth-of-type contaria a marca
      também) — assim a regra descreve exatamente "1º/2º/3º .footer-col
      depois da marca", sem depender de coincidência de contagem. */
-  .footer-brand + .footer-col {
-    grid-column: 7 / span 2; border-left: 1px solid var(--rule-c); padding-left: clamp(20px, 2vw, 32px);
-  }
-  .footer-brand + .footer-col + .footer-col { grid-column: 9 / span 2; }
-  .footer-brand + .footer-col + .footer-col + .footer-col { grid-column: 11 / span 2; }
+  .footer-brand + .footer-col { grid-column: 6 / span 3; border-left: 1px solid var(--rule-c); padding-left: clamp(20px, 2vw, 32px); }
+  .footer-brand + .footer-col + .footer-col { grid-column: 9 / span 3; }
+  .footer-brand + .footer-col + .footer-col + .footer-col { grid-column: 12 / span 1; }
 }
 
 /* ==========================================================================
@@ -1634,3 +1770,37 @@ body.nl-open { overflow: hidden; }
 .nf .display { font-size: var(--t-2xl); max-width: 14ch; }
 .nf .lead { margin-top: 22px; color: rgba(244, 240, 230, .78); }
 .nf .btn-row { margin-top: 36px; }
+
+/* ==========================================================================
+   23. Página de contato
+   ========================================================================== */
+.contato-hero { padding-block: calc(var(--header-h) + clamp(40px, 5vw, 80px)) 0; }
+.contato-hero-grid { display: grid; gap: 18px; }
+.contato-hero .display { font-size: var(--t-2xl); max-width: 14ch; }
+.contato-hero .lead { max-width: 46ch; }
+@media (min-width: 920px) {
+  .contato-hero-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gap); align-items: end; }
+  .contato-hero-grid > .eyebrow { grid-column: 1 / -1; }
+  .contato-hero-grid > .display { grid-column: 1 / span 7; }
+  .contato-hero-grid > .lead { grid-column: 8 / -1; padding-bottom: .4em; }
+}
+
+.contato-grid { display: grid; gap: clamp(28px, 3.5vw, 48px); align-items: start; }
+@media (min-width: 980px) { .contato-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: clamp(40px, 4.5vw, 80px); } }
+
+/* O formulário é a ação principal da página: fica na coluna larga, com a
+   mesma moldura de ilha clara dos outros formulários do site. */
+.contato-form { padding: clamp(22px, 2.6vw, 34px); border: 1px solid var(--rule-c); background: var(--surface); }
+.contato-form .form-intro { margin-bottom: clamp(20px, 2.2vw, 28px); }
+.contato-form textarea { min-height: 150px; }
+.form-status.is-ok { color: var(--c-ocean-2); font-weight: 650; }
+.form-status.is-bad { color: var(--c-bad); font-weight: 650; }
+
+.contato-aside { display: grid; gap: clamp(14px, 1.8vw, 20px); }
+.contato-card {
+  padding: clamp(20px, 2.4vw, 28px); border: 1px solid var(--rule-c); background: var(--surface);
+  display: grid; gap: 10px; justify-items: start;
+}
+.contato-card p { margin: 0; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; }
+.contato-card .btn { margin-top: 8px; }
+.contato-card--muted { background: var(--c-shell-2); border-color: transparent; }

@@ -23,8 +23,36 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 ### Idiomas e rotas
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
-- Rotas: `/` e `/en/` (institucional), `/produtos/` e `/en/produtos/` (loja), `/privacidade/` e `/en/privacidade/` (LGPD). O slug da rota (`produtos`, `privacidade`) é o mesmo nas duas línguas — só o texto visível muda, mesmo padrão das âncoras internas (`#particular` etc.).
-- `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — nav, rodapé e pop-up de WhatsApp aparecem em qualquer rota (o pop-up de newsletter, não: ver abaixo). `nav_items_html()` decide se um link de âncora é hash puro (na própria home, pro JS de abas) ou link absoluto de volta pra home (`/#experimentar`) nas outras páginas.
+- Rotas (sempre em par PT/EN, slug igual nas duas línguas):
+  `/` · `/produtos/` · `/contato/` · `/privacidade/` · `/termos/` · `/diretrizes/` · `/reservas/`.
+  Só o texto visível muda, mesmo padrão das âncoras internas (`#particular` etc.).
+- `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — menu, rodapé e pop-up de WhatsApp aparecem em qualquer rota (o pop-up de newsletter, não: ver abaixo). `nav_href()` decide se um item é âncora da home (hash puro na home, `/#reservar` fora dela) ou slug de rota.
+
+### Navegação
+
+Menu hambúrguer em **todas as larguras**: painel lateral com os seis itens
+(`CONTENT[...]["nav"]`), CTA de reserva em destaque, link de contato,
+Instagram e troca PT/EN. Abre por clique, fecha por Esc, pelo X, pelo
+overlay (no desktop) ou ao escolher uma opção; o foco fica preso dentro do
+painel enquanto ele está aberto e volta ao botão ao fechar. O mesmo
+`CONTENT["nav"]` alimenta a coluna "Navegue" do rodapé, que é a navegação
+de quem está sem JavaScript.
+
+### Contato — `/contato`
+
+Três caminhos: formulário, WhatsApp e Instagram. O formulário envia de
+verdade (`POST /api/contact` → tabela `contact_messages`); **o site não
+dispara e-mail** e nunca mostra "enviado" sem o servidor confirmar — sem
+banco configurado a resposta é 503 e a tela diz que o canal ainda não está
+ativo. Nenhum telefone aparece na interface. Ver CLAUDE.md § "Contato".
+
+### Páginas institucionais
+
+`legal_content.py` guarda privacidade, termos de uso, diretrizes da
+comunidade e política de reservas/cancelamentos. Documento com
+`draft: True` mostra aviso de rascunho, recebe `noindex` e fica fora do
+sitemap; seções ainda não decididas aparecem com a etiqueta "a definir" em
+vez de uma regra inventada. Hoje só a privacidade é documento válido.
 
 ### Home — layout "Template 2"
 

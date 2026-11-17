@@ -13,7 +13,8 @@
 import { initBooking } from './booking.js';
 import { initWaWidget } from './wa-widget.js';
 import { initNewsletter } from './newsletter.js';
-import { initProducts } from './products.js';
+import { initProducts, initProductFilters } from './products.js';
+import { initContact } from './contact.js';
 
 const CONFIG = window.GVV_CONFIG || {};
 const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
@@ -21,8 +22,6 @@ const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
 /* ---------- Header ---------- */
 function initHeader() {
   const header = document.querySelector('.header');
-  const btn = document.querySelector('.menu-btn');
-  const mobileNav = document.getElementById('mobile-nav');
   if (!header) return;
 
   const hero = document.querySelector('.hero');
@@ -36,27 +35,74 @@ function initHeader() {
   };
   setSolid();
   window.addEventListener('scroll', setSolid, { passive: true });
+}
 
-  if (!btn || !mobileNav) return;
-  const close = () => {
-    header.classList.remove('is-open');
-    btn.setAttribute('aria-expanded', 'false');
-    btn.setAttribute('aria-label', I18N.menuOpen);
-    document.body.style.overflow = '';
+/* ---------- Menu em painel lateral ----------
+   A navegação inteira vive aqui, em todas as larguras. O painel nasce
+   `inert` no HTML (ver page_header em build.py): sem JS ele continua
+   inalcançável e a navegação da página é a do rodapé.
+
+   Foco: ao abrir vai para o primeiro item; Tab circula dentro do painel
+   (não há como tabular para a página atrás dele); Esc fecha e devolve o
+   foco ao botão. O `inert` só volta depois da transição — aplicá-lo junto
+   com o fechamento tiraria o foco de dentro do painel antes de devolvê-lo
+   ao botão, e o foco cairia no <body>. */
+const MENU_OPEN_CLASS = 'menu-open';
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function initMenu() {
+  const drawer = document.getElementById('menu-drawer');
+  const overlay = document.querySelector('[data-menu-overlay]');
+  const toggle = document.querySelector('[data-menu-toggle]');
+  if (!drawer || !overlay || !toggle) return;
+
+  const root = document.documentElement;
+  const isOpen = () => root.classList.contains(MENU_OPEN_CLASS);
+  let closeTimer = null;
+
+  const open = () => {
+    if (isOpen()) return;
+    window.clearTimeout(closeTimer);
+    drawer.removeAttribute('inert');
+    root.classList.add(MENU_OPEN_CLASS);
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', I18N.menuClose);
+    // Forçar o cálculo de layout antes de focar: no mesmo quadro em que
+    // `inert` sai e o painel deixa de ser visibility:hidden, o navegador
+    // ainda trata o conteúdo como inerte e .focus() não pega — o foco
+    // ficaria no botão, atrás do overlay. Ler offsetWidth sincroniza isso.
+    void drawer.offsetWidth;
+    drawer.querySelector(FOCUSABLE)?.focus();
   };
-  btn.addEventListener('click', () => {
-    const open = !header.classList.contains('is-open');
-    header.classList.toggle('is-open', open);
-    btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? I18N.menuClose : I18N.menuOpen);
-    document.body.style.overflow = open ? 'hidden' : '';
-    if (open) mobileNav.querySelector('a')?.focus();
-  });
-  mobileNav.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
+
+  const close = ({ restoreFocus = true } = {}) => {
+    if (!isOpen()) return;
+    root.classList.remove(MENU_OPEN_CLASS);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', I18N.menuOpen);
+    if (restoreFocus) toggle.focus();
+    closeTimer = window.setTimeout(() => {
+      if (!isOpen()) drawer.setAttribute('inert', '');
+    }, 340);
+  };
+
+  toggle.addEventListener('click', () => (isOpen() ? close() : open()));
+  overlay.addEventListener('click', () => close());
+  drawer.querySelector('[data-menu-close]')?.addEventListener('click', () => close());
+  // Fechar ao escolher uma opção, sem roubar o foco do destino do link.
+  drawer.addEventListener('click', (e) => { if (e.target.closest('a')) close({ restoreFocus: false }); });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && header.classList.contains('is-open')) { close(); btn.focus(); }
+    if (!isOpen()) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const items = [...drawer.querySelectorAll(FOCUSABLE)].filter((el) => el.getClientRects().length > 0);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
-  window.matchMedia('(min-width: 1080px)').addEventListener('change', (m) => { if (m.matches) close(); });
 }
 
 /* ---------- Barra fixa mobile: aparece depois do hero ---------- */
@@ -289,6 +335,7 @@ function initYear() {
 }
 
 initHeader();
+initMenu();
 initDock();
 initTabs();
 initCarousel();
@@ -298,4 +345,6 @@ initYear();
 initBooking({ config: CONFIG, i18n: I18N });
 initWaWidget({ config: CONFIG });
 initProducts({ config: CONFIG, i18n: I18N });
+initProductFilters();
 initNewsletter({ config: CONFIG, i18n: I18N });
+initContact({ i18n: I18N });

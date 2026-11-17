@@ -156,3 +156,27 @@ não foi construído nesta etapa porque exigiria autenticação própria, o que
   no fluxo (eles não pagam Pix).
 - Confirmação do modelo de orçamento→pagamento para "Particular" (descrito
   no plano de arquitetura).
+
+## Mensagens de contato
+
+A tabela `contact_messages` (ver `db/schema.sql`) recebe os envios do
+formulário de `/contato` via `POST /api/contact`. Ela usa a mesma
+`SUPABASE_DB_URL` das demais — não precisa de variável nova.
+
+Enquanto a variável não estiver configurada, o endpoint responde 503 e o
+formulário avisa, na tela, que o envio por e-mail ainda não está ativo e
+aponta o WhatsApp. Ele **nunca** mostra "mensagem enviada" sem a gravação
+ter acontecido.
+
+Para a equipe ler o que chegou:
+
+```sql
+select created_at, name, email, subject, message
+from contact_messages
+where handled_at is null
+order by created_at desc;
+```
+
+Se um dia o clube tiver um e-mail oficial e um provedor de envio (Resend,
+Postmark, SES...), basta somar o disparo em `saveContactMessage`
+(`lib/contact.ts`): o contrato da API e o formulário não mudam.

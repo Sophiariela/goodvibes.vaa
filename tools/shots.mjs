@@ -11,8 +11,12 @@ const ROUTES = [
   ['home-en', '/en/'],
   ['produtos-pt', '/produtos/'],
   ['produtos-en', '/en/produtos/'],
+  ['contato-pt', '/contato/'],
+  ['contato-en', '/en/contato/'],
   ['privacidade-pt', '/privacidade/'],
-  ['privacidade-en', '/en/privacidade/'],
+  ['termos-pt', '/termos/'],
+  ['diretrizes-pt', '/diretrizes/'],
+  ['reservas-pt', '/reservas/'],
 ];
 const SIZES = [
   ['390', 390, 844],

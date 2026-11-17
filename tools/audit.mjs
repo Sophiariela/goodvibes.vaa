@@ -14,7 +14,15 @@
 import { chromium } from 'playwright';
 
 const BASE = process.argv[2] || 'http://localhost:8777';
-const ROUTES = ['/', '/en/', '/produtos/', '/en/produtos/', '/privacidade/', '/en/privacidade/'];
+const ROUTES = [
+  '/', '/en/',
+  '/produtos/', '/en/produtos/',
+  '/contato/', '/en/contato/',
+  '/privacidade/', '/en/privacidade/',
+  '/termos/', '/en/termos/',
+  '/diretrizes/', '/en/diretrizes/',
+  '/reservas/', '/en/reservas/',
+];
 const SIZES = [[390, 844], [768, 1024], [1440, 900], [1920, 1080]];
 
 const findings = [];
@@ -61,9 +69,12 @@ for (const [w, h] of SIZES) {
          .carousel-track (momentos do clube) e .bk-days (dias do quadro de
          saídas) são trilhos de rolagem horizontal — neles o conteúdo fora
          da borda é o comportamento desejado, não um vazamento de layout.
-         A página em si continua sendo checada por 'overflow' acima. */
+         .nl-hp é o honeypot anti-spam (newsletter e /contato): fica em
+         left:-9999px de propósito, porque bot preenche campo escondido e
+         pessoa nenhuma o vê. A página em si continua sendo checada por
+         'overflow' acima. */
       for (const el of document.querySelectorAll('main *, footer *')) {
-        if (!vis(el) || el.closest('.carousel-track, .bk-days')) continue;
+        if (!vis(el) || el.closest('.carousel-track, .bk-days, .nl-hp')) continue;
         const r = el.getBoundingClientRect();
         if (r.width === 0) continue;
         if (r.right > vw + 1.5 || r.left < -1.5) out.push(['bleed', `${label(el)} left=${Math.round(r.left)} right=${Math.round(r.right)}`]);
@@ -100,7 +111,7 @@ for (const [w, h] of SIZES) {
       };
       if (vw < 760) {
         for (const el of document.querySelectorAll('a[href], button, input, summary, [role="tab"]')) {
-          if (!vis(el) || el.closest('.legal-toc, .footer-bottom')) continue;
+          if (!vis(el) || el.closest('.legal-toc, .footer-bottom, .nl-hp')) continue;
           el.scrollIntoView({ block: 'center', behavior: 'instant' });
           const r = el.getBoundingClientRect();
           const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
@@ -134,12 +145,20 @@ for (const [w, h] of SIZES) {
         // então está fora do alcance de uma checagem por cor computada
         if (el.closest('.hero, .header, .media, .shop-teaser-media, .pmodal-media, .nl-media')) continue;
         const s = getComputedStyle(el);
-        const fg = parse(s.color);
-        if (fg[3] !== undefined && fg[3] < 0.95) continue;
+        const bg = bgOf(el);
+        let fg = parse(s.color);
+        // Cor de texto com transparência (os tokens --ink-2/--ink-3 do
+        // contexto escuro são rgba) precisa ser COMPOSTA sobre o fundo, não
+        // ignorada: pular essas cores escondia o pior caso possível — texto
+        // claro translúcido sobre cartão claro, que some por completo.
+        if (fg[3] !== undefined && fg[3] < 1) {
+          const al = fg[3];
+          fg = [0, 1, 2].map((i) => fg[i] * al + bg[i] * (1 - al));
+        }
         const px = parseFloat(s.fontSize);
         const bold = parseInt(s.fontWeight, 10) >= 700;
         const large = px >= 24 || (px >= 18.66 && bold);
-        const L1 = lum(fg), L2 = lum(bgOf(el));
+        const L1 = lum(fg), L2 = lum(bg);
         const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
         const min = large ? 3 : 4.5;
         if (ratio < min) out.push(['contrast', `${label(el)} ${ratio.toFixed(2)}:1 (min ${min}) ${Math.round(px)}px "${el.textContent.trim().slice(0, 34)}"`]);

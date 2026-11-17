@@ -79,6 +79,58 @@ quatro cartões de "O que oferecemos" apontam para as âncoras das jornadas
 e o `initTabs` abre a aba certa; o pop-up de newsletter **não** aparece na
 home (`page_footer()` só emite o `div.nl-widget` fora dela).
 
+## Navegação e rodapé
+
+A navegação inteira vive num **painel lateral (menu hambúrguer) em todas as
+larguras** — não existe mais barra horizontal de links no desktop. Os seis
+itens saem de `CONTENT[...]["nav"]`, lidos pelo menu E pelo rodapé:
+item começando com `#` é âncora da home, qualquer outro valor é slug de
+rota (ver `nav_href()`).
+
+- O painel nasce com `inert` no HTML e `initMenu()` (site.js) tira/põe o
+  atributo. **Sem JS ele continua inalcançável e a navegação da página é a
+  do rodapé** — que lista os mesmos seis itens de propósito.
+- `visibility` na transição do painel usa `0s linear .34s` ao fechar e
+  `0s` ao abrir. Com a duração igual à do `transform`, o elemento ainda
+  conta como invisível no instante em que o painel abre e `.focus()` não
+  pega — o foco ficaria no botão, atrás do overlay. Não unificar.
+- O rodapé **não mostra telefone em lugar nenhum**: atendimento passa pela
+  página `/contato/`. O Instagram é só o ícone (alvo de 52px, rótulo no
+  `aria-label`), nunca o endereço escrito. O crédito da Aster
+  (`asterops.co`) fica na barra inferior.
+
+## Contato (`/contato`) e `POST /api/contact`
+
+O formulário grava em `contact_messages` (ver `lib/contact.ts`) — **o site
+não dispara e-mail**. Isso é decisão, não pendência: sem endereço oficial
+do clube e sem provedor contratado, inventar credencial seria mentira.
+Quando houver, somar o envio a `saveContactMessage` não muda o contrato da
+API nem o formulário.
+
+**Regra crítica: o formulário nunca mostra sucesso sem o servidor ter
+confirmado.** Sem `SUPABASE_DB_URL` o endpoint responde 503 e a tela diz
+que o canal ainda não está ativo, apontando o WhatsApp ao lado. A lista de
+assuntos aceitos (`CONTACT_SUBJECTS` em `lib/contact.ts`) espelha
+`ct_subjects` em `build.py` — mudar um lado sem o outro quebra o envio.
+
+## Páginas institucionais (`legal_content.py`)
+
+Quatro documentos (privacidade, termos, diretrizes, reservas) saem do mesmo
+`render_legal()`. Cada um tem `draft`: enquanto `True`, a página mostra
+aviso de rascunho, recebe `noindex` e **fica fora do sitemap** — existe e é
+navegável, mas nunca se apresenta como política em vigor. Seções marcadas
+com `pendente=True` descrevem o que falta decidir e ganham a etiqueta "a
+definir"; **nunca transformar um pendente em regra sem o clube confirmar** —
+prazo de cancelamento, reembolso, uso de imagem e foro têm efeito jurídico
+e comercial real.
+
+## Loja (`/produtos`)
+
+As categorias dos chips de filtro saem de `products.py` (nenhuma inventada)
+e o filtro só esconde cartão. Os cartões "Em breve" são **espaço vazio
+reservado**, sem nome, preço ou disponibilidade — não preencher com peça
+fictícia. A loja não tem checkout: a compra passa pelo WhatsApp.
+
 ## Build
 
 `python3 build.py` gera `dist/` a partir de `CONTENT['pt']`/`CONTENT['en']`

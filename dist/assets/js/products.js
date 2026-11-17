@@ -102,3 +102,28 @@ export function initProducts({ config, i18n }) {
     if (colorBtn) { selection.color = selection.color === colorBtn.dataset.color ? null : colorBtn.dataset.color; render(); }
   });
 }
+
+/* ---------- Filtro de categorias ----------
+   As categorias vêm de products.py (nenhuma inventada aqui) e o filtro é
+   só visual: esconde os cartões que não são da categoria escolhida. Os
+   espaços de peça futura ("Em breve") ficam sempre visíveis — eles valem
+   para qualquer categoria. Sem JS, todos os cartões aparecem e os chips
+   não fazem nada visível. */
+export function initProductFilters() {
+  const grid = document.querySelector('[data-pgrid]');
+  const chips = [...document.querySelectorAll('[data-cat-filter]')];
+  if (!grid || chips.length < 2) return;
+
+  const cards = [...grid.querySelectorAll('.pcard')];
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const want = chip.dataset.catFilter;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      cards.forEach((card) => {
+        const cat = card.dataset.cat;
+        const show = want === 'all' || cat === want || cat === 'soon';
+        card.hidden = !show;
+      });
+    });
+  });
+}

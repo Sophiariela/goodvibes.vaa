@@ -233,3 +233,29 @@ create index if not exists idx_subscribers_created on subscribers (created_at);
 comment on table subscribers is 'Cadastros do pop-up de newsletter. email_normalized garante 1 cadastro por e-mail (case/espaço insensível) — reenviar o mesmo e-mail responde "já cadastrado", não duplica.';
 
 alter table subscribers enable row level security;
+
+-- ---------------------------------------------------------------------------
+-- contact_messages — mensagens da página /contato (ver api/contact.ts)
+--
+-- O site não envia e-mail: grava a mensagem aqui para a equipe responder.
+-- Mesma minimização de dados das outras tabelas (LGPD): só nome, e-mail,
+-- assunto e texto que a pessoa mesma escreveu — nunca IP ou user-agent.
+-- `handled_at` existe para a equipe marcar o que já foi respondido.
+-- ---------------------------------------------------------------------------
+create table if not exists contact_messages (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  email       text not null,
+  subject     text not null check (subject in ('reserva', 'treino', 'particular', 'produtos', 'outro')),
+  message     text not null,
+  locale      text not null check (locale in ('pt', 'en')),
+  handled_at  timestamptz,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists idx_contact_messages_created on contact_messages (created_at desc);
+create index if not exists idx_contact_messages_pending on contact_messages (created_at desc) where handled_at is null;
+
+comment on table contact_messages is 'Mensagens enviadas pelo formulário de /contato. O site não dispara e-mail: a equipe responde a partir daqui.';
+
+alter table contact_messages enable row level security;
