@@ -249,6 +249,33 @@ CONTENT = {
         "a_wa_intro": "Olá, Good Vibes Va'a! Gostaria de solicitar uma reserva de passeio:",
         "a_options": [("primeira", "Primeira experiência"), ("nascer", "Passeio no nascer do sol"), ("por", "Passeio no pôr do sol"), ("turismo", "Turismo náutico")],
 
+        # --- Reserva de "Experimentar" no modo "off" -----------------------
+        # Composição única e centralizada: cabeçalho curto, cartões de
+        # experiência, formulário objetivo e um único CTA. Os textos longos
+        # que antes ficavam soltos na tela (a_lead/a_note) agora vivem no
+        # accordion "Antes de remar" — nada foi apagado, só recolhido.
+        "a_head_title": "Sua primeira vez na canoa.",
+        "a_head_sub": "Escolha sua experiência, a data e venha viver Salvador de um jeito diferente.",
+        # (valor, nome, descrição curta) — o valor casa com "a_options", que
+        # continua sendo o vocabulário da jornada em todos os modos.
+        "a_cards": [
+            ("primeira", "Primeira Experiência", "Uma introdução à canoa havaiana, ideal para iniciantes."),
+            ("nascer", "Nascer do Sol", "Remada nas primeiras horas da manhã."),
+            ("por", "Pôr do Sol", "Uma experiência ao final da tarde, com Salvador e a Baía de Todos-os-Santos como cenário."),
+            ("turismo", "Turismo Náutico", "A orla e a história da cidade vistas de dentro do mar."),
+        ],
+        "a_cards_legend": "Escolha sua experiência",
+        "a_cta": "Solicitar reserva",
+        "a_before_title": "Antes de remar",
+        "a_before": [
+            "Não é preciso ter experiência: os capitães explicam a técnica e o ritmo antes de entrar no mar.",
+            "Toda saída começa com orientação de segurança na areia, com o capitão.",
+            "Leve roupa leve, protetor solar, água e uma muda de roupa seca.",
+            "Duração, horários e valores variam conforme a experiência e as condições do mar — a equipe confirma tudo pelo WhatsApp.",
+        ],
+        "f_email": "E-mail",
+        "f_optional": "opcional",
+
         "f_name": "Seu nome",
         "f_experience": "Experiência",
         "f_date": "Data desejada",
@@ -446,6 +473,18 @@ CONTENT = {
                 "offline": "O envio por e-mail ainda não está ativo neste site. Fale com a equipe pelo WhatsApp — o botão está logo ao lado.",
                 "error": "Não foi possível enviar agora. Tente de novo em instantes ou fale com a equipe pelo WhatsApp.",
             },
+            # Calendário visual da reserva (datepicker.js). Os nomes de mês e
+            # as iniciais de semana vêm daqui, não de toLocaleDateString: o
+            # texto do site sempre sai do HTML, nunca da runtime do navegador.
+            "cal": {
+                "months": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                           "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+                "weekdays": ["D", "S", "T", "Q", "Q", "S", "S"],
+                "weekdaysFull": ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+                "prev": "Mês anterior",
+                "next": "Próximo mês",
+                "choose": "Escolha uma data",
+            },
             "bk": BOOKING["pt"],
             "wa": WA_WIDGET["pt"],
         },
@@ -547,6 +586,29 @@ CONTENT = {
         "a_form_intro": "Your request goes straight to the team on WhatsApp, who confirm your booking.",
         "a_wa_intro": "Hi Good Vibes Va'a! I'd like to request a paddle booking:",
         "a_options": [("primeira", "First-time session"), ("nascer", "Sunrise paddle"), ("por", "Sunset paddle"), ("turismo", "Sea tour")],
+
+        # --- "I want to try it" booking, mode "off" ------------------------
+        # Ver a nota em português: mesma composição centralizada, com o texto
+        # longo recolhido no accordion "Before you paddle".
+        "a_head_title": "Your first time in the canoe.",
+        "a_head_sub": "Choose your experience, pick a date and come see Salvador from the water.",
+        "a_cards": [
+            ("primeira", "First-Time Session", "An introduction to the outrigger canoe, made for beginners."),
+            ("nascer", "Sunrise", "A paddle in the first hours of the morning."),
+            ("por", "Sunset", "A late-afternoon outing, with Salvador and the Bay of All Saints as the backdrop."),
+            ("turismo", "Sea Tour", "The city's waterfront and history, seen from the water."),
+        ],
+        "a_cards_legend": "Choose your experience",
+        "a_cta": "Request a booking",
+        "a_before_title": "Before you paddle",
+        "a_before": [
+            "No experience needed: the captains walk you through technique and timing before you head out.",
+            "Every outing starts with a safety briefing on the sand, with the captain.",
+            "Bring light clothes, sunscreen, water and a dry change of clothes.",
+            "Duration, times and prices depend on the experience and sea conditions — the team confirms everything on WhatsApp.",
+        ],
+        "f_email": "Email",
+        "f_optional": "optional",
 
         "f_name": "Your name",
         "f_experience": "Experience",
@@ -741,6 +803,16 @@ CONTENT = {
                 "ok": "Message sent. The team will reply to the email address you gave us.",
                 "offline": "Email sending isn't active on this site yet. Message the team on WhatsApp — the button is right next to this one.",
                 "error": "We couldn't send it right now. Try again in a moment or message the team on WhatsApp.",
+            },
+            # Ver a nota em português no bloco "pt".
+            "cal": {
+                "months": ["January", "February", "March", "April", "May", "June",
+                           "July", "August", "September", "October", "November", "December"],
+                "weekdays": ["S", "M", "T", "W", "T", "F", "S"],
+                "weekdaysFull": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                "prev": "Previous month",
+                "next": "Next month",
+                "choose": "Pick a date",
             },
             "bk": BOOKING["en"],
             "wa": WA_WIDGET["en"],
@@ -1124,6 +1196,105 @@ def textarea(fid, name, label, hint=False):
     return f'<textarea id="{fid}" name="{name}" data-label="{e(label)}"{desc}></textarea>'
 
 
+def experience_compose(c):
+    """Reserva de "Experimentar" no modo "off" — composição única e centrada.
+
+    Uma coluna só: cabeçalho curto, cartões de experiência, formulário
+    objetivo, observação recolhida e um único CTA. O texto de apoio
+    (a_lead/a_note/a_offers) não sumiu — foi para o accordion "Antes de
+    remar", no fim, fora do caminho de quem só quer reservar.
+
+    O <form> mantém exatamente o contrato que site.js já espera
+    (data-journey, data-intro, [data-label] nos campos, .form-status,
+    button[type=submit]), então validação e envio pelo WhatsApp seguem
+    os mesmos de sempre — só a apresentação mudou.
+    """
+    # Cartões = radios nativos. O rótulo visível é o próprio value, porque
+    # é ele que entra na mensagem de WhatsApp (collect() lê .value); a chave
+    # estável da jornada fica em data-key, para quando o modo virar "live".
+    cards = "".join(
+        f'<label class="exp-card">'
+        f'<input type="radio" id="a-exp{"" if i == 0 else f"-{i}"}" name="experience" '
+        f'value="{e(name)}" data-key="{e(key)}" data-label="{e(c["f_experience"])}"'
+        f'{" required" if i == 0 else ""} aria-describedby="a-exp-error">'
+        f'<span class="exp-card-in">'
+        f'<span class="exp-name">{e(name)}</span>'
+        f'<span class="exp-desc">{e(desc)}</span>'
+        f"</span></label>"
+        for i, (key, name, desc) in enumerate(c["a_cards"])
+    )
+
+    # A data real continua num <input type="date"> — é ele que guarda o
+    # valor, recebe o min de hoje (initForms) e é formatado por collect().
+    # O calendário visual é uma camada que escreve nesse input; em sr-only
+    # o campo segue focável, então o foco de erro da validação não se perde.
+    date_field = f"""
+      <div class="field field--full field--date">
+        <label for="a-date">{e(c['f_date'])}</label>
+        <div class="cal" data-datepicker data-for="a-date"></div>
+        <input id="a-date" name="date" type="date" data-label="{e(c['f_date'])}" required aria-describedby="a-date-error">
+        <span class="field-error" id="a-date-error" aria-live="polite"></span>
+      </div>"""
+
+    opt = f' ({c["f_optional"]})'
+    rest = (
+        field("a-people", c["f_people"], text_input(
+            "a-people", "people", c["f_people"], kind="number",
+            extra='min="1" max="60" inputmode="numeric" value="1"'))
+        + field("a-name", c["f_name"], text_input(
+            "a-name", "name", c["f_name"], extra='autocomplete="name"'))
+        + field("a-email", c["f_email"] + opt, text_input(
+            "a-email", "email", c["f_email"], kind="email", required=False,
+            extra='autocomplete="email"'))
+        + field("a-phone", c["bk"]["phone"] + opt, text_input(
+            "a-phone", "phone", c["bk"]["phone"], kind="tel", required=False,
+            extra='autocomplete="tel" placeholder="(71) 9 0000-0000"'))
+    )
+
+    notes = (
+        f'<details class="more field--full"><summary>{e(c["f_more"])}</summary>'
+        + field("a-notes", c["f_notes"], textarea("a-notes", "notes", c["f_notes"], hint=True),
+                hint=c["f_notes_hint"], full=True, error=False)
+        + "</details>"
+    )
+
+    before = "".join(f"<li>{e(s)}</li>" for s in c["a_before"])
+
+    # `data-booking` (sem `data-modality`) marca esta área como "reserva em
+    # andamento" para o wa-widget.js: ele não abre o pop-up sozinho enquanto
+    # algo assim está na tela, e recolhe o que já estiver aberto quando o
+    # foco entra aqui. booking.js ignora este host — sai cedo no modo "off"
+    # e, nos outros, só inicializa quem tem modalidade conhecida.
+    return f"""
+    <div class="bkx" data-booking>
+      <div class="bkx-head">
+        <h3 class="bkx-title" id="experimentar-form-title">{e(c['a_head_title'])}</h3>
+        <p class="bkx-sub">{e(c['a_head_sub'])}</p>
+      </div>
+      <form class="form form--bkx" data-journey="experimentar" data-intro="{e(c['a_wa_intro'])}" novalidate aria-labelledby="experimentar-form-title">
+        <fieldset class="exp-pick">
+          <legend class="exp-legend">{e(c['a_cards_legend'])}</legend>
+          <div class="exp-cards">{cards}</div>
+          <span class="field-error" id="a-exp-error" aria-live="polite"></span>
+        </fieldset>
+        <div class="fields fields--bkx">
+          {date_field}
+          {rest}
+          {notes}
+        </div>
+        <div class="form-actions">
+          <button class="btn btn--gold btn--xl" type="submit">{ICON_WA}{e(c['a_cta'])}</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </div>
+        <details class="bkx-before">
+          <summary>{e(c['a_before_title'])}</summary>
+          <ul>{before}</ul>
+        </details>
+        <p class="form-privacy">{e(c['f_privacy'])}</p>
+      </form>
+    </div>"""
+
+
 def form_shell(journey, title, intro, wa_intro, fields_html, submit, c, extra_cls=""):
     off = SITE["booking_mode"] == "off"
     icon = ICON_WA if off else ""
@@ -1284,16 +1455,10 @@ def render(code):
 
     # A — experimentar
     if SITE["booking_mode"] == "off":
-        # Sem sistema de reservas: formulário de WhatsApp de sempre.
-        a_fields = (
-            field("a-exp", c["f_experience"], select("a-exp", "experience", c["f_experience"], c["a_options"], c), full=True)
-            + field("a-date", c["f_date"], text_input("a-date", "date", c["f_date"], kind="date"))
-            + field("a-people", c["f_people"], text_input("a-people", "people", c["f_people"], kind="number", extra='min="1" max="60" inputmode="numeric" value="1"'))
-            + more_field("a-notes", "notes", c["f_notes"], c["f_notes_hint"])
-        )
-        panel_a_head = f'<h3 class="h3">{e(c["a_title"])}</h3><p class="lead">{e(c["a_lead"])}</p>'
-        panel_a_main = form_shell("experimentar", c["a_form_title"], c["a_form_intro"], c["a_wa_intro"], a_fields, c["f_submit"], c)
-        panel_a_aside = offer_list(c["a_offers"]) + f'<p class="note">{c["a_note"]}</p>'
+        # Sem sistema de reservas: a solicitação segue para o WhatsApp, mas
+        # a tela é a composição centrada (ver experience_compose), não mais
+        # a grade de duas colunas com texto explicativo ao lado.
+        pass
     else:
         # Reserva no site: a coluna estreita descreve o quadro de saídas ao
         # lado (ver booking.js, flow "calendar+pix"), não mais o formulário
@@ -1311,9 +1476,16 @@ def render(code):
           <ul class="board-steps">{board_steps_html}</ul>
           <p class="board-wa">{e(c["bk"]["board_wa_prefix"])} <a href="{wa_link()}" data-wa-open>{e(c["cta_team"])}</a></p>"""
 
-    # Coluna estreita (narrativa) + coluna larga (reserva): no desktop a
-    # reserva ocupa 8 das 12 colunas, em vez do cartão fixo de 420px.
-    panel_a = f"""
+    # No modo "off" a jornada vira uma coluna só, centrada (.panel--solo).
+    # Nos modos demo/live segue a grade: coluna estreita (narrativa) +
+    # coluna larga (quadro de saídas), com a reserva em 8 das 12 colunas.
+    if SITE["booking_mode"] == "off":
+        panel_a = f"""
+    <div class="panel panel--solo" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
+      {experience_compose(c)}
+    </div>"""
+    else:
+        panel_a = f"""
     <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
       <div class="panel-grid">
         <div class="panel-intro">

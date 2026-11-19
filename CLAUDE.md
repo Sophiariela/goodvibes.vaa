@@ -168,6 +168,14 @@ jornadas voltam ao formulário que abre o WhatsApp com a solicitação pronta.
   contra TODOS os `[data-booking]` da página — há um por jornada agora —
   não só `IntersectionObserver` — evita corrida entre o gatilho "saiu do
   hero" e o observer do cartão ainda não ter processado a posição nova).
+  **A geometria só vale com a página parada** (`scrolling()`, 400 ms sem
+  evento de scroll): num salto suave de âncora a reserva ainda não chegou
+  ao viewport, e medir no meio do trajeto dá "não tem reserva na tela" —
+  o pop-up abria justamente em cima dela ao entrar em `/#reservar` ou pelo
+  CTA do hero. Rolando, `busy()` adia para a tentativa seguinte (3 s).
+  No modo `"off"` quem carrega o `data-booking` é a composição centrada
+  (`.bkx`, ver `experience_compose`), sem `data-modality` — `booking.js`
+  ignora, `wa-widget.js` respeita.
 - `build.py`: `contact_fields()`/formulário simples só existem mais no modo
   `"off"` (WhatsApp direto); em `"demo"`/`"live"` as três jornadas renderizam
   o mesmo `<div class="bk" data-booking data-modality="...">`. `form_shell()`
