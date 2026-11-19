@@ -15,6 +15,7 @@ import { initWaWidget } from './wa-widget.js';
 import { initNewsletter } from './newsletter.js';
 import { initProducts, initProductFilters } from './products.js';
 import { initContact } from './contact.js';
+import { initDatePicker } from './datepicker.js';
 
 const CONFIG = window.GVV_CONFIG || {};
 const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
@@ -126,6 +127,9 @@ function formatDate(value) {
 function collect(form) {
   const rows = [];
   form.querySelectorAll('[data-label]').forEach((el) => {
+    // Grupo de escolha (cartões de experiência): só a opção marcada entra
+    // na mensagem — sem isso, as quatro entrariam de uma vez.
+    if ((el.type === 'radio' || el.type === 'checkbox') && !el.checked) return;
     let value = el.value.trim();
     if (!value) return;
     if (el.tagName === 'SELECT') value = el.options[el.selectedIndex].text;
@@ -146,7 +150,12 @@ function validate(form) {
   form.querySelectorAll('[required]').forEach((el) => {
     const error = document.getElementById(`${el.id}-error`);
     let msg = '';
-    if (!el.value.trim()) msg = I18N.required;
+    // Num grupo de radios o próprio .value nunca é vazio, então "obrigatório"
+    // se mede por ter alguma opção marcada no grupo inteiro.
+    if (el.type === 'radio') {
+      const picked = form.querySelector(`input[name="${el.name}"]:checked`);
+      msg = picked ? '' : I18N.required;
+    } else if (!el.value.trim()) msg = I18N.required;
     else if (el.type === 'date' && el.min && el.value < el.min) msg = I18N.datePast;
     else if (el.type === 'number' && Number(el.value) < Number(el.min || 1)) msg = I18N.minPeople;
     el.setAttribute('aria-invalid', msg ? 'true' : 'false');
@@ -203,9 +212,14 @@ function initForms() {
     const status = form.querySelector('.form-status');
     form.addEventListener('input', (e) => {
       const el = e.target;
-      if (el.getAttribute('aria-invalid') === 'true' && el.value.trim()) {
-        el.setAttribute('aria-invalid', 'false');
-        const err = document.getElementById(`${el.id}-error`);
+      // Num grupo de radios o estado de erro mora no primeiro (o que tem
+      // [required]); marcar qualquer opção do grupo limpa a mensagem.
+      const owner = el.type === 'radio'
+        ? form.querySelector(`input[name="${el.name}"][required]`) || el
+        : el;
+      if (owner.getAttribute('aria-invalid') === 'true' && (el.type === 'radio' || el.value.trim())) {
+        owner.setAttribute('aria-invalid', 'false');
+        const err = document.getElementById(`${owner.id}-error`);
         if (err) err.textContent = '';
       }
     });
@@ -340,6 +354,7 @@ initDock();
 initTabs();
 initCarousel();
 initForms();
+initDatePicker(I18N);
 initPreselect();
 initYear();
 initBooking({ config: CONFIG, i18n: I18N });

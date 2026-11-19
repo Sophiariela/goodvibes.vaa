@@ -1128,6 +1128,170 @@ body.bk-modal-open { overflow: hidden; }
 .form-privacy { margin-top: 12px; font-size: var(--t-xs); color: var(--ink-3); line-height: 1.5; }
 
 /* ==========================================================================
+   11b. Reserva "Experimentar" no modo "off" — composição centrada
+   Uma coluna só, bastante respiro e um único CTA. Os cartões de experiência
+   são radios nativos (a borda dourada é o estado :checked), o calendário é
+   uma camada visual sobre um <input type="date"> em .sr-only, e o texto de
+   apoio fica recolhido em "Antes de remar". Nada aqui muda o envio: o
+   <form> continua sendo o mesmo contrato que site.js já lê.
+   ========================================================================== */
+.panel--solo { display: grid; justify-items: center; }
+.bkx { width: 100%; max-width: 680px; }
+
+.bkx-head { text-align: center; margin-bottom: clamp(32px, 4vw, 52px); }
+.bkx-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(1.75rem, 1.1rem + 2.4vw, 3rem); line-height: 1.06;
+  letter-spacing: -.02em; color: var(--ink); text-wrap: balance;
+}
+.bkx-sub {
+  margin: 14px auto 0; max-width: 44ch; color: var(--ink-2);
+  font-size: var(--t-md); line-height: 1.55; text-wrap: pretty;
+}
+
+/* O formulário perde a moldura: no centro da página a caixa competiria
+   com os cartões, que são o único elemento "sólido" da composição. */
+.form--bkx { background: transparent; border: 0; padding: 0; }
+
+/* ---------- Cartões de experiência ---------- */
+.exp-pick { border: 0; padding: 0; margin: 0 0 clamp(28px, 3.4vw, 40px); }
+.exp-legend {
+  display: block; width: 100%; padding: 0 0 14px;
+  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.exp-cards { display: grid; gap: 12px; }
+@media (min-width: 640px) { .exp-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.exp-card { position: relative; display: block; cursor: pointer; }
+/* O radio cobre o cartão inteiro em opacity 0, em vez do clip de 1px de
+   .sr-only: assim o alvo de toque é o cartão (os 44px que tools/audit.mjs
+   exige no celular), o controle continua nativo — focável e anunciado — e
+   o desenho fica todo por conta de .exp-card-in. */
+.exp-card input {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  min-height: 0; margin: 0; padding: 0; border: 0;
+  appearance: none; -webkit-appearance: none;
+  opacity: 0; cursor: pointer;
+}
+.exp-card-in {
+  display: grid; gap: 6px; height: 100%; align-content: start;
+  padding: clamp(16px, 1.8vw, 22px);
+  background: var(--surface); border: 1px solid var(--rule-c);
+  border-radius: var(--radius);
+  transition: border-color .22s, box-shadow .22s, background .22s, transform .22s;
+}
+.exp-name {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--t-md); line-height: 1.15; color: var(--ink);
+}
+.exp-desc { font-size: var(--t-sm); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+
+.exp-card:hover .exp-card-in { border-color: var(--rule-strong); transform: translateY(-1px); }
+.exp-card input:focus-visible + .exp-card-in {
+  outline: 2px solid var(--focus-ring); outline-offset: 2px;
+}
+/* Seleção: filete dourado + marca no canto. Sem preenchimento forte —
+   o cartão escolhido deve ficar evidente, não gritar. */
+.exp-card input:checked + .exp-card-in {
+  border-color: var(--c-gold); box-shadow: inset 0 0 0 1px var(--c-gold);
+  background: var(--surface);
+}
+.exp-card input:checked + .exp-card-in::after {
+  content: ""; position: absolute; top: 14px; right: 14px;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--c-gold);
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-card-in { transition: none; }
+  .exp-card:hover .exp-card-in { transform: none; }
+}
+
+/* ---------- Calendário visual ---------- */
+.fields--bkx { row-gap: clamp(18px, 2vw, 22px); }
+.field--date > label { margin-bottom: 2px; }
+/* O <input type="date"> é só o depósito do valor — quem opera a data é o
+   calendário. Fica fora do desenho e fora do alcance de toque (seletor
+   mais específico que ".field input", que senão o devolveria a 100%/50px
+   e o faria vazar o viewport). Segue valendo para initForms (min de hoje),
+   collect() (formata dd/mm/aaaa) e validate(). */
+.field--date > input[type="date"] { display: none; }
+/* Largura travada: sem isso as sete colunas esticam até 680px e cada
+   célula (aspect-ratio 1/1) vira um quadrado de ~90px — o calendário
+   passa a dominar a composição inteira. */
+.cal {
+  max-width: 352px; padding: 14px; background: var(--surface);
+  border: 1px solid var(--rule-c); border-radius: var(--radius);
+}
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.cal-month {
+  font-weight: 650; font-size: var(--t-sm); letter-spacing: .01em; color: var(--ink);
+}
+.cal-nav {
+  display: grid; place-items: center; width: 34px; height: 34px;
+  background: transparent; border: 1px solid var(--rule-c); border-radius: var(--radius);
+  color: var(--ink-2); font-size: 1rem; line-height: 1; cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.cal-nav:hover:not(:disabled) { border-color: var(--rule-strong); color: var(--ink); }
+.cal-nav:disabled { opacity: .35; cursor: default; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.cal-wd {
+  padding: 4px 0 8px; text-align: center; font-size: var(--t-2xs);
+  font-weight: 650; letter-spacing: .1em; color: var(--ink-3);
+}
+.cal-day {
+  aspect-ratio: 1 / 1; display: grid; place-items: center;
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius);
+  font-family: var(--font); font-size: var(--t-sm); color: var(--ink);
+  cursor: pointer; transition: background .18s, color .18s, border-color .18s;
+}
+.cal-day:hover:not(:disabled) { background: var(--surface-2); }
+.cal-day:disabled { color: var(--ink-3); opacity: .4; cursor: default; }
+.cal-day.is-today { border-color: var(--rule-strong); }
+.cal-day[aria-pressed="true"] {
+  background: var(--c-forest); color: var(--c-shell); border-color: var(--c-forest);
+}
+.cal-pad { aspect-ratio: 1 / 1; }
+/* Erro no grupo de experiências e na data: o filete some, o texto fica. */
+.exp-pick .field-error { display: block; margin-top: 10px; }
+
+/* ---------- CTA e "Antes de remar" ---------- */
+.btn--xl { min-height: 58px; font-size: var(--t-md); }
+.form--bkx .form-actions { margin-top: clamp(26px, 3vw, 34px); }
+
+.bkx-before {
+  margin-top: clamp(26px, 3vw, 34px);
+  border-top: 1px solid var(--rule-c); padding-top: 16px;
+}
+.bkx-before summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px;
+  font-size: var(--t-xs); font-weight: 650; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.bkx-before summary::-webkit-details-marker { display: none; }
+.bkx-before summary::after {
+  content: "+"; margin-left: auto; font-size: var(--t-md); font-weight: 400;
+  color: var(--ink-3); transition: transform .2s;
+}
+.bkx-before[open] summary::after { content: "–"; }
+.bkx-before summary:hover { color: var(--ink); }
+.bkx-before ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.bkx-before li {
+  position: relative; padding-left: 18px;
+  font-size: var(--t-sm); line-height: 1.55; color: var(--ink-2); text-wrap: pretty;
+}
+.bkx-before li::before {
+  content: ""; position: absolute; left: 0; top: .62em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--c-gold);
+}
+
+@media (max-width: 639px) {
+  .bkx-head { text-align: left; }
+  .bkx-sub { margin-inline: 0; }
+  .fields--bkx { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ==========================================================================
    12. Por que remar com a gente · comunidade, capitães e carrossel
    ========================================================================== */
 /* Quatro razões em ícone de gota (Ocean), a figura de marca do Template 2. */

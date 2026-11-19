@@ -67,7 +67,18 @@ export function initWaWidget({ config }) {
     const r = booking.getBoundingClientRect();
     return r.bottom > 0 && r.top < (window.innerHeight || document.documentElement.clientHeight);
   });
-  const busy = () => bookingOnScreen() || bookings.some((booking) => booking.contains(document.activeElement));
+  // Enquanto a página está rolando, a geometria ainda não vale: num salto
+  // suave de âncora (#reservar, os CTAs do hero, os cartões de "O que
+  // oferecemos") a área de reserva só chega ao viewport no fim do trajeto.
+  // Medir no meio do caminho dá "não tem reserva na tela" e o pop-up abre
+  // exatamente em cima dela — era o que acontecia ao abrir /#reservar.
+  // Rolando, fica para a próxima tentativa (3 s), quando já parou.
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  const scrolling = () => performance.now() - lastScroll < 400;
+
+  const busy = () => scrolling() || bookingOnScreen()
+    || bookings.some((booking) => booking.contains(document.activeElement));
   let auto = false;
   let retries = 0;
   const autoOpen = () => {
