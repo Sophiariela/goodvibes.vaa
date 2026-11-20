@@ -15,7 +15,9 @@ src/assets/img/          fotos oficiais (ver lista abaixo)
 dist/                    site pronto para publicar (gerado)
 ```
 
-Para gerar: `python3 build.py`. Publique a pasta `dist/`.
+Para gerar: `python build.py` (ou `python3 build.py`, conforme o nome do
+interpretador no seu sistema — no Windows costuma ser `python`). Publique a
+pasta `dist/`.
 
 ### Deploy
 Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` dispara um deploy automático de produção.
@@ -24,7 +26,8 @@ Hospedado na Vercel, conectado a este repositório. Todo push na branch `main` d
 - Português em `/`, inglês em `/en/`. Cada idioma é uma página HTML completa, com `lang`, `canonical`, `hreflang`, Open Graph e JSON-LD próprios. Não há troca de texto por JavaScript.
 - Todo o texto fica em `CONTENT['pt']` e `CONTENT['en']` no `build.py`.
 - Rotas (sempre em par PT/EN, slug igual nas duas línguas):
-  `/` · `/produtos/` · `/contato/` · `/privacidade/` · `/termos/` · `/diretrizes/` · `/reservas/`.
+  `/` · `/agendar/` · `/produtos/` · `/contato/` · `/privacidade/` · `/termos/` · `/diretrizes/` · `/reservas/`.
+  `/agendar/` é a reserva (carrossel de experiências); `/reservas/` é a política institucional — não confundir.
   Só o texto visível muda, mesmo padrão das âncoras internas (`#particular` etc.).
 - `page_header()`/`page_footer()`/`page_scripts()` em `build.py` são compartilhados por todas as páginas — menu, rodapé e pop-up de WhatsApp aparecem em qualquer rota (o pop-up de newsletter, não: ver abaixo). `nav_href()` decide se um item é âncora da home (hash puro na home, `/#reservar` fora dela) ou slug de rota.
 

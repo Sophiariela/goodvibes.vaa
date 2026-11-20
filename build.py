@@ -154,7 +154,7 @@ CONTENT = {
         # Menu (hambúrguer) e rodapé leem a MESMA lista. Item que começa
         # com "#" é âncora da home; o resto é slug de rota ("produtos",
         # "contato") — ver nav_items_html().
-        "nav": [("#reservar", "Reservar"), ("#clube", "O Clube"), ("#comunidade", "Comunidade Local"), ("#experiencias", "Experiências"), ("#faq", "Dúvidas"), ("produtos", "Produtos")],
+        "nav": [("agendar", "Reservar"), ("#clube", "O Clube"), ("#comunidade", "Comunidade Local"), ("#experiencias", "Experiências"), ("#faq", "Dúvidas"), ("produtos", "Produtos")],
         "nav_produtos": "Produtos",
         "menu_word": "Menu",
         "menu_label": "Menu de navegação",
@@ -275,6 +275,42 @@ CONTENT = {
         ],
         "f_email": "E-mail",
         "f_optional": "opcional",
+        "f_group_size": "Tamanho do grupo",
+
+        # --- Página /agendar/ — descoberta por carrossel ------------------
+        # Uma experiência por vez: o visitante navega as três jornadas no
+        # carrossel e só então entra no fluxo daquela escolha. Os campos de
+        # cada fluxo saem de "xp_config" e são os mesmos vocabulários das
+        # jornadas (a_options, b_options, c_options…) — nada inventado aqui.
+        "agendar_path": "/agendar/",
+        "agendar_title": "Agendar sua remada — Good Vibes Va'a",
+        "agendar_description": "Escolha sua experiência na canoa havaiana — primeira remada, treino ou saída privada — e envie sua solicitação para a equipe do clube.",
+        "agendar_kicker": "Reservas",
+        "agendar_h1": "Qual experiência você quer viver?",
+        "agendar_hint": "Arraste ou use as setas para ver as três experiências.",
+        "xp_cards": [
+            ("experimentar", "community_4", "Quero experimentar",
+             "Primeira remada ou passeio na canoa havaiana."),
+            ("treinar", "community_1", "Quero treinar",
+             "Treinos regulares, aulas avulsas e planos."),
+            ("particular", "community_3", "Quero uma experiência particular",
+             "Grupos, eventos, aniversários e saídas privadas."),
+        ],
+        "xp_explore": "Explorar experiência",
+        "xp_steps": ["Configurar", "Data", "Seus dados", "Confirmar"],
+        "xp_back_all": "Ver todas as experiências",
+        "xp_next": "Continuar",
+        "xp_prev": "Voltar",
+        "xp_prev_label": "Experiência anterior",
+        "xp_next_label": "Próxima experiência",
+        "xp_review_title": "Confirme sua solicitação",
+        "xp_review_lead": "Confira os dados antes de enviar. A equipe confirma a reserva pelo WhatsApp.",
+        "xp_edit": "Alterar",
+        "xp_date_title": "Quando você quer remar?",
+        "xp_date_title_treinar": "Quando você quer começar?",
+        "xp_contact_title": "Como falamos com você?",
+        "xp_submit": "Solicitar reserva",
+        "xp_resumed": "Retomamos de onde você parou.",
 
         "f_name": "Seu nome",
         "f_experience": "Experiência",
@@ -503,7 +539,7 @@ CONTENT = {
         "description": "Outrigger canoe (va'a) club at Praia da Preguiça in Salvador, Brazil. Sunrise and sunset paddles, classes, training plans and private experiences on the Bay of All Saints.",
         "skip": "Skip to content",
         "brand_sub": "Outrigger canoe club",
-        "nav": [("#reservar", "Book"), ("#clube", "The Club"), ("#comunidade", "Local Community"), ("#experiencias", "Experiences"), ("#faq", "FAQ"), ("produtos", "Products")],
+        "nav": [("agendar", "Book"), ("#clube", "The Club"), ("#comunidade", "Local Community"), ("#experiencias", "Experiences"), ("#faq", "FAQ"), ("produtos", "Products")],
         "nav_produtos": "Products",
         "menu_word": "Menu",
         "menu_label": "Navigation menu",
@@ -609,6 +645,39 @@ CONTENT = {
         ],
         "f_email": "Email",
         "f_optional": "optional",
+        "f_group_size": "Group size",
+
+        # --- /agendar/ page — ver a nota em português no bloco "pt" -------
+        # O slug é igual nos dois idiomas, como todas as rotas do site.
+        "agendar_path": "/en/agendar/",
+        "agendar_title": "Book your paddle — Good Vibes Va'a",
+        "agendar_description": "Choose your outrigger canoe experience — first paddle, training or a private outing — and send your request to the club team.",
+        "agendar_kicker": "Bookings",
+        "agendar_h1": "Which experience do you want?",
+        "agendar_hint": "Swipe or use the arrows to see all three experiences.",
+        "xp_cards": [
+            ("experimentar", "community_4", "I want to try it",
+             "Your first paddle or an outing in the canoe."),
+            ("treinar", "community_1", "I want to train",
+             "Regular training, drop-in classes and plans."),
+            ("particular", "community_3", "I want a private experience",
+             "Groups, events, birthdays and private outings."),
+        ],
+        "xp_explore": "Explore experience",
+        "xp_steps": ["Set up", "Date", "Your details", "Confirm"],
+        "xp_back_all": "See all experiences",
+        "xp_next": "Continue",
+        "xp_prev": "Back",
+        "xp_prev_label": "Previous experience",
+        "xp_next_label": "Next experience",
+        "xp_review_title": "Confirm your request",
+        "xp_review_lead": "Check your details before sending. The team confirms the booking on WhatsApp.",
+        "xp_edit": "Change",
+        "xp_date_title": "When do you want to paddle?",
+        "xp_date_title_treinar": "When do you want to start?",
+        "xp_contact_title": "How do we reach you?",
+        "xp_submit": "Request a booking",
+        "xp_resumed": "We picked up where you left off.",
 
         "f_name": "Your name",
         "f_experience": "Experience",
@@ -959,6 +1028,90 @@ def resolve_campaign(code):
     }
 
 
+def resolve_xp(code, prefix):
+    """Carga do carrossel de /agendar/ para experience.js.
+
+    Entrega cartões com a URL da foto já resolvida e, por jornada, os
+    campos do passo "Configurar". As opções são as mesmas listas que as
+    jornadas sempre usaram (a_options, b_options, c_options, f_periods,
+    f_levels) — a página nova não inventa vocabulário, só o reapresenta.
+    O JS não conhece PHOTOS nem prefix: recebe tudo pronto.
+    """
+    c = CONTENT[code]
+
+    def opts(pairs):
+        return [{"value": v, "label": t} for v, t in pairs]
+
+    cards = []
+    for key, photo_key, title, desc in c["xp_cards"]:
+        photo = PHOTOS[photo_key]
+        cards.append({
+            "key": key,
+            "title": title,
+            "desc": desc,
+            "image": f'{prefix}assets/img/{photo["file"]}',
+            "alt": photo[f"alt_{code}"],
+            "focus": photo.get("focus", "center"),
+        })
+
+    # Cada jornada pede só o que lhe diz respeito — é isso que mantém a
+    # tela de treino livre de texto sobre passeio turístico, e vice-versa.
+    config = {
+        "experimentar": [
+            {"id": "tipo", "label": c["f_experience"], "type": "choice", "options": opts(c["a_options"])},
+            {"id": "pessoas", "label": c["f_people"], "type": "number", "min": 1, "max": 60, "value": 1},
+        ],
+        "treinar": [
+            {"id": "modalidade", "label": c["f_modality"], "type": "choice", "options": opts(c["b_options"])},
+            {"id": "periodo", "label": c["f_period"], "type": "choice", "options": opts(c["f_periods"])},
+            {"id": "nivel", "label": c["f_experience_level"], "type": "choice", "options": opts(c["f_levels"])},
+        ],
+        "particular": [
+            {"id": "tipo", "label": c["f_type"], "type": "choice", "options": opts(c["c_options"])},
+            {"id": "pessoas", "label": c["f_group_size"], "type": "number", "min": 2, "max": 200, "value": 6},
+        ],
+    }
+
+    # A mensagem de WhatsApp de cada jornada continua sendo a de sempre.
+    intro = {
+        "experimentar": c["a_wa_intro"],
+        "treinar": c["b_wa_intro"],
+        "particular": c["c_wa_intro"],
+    }
+
+    return {
+        "cards": cards,
+        "config": config,
+        "intro": intro,
+        "steps": c["xp_steps"],
+        "explore": c["xp_explore"],
+        "backAll": c["xp_back_all"],
+        "next": c["xp_next"],
+        "prev": c["xp_prev"],
+        "prevLabel": c["xp_prev_label"],
+        "nextLabel": c["xp_next_label"],
+        "reviewTitle": c["xp_review_title"],
+        "reviewLead": c["xp_review_lead"],
+        "edit": c["xp_edit"],
+        "dateTitle": c["xp_date_title"],
+        "dateTitleTreinar": c["xp_date_title_treinar"],
+        "contactTitle": c["xp_contact_title"],
+        "submit": c["xp_submit"],
+        "resumed": c["xp_resumed"],
+        "choose": c["f_choose"],
+        "optional": c["f_optional"],
+        "labels": {
+            "experience": c["f_experience"],
+            "date": c["f_date"],
+            "name": c["f_name"],
+            "email": c["f_email"],
+            "phone": c["bk"]["phone"],
+            "notes": c["f_notes"],
+            "more": c["f_more"],
+        },
+    }
+
+
 def nav_href(code, item, page):
     """Resolve um item de CONTENT[...]["nav"] para href.
 
@@ -971,6 +1124,18 @@ def nav_href(code, item, page):
     if item.startswith("#"):
         return item if page == "home" else f"{root}{item}"
     return f"{root}{item}/"
+
+
+def offer_href(code, anchor):
+    """Cartões de "O que oferecemos" → /agendar/ já na jornada certa.
+
+    Eles apontavam para as âncoras das abas na home (`#experimentar`);
+    agora levam para a página de reserva com `?xp=`, que o experience.js
+    lê para abrir aquele fluxo direto, sem passar pelo carrossel. Mantém
+    o link útil sem JS: cai na página e o carrossel abre no primeiro.
+    """
+    root = "/" if code == "pt" else "/en/"
+    return f"{root}agendar/?xp={anchor.lstrip('#')}"
 
 
 def nav_items_html(code, page, cls=""):
@@ -1012,7 +1177,7 @@ def page_header(code, prefix, page):
     brand_href = "./" if page == "home" else root
     solid = "" if page == "home" else " is-solid"
     menu_items = nav_items_html(code, page)
-    book_href = nav_href(code, "#reservar", page)
+    book_href = nav_href(code, "agendar", page)
     return f"""
 <a class="skip" href="#conteudo">{e(c['skip'])}</a>
 <header class="header{solid}">
@@ -1079,7 +1244,7 @@ def page_footer(code, prefix, page):
     # O pop-up de newsletter sai da home: a home abre direto no quadro de
     # reservas e um overlay por cima dela competiria com a reserva.
     nl_widget = "" if page == "home" else '<div class="nl-widget" data-nl-widget></div>'
-    dock_href = nav_href(code, "#reservar", page)
+    dock_href = nav_href(code, "agendar", page)
     local_href = f"{root}#local" if page != "home" else "#local"
     return f"""
 <footer class="footer">
@@ -1163,6 +1328,7 @@ def page_scripts(code, prefix):
         "close": c["produtos_close"],
         "waIntro": c["produtos_wa_intro"],
     }
+    i18n_data["xp"] = resolve_xp(code, prefix)
     i18n_data["privacyHref"] = c["privacy_path"]
     i18n_data["produtosHref"] = c["produtos_path"]
     return f"""
@@ -1196,125 +1362,6 @@ def textarea(fid, name, label, hint=False):
     return f'<textarea id="{fid}" name="{name}" data-label="{e(label)}"{desc}></textarea>'
 
 
-def experience_compose(c):
-    """Reserva de "Experimentar" no modo "off" — composição única e centrada.
-
-    Uma coluna só: cabeçalho curto, cartões de experiência, formulário
-    objetivo, observação recolhida e um único CTA. O texto de apoio
-    (a_lead/a_note/a_offers) não sumiu — foi para o accordion "Antes de
-    remar", no fim, fora do caminho de quem só quer reservar.
-
-    O <form> mantém exatamente o contrato que site.js já espera
-    (data-journey, data-intro, [data-label] nos campos, .form-status,
-    button[type=submit]), então validação e envio pelo WhatsApp seguem
-    os mesmos de sempre — só a apresentação mudou.
-    """
-    # Cartões = radios nativos. O rótulo visível é o próprio value, porque
-    # é ele que entra na mensagem de WhatsApp (collect() lê .value); a chave
-    # estável da jornada fica em data-key, para quando o modo virar "live".
-    cards = "".join(
-        f'<label class="exp-card">'
-        f'<input type="radio" id="a-exp{"" if i == 0 else f"-{i}"}" name="experience" '
-        f'value="{e(name)}" data-key="{e(key)}" data-label="{e(c["f_experience"])}"'
-        f'{" required" if i == 0 else ""} aria-describedby="a-exp-error">'
-        f'<span class="exp-card-in">'
-        f'<span class="exp-name">{e(name)}</span>'
-        f'<span class="exp-desc">{e(desc)}</span>'
-        f"</span></label>"
-        for i, (key, name, desc) in enumerate(c["a_cards"])
-    )
-
-    # A data real continua num <input type="date"> — é ele que guarda o
-    # valor, recebe o min de hoje (initForms) e é formatado por collect().
-    # O calendário visual é uma camada que escreve nesse input; em sr-only
-    # o campo segue focável, então o foco de erro da validação não se perde.
-    date_field = f"""
-      <div class="field field--full field--date">
-        <label for="a-date">{e(c['f_date'])}</label>
-        <div class="cal" data-datepicker data-for="a-date"></div>
-        <input id="a-date" name="date" type="date" data-label="{e(c['f_date'])}" required aria-describedby="a-date-error">
-        <span class="field-error" id="a-date-error" aria-live="polite"></span>
-      </div>"""
-
-    opt = f' ({c["f_optional"]})'
-    rest = (
-        field("a-people", c["f_people"], text_input(
-            "a-people", "people", c["f_people"], kind="number",
-            extra='min="1" max="60" inputmode="numeric" value="1"'))
-        + field("a-name", c["f_name"], text_input(
-            "a-name", "name", c["f_name"], extra='autocomplete="name"'))
-        + field("a-email", c["f_email"] + opt, text_input(
-            "a-email", "email", c["f_email"], kind="email", required=False,
-            extra='autocomplete="email"'))
-        + field("a-phone", c["bk"]["phone"] + opt, text_input(
-            "a-phone", "phone", c["bk"]["phone"], kind="tel", required=False,
-            extra='autocomplete="tel" placeholder="(71) 9 0000-0000"'))
-    )
-
-    notes = (
-        f'<details class="more field--full"><summary>{e(c["f_more"])}</summary>'
-        + field("a-notes", c["f_notes"], textarea("a-notes", "notes", c["f_notes"], hint=True),
-                hint=c["f_notes_hint"], full=True, error=False)
-        + "</details>"
-    )
-
-    before = "".join(f"<li>{e(s)}</li>" for s in c["a_before"])
-
-    # `data-booking` (sem `data-modality`) marca esta área como "reserva em
-    # andamento" para o wa-widget.js: ele não abre o pop-up sozinho enquanto
-    # algo assim está na tela, e recolhe o que já estiver aberto quando o
-    # foco entra aqui. booking.js ignora este host — sai cedo no modo "off"
-    # e, nos outros, só inicializa quem tem modalidade conhecida.
-    return f"""
-    <div class="bkx" data-booking>
-      <div class="bkx-head">
-        <h3 class="bkx-title" id="experimentar-form-title">{e(c['a_head_title'])}</h3>
-        <p class="bkx-sub">{e(c['a_head_sub'])}</p>
-      </div>
-      <form class="form form--bkx" data-journey="experimentar" data-intro="{e(c['a_wa_intro'])}" novalidate aria-labelledby="experimentar-form-title">
-        <fieldset class="exp-pick">
-          <legend class="exp-legend">{e(c['a_cards_legend'])}</legend>
-          <div class="exp-cards">{cards}</div>
-          <span class="field-error" id="a-exp-error" aria-live="polite"></span>
-        </fieldset>
-        <div class="fields fields--bkx">
-          {date_field}
-          {rest}
-          {notes}
-        </div>
-        <div class="form-actions">
-          <button class="btn btn--gold btn--xl" type="submit">{ICON_WA}{e(c['a_cta'])}</button>
-          <p class="form-status" role="status" aria-live="polite"></p>
-        </div>
-        <details class="bkx-before">
-          <summary>{e(c['a_before_title'])}</summary>
-          <ul>{before}</ul>
-        </details>
-        <p class="form-privacy">{e(c['f_privacy'])}</p>
-      </form>
-    </div>"""
-
-
-def form_shell(journey, title, intro, wa_intro, fields_html, submit, c, extra_cls=""):
-    off = SITE["booking_mode"] == "off"
-    icon = ICON_WA if off else ""
-    privacy = c["f_privacy"] if off else c["f_privacy_site"]
-    return f"""
-      <form class="form{extra_cls}" data-journey="{journey}" data-intro="{e(wa_intro)}" novalidate aria-labelledby="{journey}-form-title">
-        <h3 class="h3" id="{journey}-form-title">{e(title)}</h3>
-        <p class="form-intro">{e(intro)}</p>
-        <div class="fields">{fields_html}</div>
-        <div class="form-actions">
-          <button class="btn btn--gold" type="submit">{icon}{e(submit)}</button>
-          <p class="form-status" role="status" aria-live="polite"></p>
-        </div>
-        <p class="form-privacy">{e(privacy)}</p>
-      </form>"""
-
-
-# ---------------------------------------------------------------------------
-# Página
-# ---------------------------------------------------------------------------
 def render(code):
     c = CONTENT[code]
     other = "en" if code == "pt" else "pt"
@@ -1394,7 +1441,7 @@ def render(code):
       <h1 id="hero-title"><span class="hero-word">{e(c['hero_word'])}</span><span class="hero-h1-line">{e(c['hero_title'])}</span></h1>
       <p class="hero-sub">{e(c['hero_sub'])}</p>
       <div class="btn-row">
-        <a class="btn btn--gold" href="#reservar">{e(c['hero_cta1'])}</a>
+        <a class="btn btn--gold" href="{nav_href(code, "agendar", "home")}">{e(c['hero_cta1'])}</a>
         <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
       </div>
     </div>
@@ -1417,7 +1464,7 @@ def render(code):
     # Cada cartão é um link para a jornada de reserva correspondente; o JS
     # de abas (initTabs) intercepta o clique e abre a aba certa.
     offer_cards = "".join(
-        f'<a class="offer-card" href="{href}">'
+        f'<a class="offer-card" href="{offer_href(code, href)}">'
         + media(photo, code, f"{c['photo_slot_prefix']} {title}", prefix, cls="media--zoom", w=900, h=700)
         + f'<div class="offer-card-body"><h3 class="offer-card-title">{e(title)}</h3>'
         f'<span class="offer-card-meta">{e(meta)}</span><p>{e(text)}</p></div></a>'
@@ -1433,160 +1480,7 @@ def render(code):
       <p class="lead">{e(c['offers_lead'])}</p>
     </div>
     <div class="offer-cards">{offer_cards}</div>
-    <div class="offer-foot"><a class="btn btn--gold" href="#reservar">{e(c['offers_cta'])}</a></div>
-  </div>
-</section>"""
-
-    # ---- Jornadas em abas (uma de cada vez na tela) ----
-    tabs = "".join(
-        f'<a class="tab" role="tab" id="tab-{h[1:]}" href="{h}" aria-controls="{h[1:]}">'
-        f'<span class="tab-num" aria-hidden="true">{i + 1:02d}</span>'
-        f'<span class="tab-title">{e(t)}</span><span class="tab-short" aria-hidden="true">{e(go_short)}</span><span class="tab-desc">{e(d)}</span></a>'
-        for i, ((h, t, d, go), go_short) in enumerate(zip(c["journeys"], c["tab_short"]))
-    )
-
-    def offer_list(items):
-        return '<dl class="offers">' + "".join(f"<div><dt>{e(t)}</dt><dd>{e(d)}</dd></div>" for t, d in items) + "</dl>"
-
-    def more_field(fid, name, label, hint):
-        return (f'<details class="more field--full"><summary>{e(c["f_more"])}</summary>'
-                + field(fid, label, textarea(fid, name, label, hint=bool(hint)), hint=hint, full=True, error=False)
-                + "</details>")
-
-    # A — experimentar
-    if SITE["booking_mode"] == "off":
-        # Sem sistema de reservas: a solicitação segue para o WhatsApp, mas
-        # a tela é a composição centrada (ver experience_compose), não mais
-        # a grade de duas colunas com texto explicativo ao lado.
-        pass
-    else:
-        # Reserva no site: a coluna estreita descreve o quadro de saídas ao
-        # lado (ver booking.js, flow "calendar+pix"), não mais o formulário
-        # de WhatsApp — a reserva não depende mais de pedir pelo WhatsApp.
-        demo_note = (
-            f'<p class="bk-demo-note">{e(c["bk"]["demo"])}</p>' if SITE["booking_mode"] == "demo" else ""
-        )
-        panel_a_head = f'<h3 class="h3">{e(c["bk"]["board_title"])}</h3><p class="lead">{e(c["bk"]["board_subtitle"])}</p>'
-        panel_a_main = f"""<div class="bk" data-booking data-modality="experimentar">
-            {demo_note}
-            <div class="bk-root"></div>
-          </div>"""
-        board_steps_html = "".join(f"<li>{e(s)}</li>" for s in c["bk"]["board_steps"])
-        panel_a_aside = f"""
-          <ul class="board-steps">{board_steps_html}</ul>
-          <p class="board-wa">{e(c["bk"]["board_wa_prefix"])} <a href="{wa_link()}" data-wa-open>{e(c["cta_team"])}</a></p>"""
-
-    # No modo "off" a jornada vira uma coluna só, centrada (.panel--solo).
-    # Nos modos demo/live segue a grade: coluna estreita (narrativa) +
-    # coluna larga (quadro de saídas), com a reserva em 8 das 12 colunas.
-    if SITE["booking_mode"] == "off":
-        panel_a = f"""
-    <div class="panel panel--solo" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
-      {experience_compose(c)}
-    </div>"""
-    else:
-        panel_a = f"""
-    <div class="panel" id="experimentar" role="tabpanel" aria-labelledby="tab-experimentar" tabindex="-1">
-      <div class="panel-grid">
-        <div class="panel-intro">
-          {panel_a_head}
-          {panel_a_aside}
-        </div>
-        <div class="panel-main">
-          {panel_a_main}
-        </div>
-      </div>
-    </div>"""
-
-    # B — treinar
-    # Nome e WhatsApp só entram quando a solicitação não abre mais o
-    # WhatsApp sozinha (demo/live) — no modo "off", a conversa de WhatsApp
-    # já identifica a pessoa, como sempre foi.
-    def contact_fields(prefix):
-        if SITE["booking_mode"] == "off":
-            return ""
-        return (
-            field(f"{prefix}-name", c["f_name"], text_input(f"{prefix}-name", "name", c["f_name"], extra='autocomplete="name"'))
-            + field(
-                f"{prefix}-phone", c["bk"]["phone"],
-                text_input(f"{prefix}-phone", "phone", c["bk"]["phone"], kind="tel", extra='autocomplete="tel" placeholder="(71) 9 0000-0000"', hint=True),
-                hint=c["bk"]["phone_hint"],
-            )
-        )
-
-    plans = "".join(
-        f'<div><dt>{e(t)}</dt><dd>{e(d)} <span class="price">{e(p)}</span></dd></div>' for t, d, p in c["plans"]
-    )
-    if SITE["booking_mode"] == "off":
-        b_fields = (
-            contact_fields("b")
-            + field("b-mod", c["f_modality"], select("b-mod", "modality", c["f_modality"], c["b_options"], c), full=True)
-            + field("b-period", c["f_period"], select("b-period", "period", c["f_period"], c["f_periods"], c))
-            + field("b-level", c["f_experience_level"], select("b-level", "level", c["f_experience_level"], c["f_levels"], c))
-            + more_field("b-notes", "notes", c["f_notes"], None)
-        )
-        panel_b_main = form_shell("treinar", c["b_form_title"], c["b_form_intro"], c["b_wa_intro"], b_fields, c["f_submit"], c)
-    else:
-        panel_b_main = f"""<div class="bk" data-booking data-modality="treinar">
-            {demo_note}
-            <div class="bk-root"></div>
-          </div>"""
-
-    panel_b = f"""
-    <div class="panel" id="treinar" role="tabpanel" aria-labelledby="tab-treinar" tabindex="-1">
-      <div class="panel-grid">
-        <div class="panel-intro">
-          <h3 class="h3">{e(c['b_title'])}</h3>
-          <p class="lead">{e(c['b_lead'])}</p>
-          <dl class="offers">{plans}</dl>
-          <p class="note">{c['b_note']}</p>
-        </div>
-        <div class="panel-main">
-          {panel_b_main}
-        </div>
-      </div>
-    </div>"""
-
-    # C — particular
-    if SITE["booking_mode"] == "off":
-        c_fields = (
-            contact_fields("c")
-            + field("c-type", c["f_type"], select("c-type", "type", c["f_type"], c["c_options"], c), full=True)
-            + field("c-date", c["f_date"], text_input("c-date", "date", c["f_date"], kind="date"))
-            + field("c-people", c["f_people"], text_input("c-people", "people", c["f_people"], kind="number", extra='min="1" max="200" inputmode="numeric"'))
-            + more_field("c-details", "details", c["f_details"], c["f_details_hint"])
-        )
-        panel_c_main = form_shell("particular", c["c_form_title"], c["c_form_intro"], c["c_wa_intro"], c_fields, c["f_submit_quote"], c)
-    else:
-        panel_c_main = f"""<div class="bk" data-booking data-modality="particular">
-            {demo_note}
-            <div class="bk-root"></div>
-          </div>"""
-
-    panel_c = f"""
-    <div class="panel" id="particular" role="tabpanel" aria-labelledby="tab-particular" tabindex="-1">
-      <div class="panel-grid panel-grid--quote">
-        <div class="panel-intro">
-          <h3 class="h3">{e(c['c_title'])}</h3>
-          <p class="lead">{e(c['c_lead'])}</p>
-          {offer_list(c['formats'])}
-        </div>
-        <div class="panel-main">
-          {panel_c_main}
-        </div>
-      </div>
-    </div>"""
-
-    journeys = f"""
-<section class="section journeys" id="reservar" aria-labelledby="journeys-title">
-  <div class="wrap wrap--wide">
-    <div class="section-head section-head--split">
-      {eyebrow(c['kicker_closing'])}
-      <h2 class="h2" id="journeys-title">{e(c['journeys_title'])}</h2>
-      <p class="lead">{e(c['journeys_lead'])}</p>
-    </div>
-    <div class="tabs" role="tablist" aria-label="{e(c['journeys_title'])}">{tabs}</div>
-    {panel_a}{panel_b}{panel_c}
+    <div class="offer-foot"><a class="btn btn--gold" href="{nav_href(code, "agendar", "home")}">{e(c['offers_cta'])}</a></div>
   </div>
 </section>"""
 
@@ -1717,7 +1611,7 @@ def render(code):
         <h2 class="closing-title" id="closing-title">{e(c['final_title'])}</h2>
         <p class="lead">{e(c['final_lead'])}</p>
         <div class="btn-row">
-          <a class="btn btn--gold" href="#reservar">{e(c['dock_book'])}</a>
+          <a class="btn btn--gold" href="{nav_href(code, "agendar", "home")}">{e(c['dock_book'])}</a>
           <a class="btn btn--line" href="{wa_link()}" data-wa-open target="_blank" rel="noopener">{ICON_WA}{e(c['cta_team'])}</a>
         </div>
       </div>
@@ -1736,7 +1630,7 @@ def render(code):
     # rodapé.
     body = (
         "<body>" + header + '<main id="conteudo">'
-        + hero + credibility + offer + journeys + reasons + community
+        + hero + credibility + offer + reasons + community
         + shop + place + faq_section + closing
         + "</main>" + footer + scripts + "</body></html>"
     )
@@ -2007,6 +1901,160 @@ def render_contato(code):
     return head + chr(10) + body
 
 
+def render_agendar(code):
+    """/agendar/ — descoberta por carrossel e fluxo por jornada.
+
+    A página entrega o carrossel renderizado no servidor (três artigos,
+    um por jornada) e um <form data-journey> único e oculto. O
+    experience.js assume a partir daí: navega o carrossel, troca o fluxo
+    conforme a escolha e escreve os valores nos campos ocultos do form.
+
+    O form é o mesmo contrato que o site.js já lê (data-journey,
+    data-intro, [data-label], .form-status) — validação e envio pelo
+    WhatsApp seguem sendo os de sempre, e por isso ele precisa existir no
+    HTML desde o carregamento, não ser criado depois pelo JS.
+
+    Sem JS a página continua útil: os três cartões aparecem em sequência,
+    cada um com link para a jornada correspondente na home.
+    """
+    c = CONTENT[code]
+    other = "en" if code == "pt" else "pt"
+    prefix = "../" if code == "pt" else "../../"
+    base = SITE["base_url"].rstrip("/")
+    canonical = base + c["agendar_path"]
+    og_image = base + "/assets/img/og.jpg"
+
+    alternates = (
+        f'<link rel="alternate" hreflang="pt-BR" href="{base}/agendar/">'
+        f'<link rel="alternate" hreflang="en" href="{base}/en/agendar/">'
+        f'<link rel="alternate" hreflang="x-default" href="{base}/agendar/">'
+    )
+
+    head = f"""<!doctype html>
+<html lang="{c['lang']}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(c['agendar_title'])}</title>
+<meta name="description" content="{e(c['agendar_description'])}">
+<link rel="canonical" href="{canonical}">
+{alternates}
+<meta name="theme-color" content="#123D2B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{e(SITE['name'])}">
+<meta property="og:title" content="{e(c['agendar_title'])}">
+<meta property="og:description" content="{e(c['agendar_description'])}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="{c['og_locale']}">
+<meta property="og:locale:alternate" content="{CONTENT[other]['og_locale']}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{prefix}assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/manrope-latin-standard-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{prefix}assets/fonts/dmserifdisplay-latin-standard-normal.woff2" crossorigin>
+<link rel="stylesheet" href="{prefix}assets/css/site.css">
+</head>"""
+
+    root = "/" if code == "pt" else "/en/"
+    # Sem JS não há fluxo: o "Explorar" abre o WhatsApp já com a frase
+    # daquela jornada. Com JS o clique é interceptado e o href nunca é
+    # seguido. (Antes isso apontava para as abas da home, que saíram.)
+    wa_intro = {
+        "experimentar": c["a_wa_intro"],
+        "treinar": c["b_wa_intro"],
+        "particular": c["c_wa_intro"],
+    }
+    slides = ""
+    for i, (key, photo_key, title, desc) in enumerate(c["xp_cards"]):
+        photo = PHOTOS[photo_key]
+        slides += f"""
+      <article class="xp-slide" id="xp-{key}" data-xp-slide="{key}" role="group" aria-roledescription="slide" aria-label="{i + 1} / {len(c['xp_cards'])}">
+        <figure class="xp-shot">
+          <img src="{prefix}assets/img/{photo['file']}" alt="{e(photo[f'alt_{code}'])}" style="--focus:{photo.get('focus', 'center')}" loading="{'eager' if i == 0 else 'lazy'}" decoding="async">
+        </figure>
+        <div class="xp-slide-body">
+          <span class="xp-num" aria-hidden="true">{i + 1:02d}</span>
+          <h2 class="xp-slide-title">{e(title)}</h2>
+          <p class="xp-slide-desc">{e(desc)}</p>
+          <a class="btn btn--gold xp-explore" href="{wa_link(wa_intro[key])}" data-xp-explore="{key}" target="_blank" rel="noopener">{e(c['xp_explore'])}</a>
+        </div>
+      </article>"""
+
+    dots = "".join(
+        f'<button type="button" class="xp-dot" data-xp-dot="{i}" aria-label="{i + 1:02d}"><span>{i + 1:02d}</span></button>'
+        for i in range(len(c["xp_cards"]))
+    )
+
+    # Campos ocultos: o experience.js escreve aqui o que a pessoa escolheu,
+    # com o rótulo que vai aparecer na mensagem. collect() lê [data-label].
+    hidden = "".join(
+        f'<input type="hidden" name="{n}" data-label="" data-xp-field="{n}">'
+        for n in ("experiencia", "tipo", "modalidade", "periodo", "nivel", "pessoas", "data")
+    )
+
+    opt = f' ({c["f_optional"]})'
+    contact = (
+        field("xp-name", c["f_name"], text_input("xp-name", "name", c["f_name"], extra='autocomplete="name"'))
+        + field("xp-email", c["f_email"] + opt, text_input("xp-email", "email", c["f_email"], kind="email", required=False, extra='autocomplete="email"'))
+        + field("xp-phone", c["bk"]["phone"] + opt, text_input("xp-phone", "phone", c["bk"]["phone"], kind="tel", required=False, extra='autocomplete="tel" placeholder="(71) 9 0000-0000"'))
+        + f'<details class="more field--full"><summary>{e(c["f_more"])}</summary>'
+        + field("xp-notes", c["f_notes"], textarea("xp-notes", "notes", c["f_notes"]), full=True, error=False)
+        + "</details>"
+    )
+
+    main_html = f"""
+<!-- data-booking: a página inteira é uma reserva em andamento, então o
+     pop-up do WhatsApp não se abre sozinho por cima dela (wa-widget.js).
+     Sem data-modality, o booking.js ignora este host. -->
+<section class="xp" data-xp data-booking>
+  <div class="wrap wrap--wide">
+
+    <header class="xp-head">
+      {eyebrow(c['agendar_kicker'])}
+      <h1 class="xp-h1">{e(c['agendar_h1'])}</h1>
+      <p class="xp-hint" data-xp-hint>{e(c['agendar_hint'])}</p>
+    </header>
+
+    <div class="xp-stage" data-xp-stage>
+      <div class="xp-track" data-xp-track>{slides}
+      </div>
+      <div class="xp-controls" data-xp-controls hidden>
+        <button type="button" class="xp-arrow" data-xp-prev aria-label="{e(c['xp_prev_label'])}">{ICON_PREV}</button>
+        <div class="xp-dots" role="tablist" aria-label="{e(c['agendar_h1'])}">{dots}</div>
+        <button type="button" class="xp-arrow" data-xp-next aria-label="{e(c['xp_next_label'])}">{ICON_NEXT}</button>
+      </div>
+    </div>
+
+    <div class="xp-flow" data-xp-flow hidden>
+      <div class="xp-flow-head">
+        <button type="button" class="xp-back" data-xp-back-all>{ICON_PREV}{e(c['xp_back_all'])}</button>
+        <ol class="xp-steps" data-xp-steps></ol>
+      </div>
+      <div class="xp-panel" data-xp-panel tabindex="-1"></div>
+    </div>
+
+    <form class="form xp-form" data-journey="experimentar" data-intro="{e(c['a_wa_intro'])}" novalidate aria-label="{e(c['xp_submit'])}" hidden data-xp-form>
+      {hidden}
+      <div class="fields" data-xp-contact>{contact}</div>
+      <div class="form-actions">
+        <button class="btn btn--gold btn--xl" type="submit">{ICON_WA}{e(c['xp_submit'])}</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </div>
+      <p class="form-privacy">{e(c['f_privacy'])}</p>
+    </form>
+
+  </div>
+</section>"""
+
+    header = page_header(code, prefix, "agendar")
+    footer = page_footer(code, prefix, "agendar")
+    scripts = page_scripts(code, prefix)
+    body = "<body class=\"page-xp\">" + header + '<main id="conteudo">' + main_html + "</main>" + footer + scripts + "</body></html>"
+    return head + chr(10) + body
+
+
 def render_legal(code, key):
     """Página institucional (privacidade, termos, diretrizes, reservas).
 
@@ -2122,7 +2170,8 @@ def sitemap():
     institucional (draft=True em legal_content.py) fica de fora e recebe
     noindex na própria página."""
     base = SITE["base_url"].rstrip("/")
-    groups = [("/", "/en/"), ("/produtos/", "/en/produtos/"), ("/contato/", "/en/contato/")]
+    groups = [("/", "/en/"), ("/agendar/", "/en/agendar/"),
+              ("/produtos/", "/en/produtos/"), ("/contato/", "/en/contato/")]
     for doc in LEGAL.values():
         if not doc["draft"]:
             groups.append((f'/{doc["slug"]}/', f'/en/{doc["slug"]}/'))
@@ -2157,6 +2206,7 @@ def main():
     (DIST / "en" / "index.html").write_text(render("en"), encoding="utf-8")
 
     for code, parts in (("pt", ()), ("en", ("en",))):
+        write_page((*parts, "agendar"), render_agendar(code))
         write_page((*parts, "produtos"), render_produtos(code))
         write_page((*parts, "contato"), render_contato(code))
         for key, doc in LEGAL.items():

@@ -16,6 +16,7 @@ import { chromium } from 'playwright';
 const BASE = process.argv[2] || 'http://localhost:8777';
 const ROUTES = [
   '/', '/en/',
+  '/agendar/', '/en/agendar/',
   '/produtos/', '/en/produtos/',
   '/contato/', '/en/contato/',
   '/privacidade/', '/en/privacidade/',
@@ -66,15 +67,18 @@ for (const [w, h] of SIZES) {
       if (de.scrollWidth > de.clientWidth + 1) out.push(['overflow', `scrollW=${de.scrollWidth} clientW=${de.clientWidth}`]);
 
       /* --- sangria lateral: elementos passando da borda ---
-         .carousel-track (momentos do clube) e .bk-days (dias do quadro de
-         saídas) são trilhos de rolagem horizontal — neles o conteúdo fora
-         da borda é o comportamento desejado, não um vazamento de layout.
+         .carousel-track (momentos do clube), .bk-days (dias do quadro de
+         saídas) e .xp-track (carrossel de experiências em /agendar/) são
+         trilhos horizontais — neles o conteúdo fora da borda é o
+         comportamento desejado, não um vazamento de layout. No .xp-track
+         os slides inativos ficam à direita do palco, que os recorta com
+         overflow:hidden.
          .nl-hp é o honeypot anti-spam (newsletter e /contato): fica em
          left:-9999px de propósito, porque bot preenche campo escondido e
          pessoa nenhuma o vê. A página em si continua sendo checada por
          'overflow' acima. */
       for (const el of document.querySelectorAll('main *, footer *')) {
-        if (!vis(el) || el.closest('.carousel-track, .bk-days, .nl-hp')) continue;
+        if (!vis(el) || el.closest('.carousel-track, .bk-days, .xp-track, .nl-hp')) continue;
         const r = el.getBoundingClientRect();
         if (r.width === 0) continue;
         if (r.right > vw + 1.5 || r.left < -1.5) out.push(['bleed', `${label(el)} left=${Math.round(r.left)} right=${Math.round(r.right)}`]);
