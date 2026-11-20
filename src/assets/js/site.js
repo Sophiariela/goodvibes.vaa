@@ -16,6 +16,7 @@ import { initNewsletter } from './newsletter.js';
 import { initProducts, initProductFilters } from './products.js';
 import { initContact } from './contact.js';
 import { initDatePicker } from './datepicker.js';
+import { initExperience } from './experience.js';
 
 const CONFIG = window.GVV_CONFIG || {};
 const I18N = JSON.parse(document.getElementById('i18n')?.textContent || '{}');
@@ -253,69 +254,6 @@ function initPreselect() {
   });
 }
 
-/* ---------- Jornadas em abas ----------
-   Sem JS, os três painéis aparecem em sequência (links âncora normais).
-   Com JS, só o painel escolhido fica visível, e links do menu (#treinar,
-   #particular…) abrem a aba certa. */
-function initTabs() {
-  const root = document.querySelector('.journeys');
-  if (!root) return;
-  const tabs = [...root.querySelectorAll('[role="tab"]')];
-  const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')));
-  const ids = panels.map((p) => p.id);
-  root.classList.add('js-tabs');
-
-  const select = (id, { focus = false, scroll = false } = {}) => {
-    tabs.forEach((tab, i) => {
-      const on = panels[i].id === id;
-      tab.setAttribute('aria-selected', String(on));
-      tab.tabIndex = on ? 0 : -1;
-      panels[i].hidden = !on;
-      if (on && focus) tab.focus();
-    });
-    if (scroll) root.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const fromHash = (hash) => {
-    const id = (hash || '').slice(1);
-    if (ids.includes(id)) return id;
-    if (id === 'primeira-remada') return 'experimentar';
-    return null;
-  };
-
-  select(fromHash(location.hash) || ids[0]);
-  if (fromHash(location.hash)) requestAnimationFrame(() => select(fromHash(location.hash), { scroll: true }));
-
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      select(ids[i]);
-      history.replaceState(null, '', `#${ids[i]}`);
-    });
-    tab.addEventListener('keydown', (e) => {
-      const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
-      if (e.key in keys) {
-        e.preventDefault();
-        select(ids[(i + keys[e.key] + ids.length) % ids.length], { focus: true });
-      } else if (e.key === 'Home' || e.key === 'End') {
-        e.preventDefault();
-        select(ids[e.key === 'Home' ? 0 : ids.length - 1], { focus: true });
-      }
-    });
-  });
-
-  // Links em qualquer lugar da página que apontam para uma jornada
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="#"]');
-    if (!a || a.getAttribute('role') === 'tab') return;
-    const id = fromHash(a.getAttribute('href'));
-    if (!id) return;
-    e.preventDefault();
-    select(id, { scroll: true });
-    history.replaceState(null, '', `#${id}`);
-  });
-}
-
 /* ---------- Carrossel de momentos ----------
    Sem JS a faixa continua rolável com o dedo e com o teclado (o trilho tem
    tabindex), e as setas só acrescentam o controle de clique. Elas
@@ -351,10 +289,10 @@ function initYear() {
 initHeader();
 initMenu();
 initDock();
-initTabs();
 initCarousel();
 initForms();
 initDatePicker(I18N);
+initExperience(I18N);
 initPreselect();
 initYear();
 initBooking({ config: CONFIG, i18n: I18N });

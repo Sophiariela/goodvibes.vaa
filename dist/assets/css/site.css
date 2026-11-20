@@ -695,83 +695,10 @@ html.menu-open .menu-drawer { transform: none; visibility: visible; transition: 
 .offer-foot { margin-top: clamp(32px, 3.6vw, 48px); display: flex; justify-content: center; }
 
 /* ==========================================================================
-   9. Jornadas (abas) e painéis
+   9. Listas de ofertas e nota destacada
+   (As abas de jornada saíram com a seção #reservar da home; a reserva
+   vive em /agendar/, seção 24.)
    ========================================================================== */
-.journeys { overflow: hidden; }
-
-/* Índice editorial: 3 abas numeradas */
-.tabs {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 var(--grid-gap); border-top: 1px solid var(--rule-c);
-}
-.tab {
-  position: relative; display: grid; gap: 8px; align-content: start;
-  padding: clamp(14px, 1.6vw, 24px) 0 clamp(16px, 1.8vw, 26px);
-  text-decoration: none; cursor: pointer;
-}
-.tab::after {
-  content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
-  background: var(--c-gold); transform: scaleX(0); transform-origin: left;
-  transition: transform .34s cubic-bezier(.3, .8, .3, 1);
-}
-.tab[aria-selected="true"]::after { transform: scaleX(1); }
-.tab-num {
-  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .2em;
-  color: var(--ink-3); transition: color .25s;
-}
-.tab-title {
-  font-family: var(--font-display); font-size: clamp(1.125rem, .72rem + 1.45vw, 2.5rem);
-  line-height: 1.08; letter-spacing: -.018em; color: var(--ink-3); transition: color .25s;
-  text-wrap: balance;
-}
-.tab-desc { font-size: var(--t-sm); color: var(--ink-3); max-width: 30ch; transition: color .25s; display: none; }
-.tab-short { display: none; }
-.tab:hover .tab-title { color: var(--ink); }
-.tab[aria-selected="true"] .tab-num { color: var(--accent-ink); }
-.tab[aria-selected="true"] .tab-title { color: var(--ink); }
-.tab[aria-selected="true"] .tab-desc { color: var(--ink-2); }
-@media (max-width: 679px) {
-  .tabs { border-top: 0; border-bottom: 1px solid var(--rule-c); }
-  .tab { padding: 10px 2px 14px; text-align: center; justify-items: center; gap: 4px; }
-  .tab::after { top: auto; bottom: -1px; }
-  .tab-title, .tab-num { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .tab-short { display: block; font-size: var(--t-sm); font-weight: 650; color: var(--ink-3); }
-  .tab[aria-selected="true"] .tab-short { color: var(--ink); }
-}
-@media (min-width: 900px) { .tab-desc { display: block; } }
-
-/* Sem JS os três painéis aparecem em sequência; com JS, um por vez. */
-.js-tabs .panel[hidden] { display: none; }
-.panel { padding-top: clamp(32px, 4vw, 64px); outline: none; }
-.panel + .panel { margin-top: clamp(40px, 5vw, 72px); }
-.js-tabs .panel + .panel { margin-top: 0; }
-
-.panel-grid { display: grid; gap: clamp(32px, 4vw, 56px); }
-.panel-intro { display: grid; gap: 14px; align-content: start; }
-.panel-intro .lead { max-width: 42ch; }
-@media (min-width: 1100px) {
-  .panel-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: clamp(40px, 4vw, 80px); align-items: start;
-  }
-  .panel-intro { grid-column: 1 / span 4; }
-  .panel-main { grid-column: 5 / -1; }
-  .panel-grid--quote .panel-intro { grid-column: 1 / span 5; }
-  .panel-grid--quote .panel-main { grid-column: 7 / -1; }
-}
-/* Telas muito largas: a coluna narrativa fixa (sticky) não precisa de mais
-   espaço que isso pra continuar legível, então o excedente vai todo para o
-   calendário e os cartões — é ali que a largura extra realmente ajuda. */
-@media (min-width: 1600px) {
-  .panel-intro { grid-column: 1 / span 3; }
-  .panel-main { grid-column: 4 / -1; }
-}
-/* O trilho narrativo acompanha a rolagem só quando cabe inteiro na tela —
-   fixá-lo numa janela baixa esconderia o fim do próprio texto. */
-@media (min-width: 1100px) and (min-height: 860px) {
-  .panel-intro { position: sticky; top: calc(var(--header-h) + 40px); }
-}
-
 /* Lista de ofertas/planos — tabela editorial com filetes */
 .offers { margin-top: clamp(20px, 2vw, 28px); border-top: 1px solid var(--rule-c); }
 .offers > div { padding: 14px 0; border-bottom: 1px solid var(--rule-c); display: grid; gap: 4px; }
@@ -1968,3 +1895,216 @@ body.nl-open { overflow: hidden; }
 .contato-card p { margin: 0; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; }
 .contato-card .btn { margin-top: 8px; }
 .contato-card--muted { background: var(--c-shell-2); border-color: transparent; }
+
+/* ==========================================================================
+   24. Página /agendar/ — carrossel de experiências e fluxo por jornada
+   Uma experiência por vez: o carrossel ocupa a área principal e, ao
+   escolher, a mesma área vira o fluxo daquela jornada. Sem JS os três
+   artigos ficam empilhados e cada "Explorar" é um link para a home —
+   por isso o empilhado é o padrão e o trilho só vira carrossel em .is-js.
+   ========================================================================== */
+.page-xp { background: var(--bg); }
+/* Página sem hero: o cabeçalho é fixo e sólido, então o conteúdo começa
+   abaixo dele — mesma compensação de .contato-hero. */
+.xp { padding-block: calc(var(--header-h) + clamp(28px, 4vw, 64px)) clamp(48px, 7vw, 96px); }
+
+.xp-head { max-width: 46ch; margin-bottom: clamp(28px, 4vw, 48px); }
+.xp-h1 {
+  margin-top: 10px;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2rem, 1.2rem + 3.2vw, 4rem); line-height: 1.02;
+  letter-spacing: -.022em; color: var(--ink); text-wrap: balance;
+}
+.xp-hint {
+  margin-top: 16px; font-size: var(--t-sm); color: var(--ink-3);
+  display: flex; align-items: center; gap: 8px;
+}
+.xp-hint::before {
+  content: ""; width: 28px; height: 1px; background: var(--c-gold); flex: none;
+}
+
+/* ---------- Carrossel ---------- */
+.xp-stage { position: relative; }
+.xp-track { display: grid; gap: clamp(20px, 3vw, 32px); }
+
+.is-js .xp-stage { overflow: hidden; }
+.is-js .xp-track {
+  display: flex; gap: 0; align-items: stretch;
+  transition: transform .62s cubic-bezier(.22, .78, .24, 1);
+}
+.is-js .xp-slide { flex: 0 0 100%; min-width: 100%; }
+
+.xp-slide {
+  position: relative; display: grid; align-items: end;
+  min-height: clamp(380px, 56vh, 620px);
+  border-radius: var(--radius); overflow: hidden;
+  background: var(--c-forest);
+}
+.is-js .xp-slide { opacity: .34; transition: opacity .5s; }
+.is-js .xp-slide.is-active { opacity: 1; }
+
+.xp-shot { position: absolute; inset: 0; margin: 0; }
+.xp-shot img {
+  width: 100%; height: 100%; object-fit: cover;
+  object-position: var(--focus, center);
+}
+/* Véu para o texto ler sobre qualquer fotografia. */
+.xp-shot::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12, 42, 30, .12) 0%, rgba(12, 42, 30, .52) 52%, rgba(12, 42, 30, .88) 100%);
+}
+.xp-slide-body {
+  position: relative; display: grid; gap: 10px; justify-items: start;
+  padding: clamp(24px, 3.4vw, 48px);
+  /* Bloco escuro fora de .band-dark: o anel de foco volta a ser Sand. */
+  --focus-ring: var(--c-gold);
+}
+.xp-num {
+  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .22em;
+  color: var(--c-gold);
+}
+.xp-slide-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(1.6rem, 1.1rem + 2vw, 2.75rem); line-height: 1.06;
+  letter-spacing: -.018em; color: var(--c-shell); text-wrap: balance;
+}
+.xp-slide-desc {
+  max-width: 34ch; color: rgba(244, 240, 230, .86);
+  font-size: var(--t-sm); line-height: 1.55;
+}
+.xp-explore { margin-top: 8px; }
+
+.xp-controls {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  margin-top: clamp(18px, 2.4vw, 26px);
+}
+.xp-arrow {
+  display: grid; place-items: center; width: 46px; height: 46px; flex: none;
+  background: transparent; border: 1px solid var(--rule-strong);
+  border-radius: 50%; color: var(--ink); cursor: pointer;
+  transition: background .22s, border-color .22s, color .22s;
+}
+.xp-arrow svg { width: 20px; height: 20px; }
+.xp-arrow:hover { background: var(--c-forest); border-color: var(--c-forest); color: var(--c-shell); }
+.xp-dots { display: flex; align-items: center; gap: 4px; }
+.xp-dot {
+  min-width: 44px; min-height: 44px; padding: 0 6px;
+  display: grid; place-items: center;
+  background: transparent; border: 0; cursor: pointer;
+  font-family: var(--font); font-size: var(--t-2xs); font-weight: 650;
+  letter-spacing: .14em; color: var(--ink-3);
+  transition: color .22s;
+}
+.xp-dot span { position: relative; padding-bottom: 6px; }
+.xp-dot span::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-gold); transform: scaleX(0); transition: transform .3s;
+}
+.xp-dot.is-on { color: var(--ink); }
+.xp-dot.is-on span::after { transform: scaleX(1); }
+
+/* ---------- Fluxo ---------- */
+.xp-flow { display: grid; gap: clamp(20px, 2.6vw, 30px); }
+.xp-flow-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--rule-c);
+}
+.xp-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 0; padding: 6px 0; cursor: pointer;
+  font-family: var(--font); font-size: var(--t-sm); font-weight: 650;
+  color: var(--c-ocean-2);
+}
+.xp-back svg { width: 18px; height: 18px; }
+.xp-back:hover { color: var(--ink); }
+
+.xp-steps {
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  margin: 0 0 0 auto; padding: 0; list-style: none; counter-reset: xpstep;
+}
+.xp-step {
+  counter-increment: xpstep;
+  display: flex; align-items: center; gap: 7px;
+  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.xp-step::before {
+  content: counter(xpstep, decimal-leading-zero);
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.xp-step.is-done { color: var(--ink-2); }
+.xp-step.is-done::before { color: var(--c-gold); }
+.xp-step.is-on { color: var(--ink); }
+.xp-step.is-on::before { color: var(--accent-ink); }
+
+.xp-panel { outline: none; max-width: 680px; }
+.xp-panel:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 6px; }
+.xp-panel-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); line-height: 1.08;
+  letter-spacing: -.016em; color: var(--ink); text-wrap: balance;
+}
+.xp-panel-lead {
+  margin-top: 10px; max-width: 46ch;
+  color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6;
+}
+
+.xp-group { margin-top: clamp(22px, 2.8vw, 32px); display: grid; gap: 10px; }
+.xp-label {
+  font-size: var(--t-2xs); font-weight: 650; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+
+.xp-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.xp-choice {
+  min-height: 48px; padding: 12px 18px;
+  background: var(--surface); border: 1px solid var(--rule-c);
+  border-radius: var(--radius); cursor: pointer;
+  font-family: var(--font); font-size: var(--t-sm); color: var(--ink);
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.xp-choice:hover { border-color: var(--rule-strong); }
+.xp-choice[aria-pressed="true"] {
+  border-color: var(--c-gold); box-shadow: inset 0 0 0 1px var(--c-gold);
+}
+
+.xp-number { display: flex; align-items: center; gap: 10px; }
+.xp-step-btn {
+  width: 48px; height: 48px; flex: none; display: grid; place-items: center;
+  background: var(--surface); border: 1px solid var(--rule-c);
+  border-radius: var(--radius); cursor: pointer;
+  font-family: var(--font); font-size: var(--t-md); color: var(--ink);
+}
+.xp-step-btn:hover { border-color: var(--rule-strong); }
+.xp-number-input {
+  width: 92px; min-height: 48px; padding: 12px 14px; text-align: center;
+  background: var(--c-white); color: var(--c-ink);
+  border: 1px solid var(--rule-c); border-radius: var(--radius);
+  font-family: var(--font); font-size: var(--t-sm);
+}
+/* O valor real da data mora aqui; quem opera é o calendário acima. */
+.xp-date-input { display: none; }
+
+.xp-review { margin-top: 22px; border-top: 1px solid var(--rule-c); }
+.xp-review > div {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; justify-content: space-between;
+  padding: 13px 0; border-bottom: 1px solid var(--rule-c);
+}
+.xp-review dt { font-size: var(--t-xs); font-weight: 650; letter-spacing: .06em; color: var(--ink-3); text-transform: uppercase; }
+.xp-review dd { margin: 0; font-size: var(--t-sm); color: var(--ink); }
+
+.xp-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: clamp(26px, 3vw, 36px); }
+.xp-nav-note { flex-basis: 100%; font-size: var(--t-xs); color: var(--ink-3); }
+.xp-nav-next:disabled { opacity: .45; cursor: default; }
+
+/* O formulário é movido para dentro do painel; na revisão os campos de
+   contato se recolhem e sobra o botão real de envio. */
+.xp-form { background: transparent; border: 0; padding: 0; margin-top: clamp(20px, 2.4vw, 28px); }
+.xp-form .form-actions { margin-top: clamp(22px, 2.6vw, 30px); }
+.xp-form.is-review .fields { display: none; }
+
+@media (max-width: 679px) {
+  .xp-steps { margin-left: 0; width: 100%; }
+  .xp-controls { gap: 10px; }
+  .xp-nav .btn { width: 100%; }
+}

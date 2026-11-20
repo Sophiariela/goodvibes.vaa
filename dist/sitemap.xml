@@ -13,6 +13,18 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/"/>
   </url>
   <url>
+    <loc>https://goodvibesvaa.vercel.app/agendar/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/agendar/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/agendar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/agendar/"/>
+  </url>
+  <url>
+    <loc>https://goodvibesvaa.vercel.app/en/agendar/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/agendar/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/agendar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://goodvibesvaa.vercel.app/agendar/"/>
+  </url>
+  <url>
     <loc>https://goodvibesvaa.vercel.app/produtos/</loc>
     <xhtml:link rel="alternate" hreflang="pt-BR" href="https://goodvibesvaa.vercel.app/produtos/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://goodvibesvaa.vercel.app/en/produtos/"/>

@@ -24,7 +24,10 @@ export function initDatePicker(I18N) {
 
   document.querySelectorAll('[data-datepicker]').forEach((root) => {
     const input = document.getElementById(root.dataset.for);
-    if (!input) return;
+    // Em /agendar/ o calendário é remontado a cada passo, e initDatePicker
+    // roda de novo: sem esta marca o mesmo nó ganharia um segundo mês.
+    if (!input || root.dataset.calReady === '1') return;
+    root.dataset.calReady = '1';
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);

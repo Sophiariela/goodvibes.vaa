@@ -69,14 +69,14 @@ reprova abaixo de 4.5:1):
 ## Home — ordem das seções
 
 ```
-menu → hero → faixa de credibilidade → "O que oferecemos" → quadro de
-reservas → "Por que remar com a gente" → comunidade e capitães →
-chamada da loja → local e mapa → dúvidas → chamada final → rodapé
+menu → hero → faixa de credibilidade → "O que oferecemos" →
+"Por que remar com a gente" → comunidade e capitães → chamada da loja →
+local e mapa → dúvidas → chamada final → rodapé
 ```
 
 A ordem é definida pelo `body` da `render()` — ver README § "Home". Os
-quatro cartões de "O que oferecemos" apontam para as âncoras das jornadas
-e o `initTabs` abre a aba certa; o pop-up de newsletter **não** aparece na
+quatro cartões de "O que oferecemos" apontam para `/agendar/?xp=...` (a
+reserva vive lá desde que as abas saíram da home); o pop-up de newsletter **não** aparece na
 home (`page_footer()` só emite o `div.nl-widget` fora dela).
 
 ## Navegação e rodapé
@@ -133,9 +133,51 @@ fictícia. A loja não tem checkout: a compra passa pelo WhatsApp.
 
 ## Build
 
-`python3 build.py` gera `dist/` a partir de `CONTENT['pt']`/`CONTENT['en']`
+`python build.py` (ou `python3`, conforme o sistema) gera `dist/` a partir de `CONTENT['pt']`/`CONTENT['en']`
 (texto) e `PHOTOS` (fotos). Rodar depois de qualquer mudança em `build.py`
 ou nos arquivos de `src/`. Nunca editar `dist/` diretamente — é gerado.
+
+## Página `/agendar/` — carrossel de experiências
+
+Rota dedicada de reserva (`render_agendar` em build.py, `experience.js`,
+seção 24 do site.css). Uma experiência por vez: o carrossel mostra as três
+jornadas e, ao escolher, a mesma área vira o fluxo daquela jornada —
+Configurar → Data → Seus dados → Confirmar.
+
+- **O `<form data-journey>` existe no HTML desde o carregamento e nunca é
+  recriado.** É ele que `initForms()` (site.js) vincula; o experience.js
+  apenas o *move* para dentro do passo certo (mover um nó preserva os
+  listeners) e escreve nos campos ocultos `[data-xp-field]` com o rótulo
+  que sairá na mensagem. Por isso validação, `collect()` e o envio pelo
+  WhatsApp continuam sendo os de sempre. Criar o form via JS quebraria o
+  vínculo e o botão pararia de enviar.
+- Os campos de cada jornada saem de `resolve_xp()`, que reusa os mesmos
+  vocabulários das jornadas (`a_options`, `b_options`, `c_options`,
+  `f_periods`, `f_levels`) — a página não inventa opção nova. É isso que
+  mantém a tela de treino sem texto de passeio turístico.
+- O que a pessoa preencheu fica em `sessionStorage` (`gvv-xp`) por
+  jornada: voltar ao carrossel e recarregar a página não perdem nada.
+- `/agendar/?xp=treinar` abre a jornada direto — é assim que os cartões
+  de "O que oferecemos" levam a pessoa ao fluxo certo (`offer_href`).
+- Sem JS os três artigos ficam empilhados e cada "Explorar" é um link
+  normal para a jornada correspondente na home; o trilho só vira
+  carrossel com `.is-js`.
+- `.xp-track` entra na isenção de `bleed` do `tools/audit.mjs`, junto de
+  `.carousel-track` e `.bk-days`: é trilho horizontal, e os slides
+  inativos ficam fora da borda de propósito (o palco recorta).
+- **A home não tem mais seção de reserva.** A antiga `#reservar` (abas
+  Experimentar/Treinar/Particular) saiu, e com ela `experience_compose()`,
+  `form_shell()` e os painéis. Agora a home só *aponta* para cá: cartões
+  de "O que oferecemos" (`offer_href`, com `?xp=`), o botão "Ver datas e
+  reservar", hero, nav, rodapé e barra fixa. Não existe mais nenhum
+  `form[data-journey]` na home.
+- Consequência a resolver quando o `booking_mode` virar `"live"`: o
+  `booking.js` (calendário real, Pix, trava de vaga) **ficou sem host** —
+  ele só montava dentro dos painéis da home. O fluxo de `/agendar/` envia
+  por `submitRequest()`, que em `"live"` faz `POST /api/requests`, mas a
+  jornada Experimentar perde o `calendar+pix`. Ligar o live exige dar a
+  `/agendar/` um `[data-booking][data-modality]` ou migrar o passo de
+  data para o `booking.js`.
 
 ## Reserva no site (`SITE["booking_mode"]`)
 

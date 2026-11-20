@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "python3 build.py",
+    "build": "python build.py || python3 build.py",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
